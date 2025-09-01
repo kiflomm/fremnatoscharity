@@ -9,5 +9,4 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/users', [AdminController::class, 'users'])->name('users');
     Route::get('/stories', [AdminController::class, 'stories'])->name('stories');
     Route::get('/news', [AdminController::class, 'news'])->name('news');
-    Route::get('/comments', [AdminController::class, 'comments'])->name('comments');
 });

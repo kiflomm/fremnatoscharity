@@ -2,16 +2,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Users, Heart, Newspaper, MessageSquare, TrendingUp, Calendar } from 'lucide-react';
+import { Users, Heart, Newspaper, TrendingUp, Calendar } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Admin',
-        href: dashboard().url,
-    },
     {
         title: 'Dashboard',
         href: '/admin/dashboard',
@@ -55,24 +50,17 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
             trend: '+15% from last month',
             color: 'text-green-600',
         },
-        {
-            title: 'Comments',
-            value: stats.totalComments,
-            icon: MessageSquare,
-            description: 'User engagement',
-            trend: '+23% from last month',
-            color: 'text-purple-600',
-        },
+
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Admin Dashboard" />
+            <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-6 p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+                        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                         <p className="text-muted-foreground">
                             Manage your charity platform and monitor key metrics
                         </p>
@@ -86,7 +74,7 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 md:grid-cols-3">
                     {statCards.map((card) => (
                         <Card key={card.title}>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -129,10 +117,6 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                         <Button variant="outline" className="justify-start">
                             <Newspaper className="mr-2 h-4 w-4" />
                             Create Post
-                        </Button>
-                        <Button variant="outline" className="justify-start">
-                            <MessageSquare className="mr-2 h-4 w-4" />
-                            Moderate Comments
                         </Button>
                     </CardContent>
                 </Card>
