@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,17 +18,23 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
 
         // Create a default admin user
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@fremnatos.org',
-            'role_id' => 1, // admin role
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@fremnatos.org'], // Search by email
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+                'role_id' => 1, // admin role
+            ]
+        );
 
         // Create a default editor user
-        User::factory()->create([
-            'name' => 'Editor User',
-            'email' => 'editor@fremnatos.org',
-            'role_id' => 2, // editor role
-        ]);
+        User::updateOrCreate(
+            ['email' => 'editor@fremnatos.org'], // Search by email
+            [
+                'name' => 'Editor User',
+                'password' => Hash::make('password'),
+                'role_id' => 2, // editor role
+            ]
+        );
     }
 }
