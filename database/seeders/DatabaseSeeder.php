@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
         // Create a default admin user
         User::updateOrCreate(
-            ['email' => 'admin@fremnatos.org'], // Search by email
+            ['email' => 'admin@fremnatos.org'], 
             [
                 'name' => 'Admin User',
                 'password' => Hash::make('password'),
@@ -29,7 +28,7 @@ class DatabaseSeeder extends Seeder
 
         // Create a default editor user
         User::updateOrCreate(
-            ['email' => 'editor@fremnatos.org'], // Search by email
+            ['email' => 'editor@fremnatos.org'], 
             [
                 'name' => 'Editor User',
                 'password' => Hash::make('password'),
