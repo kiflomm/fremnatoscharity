@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,15 +37,24 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // Ensure default role is guest
+        $guestRoleId = Role::query()->where('name', 'guest')->value('id');
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => $guestRoleId,
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
+
+        // After registration, redirect guests to welcome (home), others to dashboard
+        if ($user && method_exists($user, 'isGuest') && $user->isGuest()) {
+            return redirect()->intended(route('home', absolute: false));
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

@@ -33,6 +33,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = $request->user();
+
+        // Role-based redirect: guests to welcome (home), others to dashboard (admin redirect handled in route)
+        if ($user && method_exists($user, 'isGuest') && $user->isGuest()) {
+            return redirect()->intended(route('home', absolute: false));
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

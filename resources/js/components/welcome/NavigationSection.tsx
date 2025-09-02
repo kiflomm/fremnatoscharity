@@ -21,6 +21,9 @@ export default function NavigationSection() {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const { t } = useTranslation();
+    // Role currently not used to toggle any additional UI here,
+    // but loaded for future role-based adjustments
+    const userRole = auth?.user?.role?.name ?? null;
 
     const slides: Slide[] = [
         {
@@ -148,6 +151,7 @@ export default function NavigationSection() {
                                                 <span className="hidden sm:inline">{t("cta.profile")}</span>
                                             </Link>
                                         ) : (
+                                            // When unauthenticated, show signup/signin. If future role-based public state needed, adjust here.
                                             <div className="flex items-center gap-2 sm:gap-3">
                                                 <Link
                                                     href="/register"
