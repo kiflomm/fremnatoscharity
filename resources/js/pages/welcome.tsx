@@ -1,14 +1,14 @@
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import Footer from '@/components/Footer';
-import { Header, HeroSection, MissionSection, FeaturesSection, DonationSection } from '@/components/welcome';
+import { Header, AboutSection, DonationSection, NavigationSection } from '@/components/welcome';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 
 export default function Welcome() {
-    const { auth, locale } = usePage<SharedData>().props;
-    const { translate, i18n, ready } = useTranslations();
+    const { auth } = usePage<SharedData>().props;
+    const {  i18n, ready } = useTranslations();
     const { t } = useTranslation();
     const [forceUpdate, setForceUpdate] = useState(0);
     
@@ -37,11 +37,9 @@ export default function Welcome() {
     return (
         <>
             <Head title={t('organization')} />
-            
             <Header />
-            <MissionSection />
-            <HeroSection />
-            <FeaturesSection />
+            <NavigationSection />
+            <AboutSection />
             <DonationSection />
             <Footer />
         </>

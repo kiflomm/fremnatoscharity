@@ -17,6 +17,8 @@ interface ImageSlideshowProps {
     showArrows?: boolean;
     showCaptions?: boolean;
     className?: string;
+    captionVariant?: 'glass' | 'solid' | 'none';
+    captionPosition?: 'auto' | 'bottom' | 'center' | 'top';
 }
 
 export default function ImageSlideshow({
@@ -25,8 +27,10 @@ export default function ImageSlideshow({
     interval = 5000,
     showIndicators = true,
     showArrows = true,
-    showCaptions = true,
-    className = ''
+    showCaptions = false,
+    className = '',
+    captionVariant = 'glass',
+    captionPosition = 'auto'
 }: ImageSlideshowProps) {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
@@ -157,24 +161,44 @@ export default function ImageSlideshow({
                     </div>
                 </div>
 
-                {/* Gradient overlays */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/0 to-black/0" />
+                {/* Gradient overlays (stronger bottom scrim for readability) */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
 
-                {/* Captions */}
+                {/* Captions with glass/solid variants and configurable position */}
                 {showCaptions && (slide.title || slide.description) && (
-                    <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
-                        <div className="max-w-3xl mx-auto text-center">
-                            {slide.title && (
-                                <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight drop-shadow-lg">
-                                    {slide.title}
-                                </h3>
-                            )}
-                            {slide.description && (
-                                <p className="mt-2 text-white/90 text-sm sm:text-base leading-relaxed drop-shadow">
-                                    {slide.description}
-                                </p>
-                            )}
+                    <div
+                        className={[
+                            'absolute inset-x-0 p-4 sm:p-6',
+                            captionPosition === 'top' && 'top-4 sm:top-6',
+                            captionPosition === 'center' && 'top-1/2 -translate-y-1/2',
+                            captionPosition === 'bottom' && 'bottom-4 sm:bottom-6',
+                            captionPosition === 'auto' && 'top-1/2 -translate-y-1/2 md:translate-y-0 md:top-auto md:bottom-6'
+                        ].filter(Boolean).join(' ')}
+                    >
+                        <div className="max-w-3xl mx-auto">
+                            <div
+                                className={[
+                                    'transition-all duration-300 rounded-2xl border shadow-lg',
+                                    'px-4 py-3 sm:px-6 sm:py-4',
+                                    'backdrop-blur',
+                                    captionVariant === 'none' && 'bg-transparent border-transparent shadow-none',
+                                    captionVariant === 'glass' && 'bg-black/35 border-white/10 hover:bg-black/45',
+                                    captionVariant === 'solid' && 'bg-black/70 border-black/40',
+                                    captionPosition === 'center' ? 'mx-auto text-center' : 'mx-auto text-center'
+                                ].filter(Boolean).join(' ')}
+                            >
+                                {slide.title && (
+                                    <h3 className="text-white text-lg sm:text-2xl md:text-3xl font-semibold tracking-tight drop-shadow [text-shadow:0_2px_8px_rgba(0,0,0,0.8)]">
+                                        {slide.title}
+                                    </h3>
+                                )}
+                                {slide.description && (
+                                    <p className="mt-1.5 sm:mt-2 text-white/95 text-sm sm:text-base leading-relaxed drop-shadow [text-shadow:0_1px_6px_rgba(0,0,0,0.7)]">
+                                        {slide.description}
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}

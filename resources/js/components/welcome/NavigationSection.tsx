@@ -1,12 +1,12 @@
 import ImageSlideshow from '@/components/ImageSlideshow';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { Link } from '@inertiajs/react';
-import { Heart, Users, Calendar, Target, ArrowRight, Sparkles } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { Heart, Users, Calendar, Target, ArrowRight } from 'lucide-react';
+import { SimpleLanguageSwitcher } from '../LanguageSwitcher';
+import { ThemeToggle } from '../ThemeToggle';
+import type { SharedData } from '@/types';
 
 interface Slide {
     id: number;
@@ -16,42 +16,43 @@ interface Slide {
     description: string;
 }
 
-export default function MissionSection() {
-    const { theme } = useTheme();
+export default function NavigationSection() {
+    const page = usePage<SharedData>();
+    const { auth } = page.props;
     const { t } = useTranslation();
 
     const slides: Slide[] = [
         {
             id: 1,
-            imageUrl: '/images/slideshow/la.jpg',
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/la_vznqng.jpg',
             alt: 'Charity work - Helping elders',
             title: t('slideshow.slide1.title'),
             description: t('slideshow.slide1.description')
         },
         {
             id: 2,
-            imageUrl: '/images/slideshow/chicago.jpg',
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/chicago_j8ekxp.jpg',
             alt: 'Charity work - Supporting children',
             title: t('slideshow.slide2.title'),
             description: t('slideshow.slide2.description')
         },
         {
             id: 3,
-            imageUrl: '/images/slideshow/ny.jpg',
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg',
             alt: 'Charity work - Mental health support',
             title: t('slideshow.slide3.title'),
             description: t('slideshow.slide3.description')
         },
         {
             id: 4,
-            imageUrl: '/images/slideshow/ny.jpg',
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg',
             alt: 'Charity work - Community service',
             title: t('slideshow.slide4.title'),
             description: t('slideshow.slide4.description')
         },
         {
             id: 5,
-            imageUrl: '/images/slideshow/ny.jpg',
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/chicago_j8ekxp.jpg',
             alt: 'Charity work - Community service',
             title: t('slideshow.slide5.title'),
             description: t('slideshow.slide5.description')
@@ -83,8 +84,8 @@ export default function MissionSection() {
     ];
 
     return (
-        <section id="mission" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 {/* Main Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
                     {/* Image Slideshow */}
@@ -95,17 +96,64 @@ export default function MissionSection() {
                             </CardContent>
                         </Card>
                     </div>
-                    
+
                     {/* Mission Content */}
                     <div className="order-1 lg:order-2 space-y-6">
-                        <Card className="border-0 shadow-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm">
-                            <CardHeader className="pb-4">
-                                <CardTitle className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-3">
-                                    <Users className="w-8 h-8 text-blue-600" />
-                                    Our Commitment to Community
-                                </CardTitle>
+                        <Card className="border-0 shadow-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-0 pb-4">
+                            <CardHeader className="pb-4 px-2">
+                                <div className="flex justify-between items-center">
+                                    <div className="ml-auto flex items-center space-x-2 sm:space-x-4 py-4">
+                                        {/* Always visible theme and language switchers */}
+                                        <div className="flex items-center space-x-2 sm:space-x-3">
+                                            <ThemeToggle className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
+                                            <SimpleLanguageSwitcher
+                                                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Secondary Navigation */}
+                                <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-3">
+                                    <nav className="flex items-center gap-3 sm:gap-4 text-sm">
+                                        <Link href="/admin/news" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                                            News
+                                        </Link>
+                                        <span className="text-slate-300 dark:text-slate-600">|</span>
+                                        <Link href="/admin/stories" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                                            Stories
+                                        </Link>
+                                    </nav>
+                                    <div className="ml-auto flex items-center gap-2 sm:gap-3">
+                                        {auth?.user ? (
+                                            <Link
+                                                href="/settings/profile"
+                                                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+                                                aria-label="Profile settings"
+                                            >
+                                                <Users className="h-4 w-4" />
+                                                <span className="hidden sm:inline">Profile</span>
+                                            </Link>
+                                        ) : (
+                                            <div className="flex items-center gap-2 sm:gap-3">
+                                                <Link
+                                                    href="/register"
+                                                    className="rounded-md px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+                                                >
+                                                    Sign up
+                                                </Link>
+                                                <Link
+                                                    href="/login"
+                                                    className="rounded-md px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+                                                >
+                                                    Sign in
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                                 <CardDescription className="text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
-                                    {t('mission_description')}
+                                    
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="pt-0">
@@ -131,7 +179,7 @@ export default function MissionSection() {
                                 </div>
                             </CardContent>
                         </Card>
-                        
+
                         {/* Call to Action */}
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Button asChild size="lg" className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
