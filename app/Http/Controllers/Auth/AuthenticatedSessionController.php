@@ -31,9 +31,9 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        session()->regenerate();
 
-        $user = $request->user();
+        $user = Auth::user();
 
         // Role-based redirect: guests to welcome (home), others to dashboard (admin redirect handled in route)
         if ($user && method_exists($user, 'isGuest') && $user->isGuest()) {
