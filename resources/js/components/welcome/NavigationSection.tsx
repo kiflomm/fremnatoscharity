@@ -7,6 +7,7 @@ import { Heart, Users, Calendar, Target, ArrowRight } from 'lucide-react';
 import { SimpleLanguageSwitcher } from '../LanguageSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 import type { SharedData } from '@/types';
+import { motion, Variants } from 'framer-motion';
 
 interface Slide {
     id: number;
@@ -25,35 +26,35 @@ export default function NavigationSection() {
         {
             id: 1,
             imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/la_vznqng.jpg',
-            alt: 'Charity work - Helping elders',
+            alt: t('slideshow.slide1.alt'),
             title: t('slideshow.slide1.title'),
             description: t('slideshow.slide1.description')
         },
         {
             id: 2,
             imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/chicago_j8ekxp.jpg',
-            alt: 'Charity work - Supporting children',
+            alt: t('slideshow.slide2.alt'),
             title: t('slideshow.slide2.title'),
             description: t('slideshow.slide2.description')
         },
         {
             id: 3,
             imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg',
-            alt: 'Charity work - Mental health support',
+            alt: t('slideshow.slide3.alt'),
             title: t('slideshow.slide3.title'),
             description: t('slideshow.slide3.description')
         },
         {
             id: 4,
             imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg',
-            alt: 'Charity work - Community service',
+            alt: t('slideshow.slide4.alt'),
             title: t('slideshow.slide4.title'),
             description: t('slideshow.slide4.description')
         },
         {
             id: 5,
             imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/chicago_j8ekxp.jpg',
-            alt: 'Charity work - Community service',
+            alt: t('slideshow.slide5.alt'),
             title: t('slideshow.slide5.title'),
             description: t('slideshow.slide5.description')
         }
@@ -63,28 +64,40 @@ export default function NavigationSection() {
         {
             icon: Heart,
             value: '500+',
-            label: 'Lives Touched',
+            label: t('stats.livesTouched'),
             color: 'text-red-500',
             bgColor: 'bg-red-50 dark:bg-red-950/20'
         },
         {
             icon: Calendar,
             value: '15+',
-            label: 'Years Service',
+            label: t('stats.yearsService'),
             color: 'text-green-500',
             bgColor: 'bg-green-50 dark:bg-green-950/20'
         },
         {
             icon: Target,
             value: '3',
-            label: 'Focus Areas',
+            label: t('stats.focusAreas'),
             color: 'text-purple-500',
             bgColor: 'bg-purple-50 dark:bg-purple-950/20'
         }
     ];
 
+    const itemVariants: Variants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: {
+            duration: 0.5,
+            ease: [0.22, 1, 0.36, 1],
+          },
+        },
+      }
+      
     return (
-        <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 max-h-[calc(100svh-140px)] lg:max-h-[calc(100svh-180px)] overflow-y-auto">
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 {/* Main Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
@@ -117,11 +130,11 @@ export default function NavigationSection() {
                                 <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-3">
                                     <nav className="flex items-center gap-3 sm:gap-4 text-sm">
                                         <Link href="/admin/news" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
-                                            News
+                                            {t("cta.news")}
                                         </Link>
                                         <span className="text-slate-300 dark:text-slate-600">|</span>
                                         <Link href="/admin/stories" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
-                                            Stories
+                                            {t("cta.stories")}
                                         </Link>
                                     </nav>
                                     <div className="ml-auto flex items-center gap-2 sm:gap-3">
@@ -129,10 +142,10 @@ export default function NavigationSection() {
                                             <Link
                                                 href="/settings/profile"
                                                 className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
-                                                aria-label="Profile settings"
+                                                aria-label={t('aria.profileSettings')}
                                             >
                                                 <Users className="h-4 w-4" />
-                                                <span className="hidden sm:inline">Profile</span>
+                                                <span className="hidden sm:inline">{t("cta.profile")}</span>
                                             </Link>
                                         ) : (
                                             <div className="flex items-center gap-2 sm:gap-3">
@@ -140,13 +153,13 @@ export default function NavigationSection() {
                                                     href="/register"
                                                     className="rounded-md px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
                                                 >
-                                                    Sign up
+                                                    {t("cta.signUp")}
                                                 </Link>
                                                 <Link
                                                     href="/login"
                                                     className="rounded-md px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
                                                 >
-                                                    Sign in
+                                                    {t("cta.signIn")}
                                                 </Link>
                                             </div>
                                         )}
@@ -180,22 +193,31 @@ export default function NavigationSection() {
                             </CardContent>
                         </Card>
 
-                        {/* Call to Action */}
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <Button asChild size="lg" className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                                <Link href="#donate" className="flex items-center justify-center gap-2">
-                                    <Heart className="w-5 h-5" />
-                                    Donate Now
-                                    <ArrowRight className="w-4 h-4" />
-                                </Link>
-                            </Button>
-                            <Button asChild variant="outline" size="lg" className="flex-1 border-2 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300">
-                                <Link href="#mission" className="flex items-center justify-center gap-2">
-                                    Learn More
-                                    <ArrowRight className="w-4 h-4" />
-                                </Link>
-                            </Button>
-                        </div>
+              {/* Call to Action */}
+              <motion.div
+                variants={itemVariants}
+                className="mt-8 lg:mt-10 flex flex-col flex-row gap-4 justify-center items-center"
+              >
+                <Button asChild size="lg" className="group font-medium">
+                  <Link href="#donate">
+                    <Heart className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" aria-hidden="true" />
+                    {t("cta.donate")}
+                    <ArrowRight
+                      className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="group font-medium bg-transparent">
+                  <Link href="#about">
+                    {t("cta.learnMore")}
+                    <ArrowRight
+                      className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                </Button>
+              </motion.div>
                     </div>
                 </div>
             </div>

@@ -226,17 +226,13 @@
   "organization": "Fremnatos",
   "organization_name": "Fremnatos Elders, Mentally Disabled and Children Charity Organization",
   "organization_description": "Fremnatos Elders, Mentally Disabled and Children Charity Organization",
-  "navigation": {
-    "vision": "Vision",
-    "news": "News", 
-    "elders": "Elders",
-    "mentally_disabled": "Mentally Disabled",
-    "children": "Children",
-    "help_them": "Help Them"
-  },
   "main_title": "Helping others is the good deed of good people.",
   "about_mission": "About Our Mission",
   "mission_description": "In the 2020/21 fiscal year, this is an effort to provide better services and help solve the problems of people without support in the Tigray region. This organization was established to support elders, mentally disabled people and children.",
+  "donation": {
+    "title": "Your Support Changes Lives",
+    "subtitle": "Every contribution, no matter the size, makes a real difference in the lives of elders, children, and those with mental disabilities."
+  },
   "bank_accounts": "Bank Accounts for Donations",
   "commercial_bank": "Commercial Bank of Ethiopia",
   "wegagen_bank": "Wegagen Bank",
@@ -260,25 +256,50 @@
       "youtube": "YouTube"
     }
   },
+  "cta": {
+    "news": "News",
+    "stories": "Stories",
+    "profile": "Profile",
+    "signUp": "Sign Up",
+    "signIn": "Sign In",
+    "donate": "Donate",
+    "learnMore": "Learn More"
+  },
+  "aria": {
+    "profileSettings": "Profile settings"
+  },
+  "images": {
+    "bannerAlt": "Fremnatos Charity Organization Banner"
+  },
+  "stats": {
+    "livesTouched": "Lives Served",
+    "yearsService": "Years of Service",
+    "focusAreas": "Focus Areas"
+  },
   "slideshow": {
     "slide1": {
       "title": "Vision",
+      "alt": "Charity work - Helping elders",
       "description": "Fremnatos is a center established by Aba Samuel and Aba Gebremedhn Berhe with good intentions and legal documents dated Miyazia-7/2010 E.C. in the main center of Mekelle city with 26 branches. These founding fathers have set a great goal to serve the community, and they have used their spiritual books and the money collected from the spiritual children inside and outside the country to buy land and budget to start this good foundation. They have made this institution a model for the people and government, and it has been running for more than 5 years."
     },
     "slide2": {
       "title": "Mission",
+      "alt": "Charity work - Supporting children",
       "description": "To provide comprehensive services to unsupported elders, mentally disabled people and children, and to help them overcome their social, economic and psychological problems, as well as to provide all the necessary support for their work through various fundraising activities and to provide comprehensive support to reduce all kinds of poverty."
     },
     "slide3": {
       "title": "Goal",
+      "alt": "Charity work - Mental health support",
       "description": "To provide comprehensive services to unsupported people at the regional level of Tigray and to help them overcome their problems in the 2020/21 budget year as an excellent center."
     },
     "slide4": {
       "title": "Values",
+      "alt": "Charity work - Community service",
       "description": "• Helping unsupported people without discrimination\n• Treating everyone equally\n• Commitment and striving for change\n• Honesty and working together\n• Transparency and accountability"
     },
     "slide5": {
       "title": "Specific Objectives",
+      "alt": "Charity work - Community service",
       "description": "To provide comprehensive support to unsupported elders, mentally disabled people and children in one center by addressing their social, economic and psychological problems.\n\nDetailed objectives:\n• To provide comprehensive support to unsupported elders over 60 years old in one center continuously;\n• To provide comprehensive support to mentally disabled people of all ages in one center and to help them return to productive citizens (to normal) continuously;\n• To provide comprehensive support to children under 7 years old and to help them gradually transition to family life when they reach 18 years old;\n\nTo continuously work on various fundraising activities to obtain the necessary budget/funds to achieve all these objectives."
     }
   },

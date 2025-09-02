@@ -15,13 +15,13 @@ export default function Header() {
                 {/* Logo for small devices */}
                 <img 
                     src="https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/logo4_gwh2sz.png" 
-                    alt="Fremnatos Charity Organization Banner" 
+                    alt={t('images.bannerAlt')}
                     className="w-full h-auto object-contain sm:hidden"
                 />
                 {/* Logo for medium and larger devices */}
                 <img 
                     src="https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/logo_yeosov.jpg" 
-                    alt="Fremnatos Charity Organization Banner" 
+                    alt={t('images.bannerAlt')} 
                     className="w-full h-auto object-cover hidden sm:block"
                 />
             </div>
