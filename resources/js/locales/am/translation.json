@@ -223,6 +223,14 @@
   "warranty": "ዋስትና",
   "refund": "መመለስ",
   "cancellation": "ማስተላለፍ",
+  "nav": {
+    "home": "መነሻ",
+    "about": "ስለ እኛ",
+    "donate": "ለመለገስ",
+    "stories": "ታሪኮች",
+    "news": "ዜና",
+    "contact": "አግኙን"
+  },
   "organization" : "ፍሬምናቶስ",
   "organization_name": "የፍሬምናቶስ ሽማግሌዎች፣ መንጃ ሕጻናት እና ልጆች በደንብ ድርጅት",
   "organization_description": "የፍሬምናቶስ ሽማግሌዎች፣ መንጃ ሕጻናት እና ልጆች በደንብ ድርጅት",
@@ -248,7 +256,18 @@
     "aba_gebremedhn_contact": "አባ ገብረመድህን በርሀ ግንኙነት",
     "location": "መቐለ፣ ትግራይ፣ ኢትዮጵያ",
     "language": "ቋንቋ:",
-    "copyright": "© 2025 ፍሬምናቶስ። ሁሉም መብቶች የተጠበቁ ናቸው።",
+    "quick_links": "ፈጣን አገናኞች",
+    "stay_connected": "ይገናኙ ቆይታ",
+    "privacy": "ግላዊነት",
+    "terms": "ውሎች",
+    "contact": "አግኙን",
+    "newsletter": {
+      "email_label": "ኢሜይል",
+      "placeholder": "you@example.com",
+      "cta": "ተመዝግብ",
+      "privacy": "ግላዊነትዎን እናከብራለን። በማንኛውም ጊዜ መዝግብ ልትቆሙ ትችላላችሁ።"
+    },
+    "copyright": "© {{year}} ፍሬምናቶስ። ሁሉም መብቶች የተጠበቁ ናቸው።",
     "social_media": {
       "telegram": "ቴሌግራም",
       "whatsapp": "ዋትስአፕ", 

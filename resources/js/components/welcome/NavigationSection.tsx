@@ -97,7 +97,7 @@ export default function NavigationSection() {
       }
       
     return (
-        <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 max-h-[calc(100svh-140px)] lg:max-h-[calc(100svh-180px)] overflow-y-auto">
+        <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 max-h-none lg:max-h-[calc(100svh-150px)] overflow-y-auto mb-10">
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 {/* Main Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">

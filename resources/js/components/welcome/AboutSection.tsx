@@ -87,9 +87,10 @@ export default function AboutSection() {
 
   return (
     <section
-      className="relative bg-gradient-to-br from-background via-muted/30 to-background py-16 md:py-24 lg:py-32 overflow-hidden"
+      className="relative bg-background overflow-hidden py-4"
       role="region"
       aria-labelledby="about-heading"
+      id="about"
     >
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.05]">

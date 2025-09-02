@@ -39,8 +39,8 @@ export default function Welcome() {
             <Head title={t('organization')} />
             <Header />
             <NavigationSection />
-            <AboutSection />
             <DonationSection />
+            <AboutSection />
             <Footer />
         </>
     );

@@ -223,6 +223,14 @@
   "warranty": "Warranty",
   "refund": "Refund",
   "cancellation": "Cancellation",
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "donate": "Donate",
+    "stories": "Stories",
+    "news": "News",
+    "contact": "Contact"
+  },
   "organization": "Fremnatos",
   "organization_name": "Fremnatos Elders, Mentally Disabled and Children Charity Organization",
   "organization_description": "Fremnatos Elders, Mentally Disabled and Children Charity Organization",
@@ -248,7 +256,18 @@
     "aba_gebremedhn_contact": "Aba Gebremedhn Berhe Contact",
     "location": "Mekelle, Tigray, Ethiopia",
     "language": "Language:",
-    "copyright": "© 2025 FreminatosCharity. All rights reserved.",
+    "quick_links": "Quick Links",
+    "stay_connected": "Stay connected",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "newsletter": {
+      "email_label": "Email",
+      "placeholder": "you@example.com",
+      "cta": "Subscribe",
+      "privacy": "We respect your privacy. Unsubscribe at any time."
+    },
+    "copyright": "© {{year}} Freminatos Charity. All rights reserved.",
     "social_media": {
       "telegram": "Telegram",
       "whatsapp": "WhatsApp", 

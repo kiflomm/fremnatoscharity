@@ -223,6 +223,14 @@
   "warranty": "ዋስትና",
   "refund": "ምምላስ",
   "cancellation": "ምስርዓል",
+  "nav": {
+    "home": "ገዛ",
+    "about": "ብዛዕባና",
+    "donate": "ሓገዝ ንምሃብ",
+    "stories": "ታሪኻት",
+    "news": "ዜናታት",
+    "contact": "ርክብ"
+  },
   "organization": "ፍሬምናጦስ",
   "organization_name": "ፍሬምናጦስ ኣረጋውያን፣ ኣእምሮ ሕሙማትን ህፃናትን ብምስብሳብ",
   "organization_description": "ፍሬምናጦስ ኣረጋውያን፣ ኣእምሮ ሕሙማትን ህፃናትን ብምስብሳብ",
@@ -249,7 +257,18 @@
     "aba_gebremedhn_contact": "አባ ገብረመድህን በርሀ ርኸቡ",
     "location": "መቐለ፣ ትግራይ፣ ኢትዮጵያ",
     "language": "ቋንቋ:",
-    "copyright": "© 2025 ፍሬምናጦስ ። ኩሉ መሰላት ዝተሓለወ እዩ።",
+    "quick_links": "ቅርብ ማረፊያታት",
+    "stay_connected": "ኣብ ርክብ ኩናት",
+    "privacy": "ውሽጣዊነት",
+    "terms": "ውልቂ",
+    "contact": "ርክብ",
+    "newsletter": {
+      "email_label": "ኢመይል",
+      "placeholder": "you@example.com",
+      "cta": "ተመዝግብ",
+      "privacy": "ውሽጣዊነትኩም ንከብር። ኣብ ዝኾነ ግዜ ምዝገባ ትቅርብ ትኽእሉ።"
+    },
+    "copyright": "© {{year}} ፍሬምናጦስ። ኩሉ መሰላት ዝተሓለወ እዩ።",
     "social_media": {
       "telegram": "ቴሌግራም",
       "whatsapp": "ዋትስአፕ", 
