@@ -6,6 +6,7 @@ import { useState, useMemo } from "react"
 import { motion, type Variants } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Heart, Users, Target, Lightbulb, Globe } from "lucide-react"
 
@@ -13,6 +14,7 @@ export default function AboutSection() {
   const { theme } = useTheme()
   const { t } = useTranslation()
   const [activeId, setActiveId] = useState<string>("slide-1")
+  const [openId, setOpenId] = useState<string | null>(null)
 
   const sections = [
     {
@@ -50,16 +52,7 @@ export default function AboutSection() {
           "Integrity, transparency, and social responsibility guide every decision we make as we work toward our shared goals.",
       }),
       icon: Heart,
-    },
-    {
-      id: "slide-5",
-      title: t("slideshow.slide5.title", { defaultValue: "Global Impact" }),
-      description: t("slideshow.slide5.description", {
-        defaultValue:
-          "Through strategic partnerships and community engagement, we've reached over 50 countries and impacted millions of lives.",
-      }),
-      icon: Globe,
-    },
+    }
   ]
 
   const containerVariants: Variants = {
@@ -107,6 +100,47 @@ export default function AboutSection() {
 
           {/* Mobile-first grid layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            {/* Mobile cards navigation */}
+            <motion.div variants={itemVariants} className="lg:hidden">
+              <div className="grid grid-cols-2 gap-3">
+                {sections.map((s) => {
+                  const Icon = s.icon
+                  return (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => { setActiveId(s.id); setOpenId(s.id); }}
+                      className="group relative flex flex-col items-center justify-center rounded-xl border border-border/60 bg-card/50 px-3 py-4 text-center transition hover:border-primary/40 hover:bg-card/70 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    >
+                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary mb-2">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <span className="text-xs font-medium text-foreground line-clamp-2">{s.title}</span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Description modal */}
+              <AlertDialog open={openId !== null} onOpenChange={(v) => { if (!v) setOpenId(null) }}>
+                <AlertDialogContent>
+                  {(() => {
+                    const selected = sections.find(sec => sec.id === openId) || sections[0]
+                    return (
+                      <>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>{selected.title}</AlertDialogTitle>
+                          <AlertDialogDescription>{selected.description}</AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel onClick={() => setOpenId(null)}>{t('close')}</AlertDialogCancel>
+                        </AlertDialogFooter>
+                      </>
+                    )
+                  })()}
+                </AlertDialogContent>
+              </AlertDialog>
+            </motion.div>
             {/* Navigation - Hidden on mobile, sidebar on desktop */}
             <motion.aside variants={itemVariants} className="hidden lg:block lg:col-span-3">
               <div className="sticky top-24">
@@ -162,7 +196,7 @@ export default function AboutSection() {
                         <CardHeader className="pb-4">
                           <div className="flex items-start gap-4">
                             <motion.div
-                              className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"
+                              className="hidden sm:flex flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 items-center justify-center"
                               whileHover={{ scale: 1.05, rotate: 5 }}
                               transition={{ type: "spring", stiffness: 400, damping: 10 }}
                             >
@@ -170,10 +204,10 @@ export default function AboutSection() {
                             </motion.div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-3 mb-2">
-                                <CardTitle className="text-xl sm:text-2xl font-semibold text-balance">
+                                <CardTitle className="hidden sm:block text-xl sm:text-2xl font-semibold text-balance">
                                   {section.title}
                                 </CardTitle>
-                                <Badge variant="secondary" className="text-xs font-medium">
+                                <Badge variant="secondary" className="hidden sm:inline-flex text-xs font-medium">
                                   {String(activeIndex + 1).padStart(2, "0")}
                                 </Badge>
                               </div>
@@ -181,7 +215,7 @@ export default function AboutSection() {
                           </div>
                         </CardHeader>
                         <CardContent className="pt-0">
-                          <CardDescription className="text-base leading-relaxed text-pretty">
+                          <CardDescription className="hidden sm:block text-base leading-relaxed text-pretty">
                             {section.description}
                           </CardDescription>
                         </CardContent>
