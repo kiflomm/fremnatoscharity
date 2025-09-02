@@ -62,6 +62,7 @@ const itemVariants: Variants = {
 export default function DonationSection() {
   const { t } = useTranslation()
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null)
+  const [activeBankIndex, setActiveBankIndex] = useState<number>(0)
 
   const banks: BankInfo[] = [
     {
@@ -141,10 +142,91 @@ export default function DonationSection() {
           </p>
         </div>
 
-        {/* Bank Grid (3 cols x 2 rows on large screens) */}
+        {/* Mobile: horizontal bank selector + details panel */}
+        <div className="sm:hidden">
+          <div className="-mx-3 px-3 overflow-x-auto">
+            <div className="flex gap-3 snap-x snap-mandatory">
+              {banks.map((bank, index) => (
+                <button
+                  key={bank.nameKey}
+                  type="button"
+                  onClick={() => setActiveBankIndex(index)}
+                  className={`snap-start inline-flex items-center gap-2 rounded-xl border px-3 py-2 transition-all ${
+                    activeBankIndex === index
+                      ? "border-primary/50 bg-primary/5 ring-2 ring-primary/20"
+                      : "border-border/50 bg-card hover:bg-card/80"
+                  }`}
+                  aria-pressed={activeBankIndex === index}
+                >
+                  <Avatar className="size-8 ring-1 ring-border">
+                    <AvatarImage
+                      src={bank.logoSrc || "/placeholder.svg"}
+                      alt={bank.alt ?? t(bank.nameKey)}
+                      className="object-contain"
+                    />
+                    <AvatarFallback className="bg-muted text-muted-foreground">
+                      <Building2 className="size-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium whitespace-nowrap">
+                    {t(bank.nameKey)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <Card className="border-border/50 bg-card">
+              <CardHeader className="py-3">
+                <CardTitle className="text-base">
+                  {t(banks[activeBankIndex]?.nameKey)}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 pb-3">
+                <div className="space-y-2.5">
+                  {banks[activeBankIndex]?.accounts.map((account, index) => (
+                    <div
+                      key={account}
+                      className="flex items-center justify-between gap-3 p-2.5 bg-muted/40 rounded-md border border-border/30"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] text-muted-foreground mb-0.5">
+                          Account {banks[activeBankIndex]?.accounts.length > 1 ? index + 1 : ""}
+                        </p>
+                        <code className="text-sm font-mono font-medium text-card-foreground select-all">
+                          {account}
+                        </code>
+                      </div>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="shrink-0 h-8 px-3"
+                        onClick={() => handleCopyAccount(account, t(banks[activeBankIndex]?.nameKey))}
+                        aria-label={`Copy ${t(banks[activeBankIndex]?.nameKey)} account ${account}`}
+                      >
+                        {copiedAccount === account ? (
+                          <>
+                            <Check className="size-4 mr-1.5" /> Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="size-4 mr-1.5" /> Copy
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Desktop/Tablet: expand/collapse grid */}
         <motion.div
           variants={listVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4"
+          className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4"
         >
           {banks.map((bank) => (
             <motion.div key={bank.nameKey} variants={itemVariants} className="group">
