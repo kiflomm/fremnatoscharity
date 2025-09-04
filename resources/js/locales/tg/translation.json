@@ -252,9 +252,13 @@
   "anbessa_bank": "አንበሳ ባንክ",
   "footer": {
     "company_name": "ፍሬምናጦስ",
+    "description": "ኣብ ማሕበረሰባት ውሽጢ ብርካሳን ተግባርን ፈላልያ ምግባር።",
+    "follow_us": "ተኸተልና",
+    "contact_info": "ሓበሬታ ርክብ",
+    "other_contacts": "ካልኦት ርኸባት",
     "freminatos_contact": "ፍሬምናጦስ ርኸቡ",
-    "aba_samuel_contact": "አባ ሳሙኤል ወልደሰላማ ርኸቡ",
-    "aba_gebremedhn_contact": "አባ ገብረመድህን በርሀ ርኸቡ",
+    "aba_samuel_contact": "አባ ሳሙኤል ወልደሰላማ ",
+    "aba_gebremedhn_contact": "አባ ገብረመድህን በርሀ ",
     "location": "መቐለ፣ ትግራይ፣ ኢትዮጵያ",
     "language": "ቋንቋ:",
     "quick_links": "ቅርብ ማረፊያታት",
@@ -283,7 +287,7 @@
     "signUp": "ተመዝግብ",
     "signIn": "እቶ",
     "donate": "ሓገዝ ንምሃብ",
-    "learnMore": "ዝያዳ ተማሃር"
+    "learnMore": "ዝያዳ ንምፍላጥ"
   },
   "aria": {
     "profileSettings": "ቅንብር መገለጽ"

@@ -46,7 +46,7 @@
   "create": "Create",
   "view": "View",
   "read_more": "Read More",
-  "learn_more": "Learn More",
+  "learn_more": "About Us",
   "get_started": "Get Started",
   "join_us": "Join Us",
   "share": "Share",
@@ -251,9 +251,13 @@
   "anbessa_bank": "Anbessa Bank",
   "footer": {
     "company_name": "FremnatosCharity",
+    "description": "Making a difference in communities through compassion and action.",
+    "follow_us": "Follow Us",
+    "contact_info": "Contact Info",
+    "other_contacts": "Other Contacts",
     "freminatos_contact": "Freminatos Contact",
-    "aba_samuel_contact": "Aba Samuel Weldeselama Contact",
-    "aba_gebremedhn_contact": "Aba Gebremedhn Berhe Contact",
+    "aba_samuel_contact": "Aba Samuel Weldeselama ",
+    "aba_gebremedhn_contact": "Aba Gebremedhn Berhe ",
     "location": "Mekelle, Tigray, Ethiopia",
     "language": "Language:",
     "quick_links": "Quick Links",
@@ -282,7 +286,7 @@
     "signUp": "Sign Up",
     "signIn": "Sign In",
     "donate": "Donate",
-    "learnMore": "Learn More"
+    "learnMore": "About Us"
   },
   "aria": {
     "profileSettings": "Profile settings"
