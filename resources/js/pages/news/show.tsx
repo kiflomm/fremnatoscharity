@@ -1,5 +1,9 @@
 import { Link, useForm, usePage, router } from '@inertiajs/react';
 import React from 'react';
+import PublicLayout from '@/layouts/public-layout';
+import { ArrowLeft, Heart, MessageSquare, Calendar, User, Send } from 'lucide-react';
+import { index, comment, like } from '@/routes/public/news';
+import { login } from '@/routes';
 
 type Comment = {
   id: number;
@@ -17,6 +21,7 @@ type News = {
   comments: Comment[];
   likesCount: number;
   isLiked: boolean;
+  createdAt?: string | null;
 };
 
 type PageProps = {
@@ -32,56 +37,171 @@ export default function NewsShow() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route('public.news.comment', { news: news.id }), {
+    post(comment({ news: news.id }).url, {
       onSuccess: () => reset('comment'),
     });
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto">
-        <Link href={route('public.news.index')} className="text-sm text-blue-600">← Back</Link>
-        <h1 className="text-2xl font-semibold mt-2">{news.title}</h1>
-        <article className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: news.description }} />
+    <PublicLayout title={news.title}>
+      <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <Link 
+          href={index().url} 
+          className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to News
+        </Link>
 
-        <div className="mt-6 flex items-center gap-4">
-          <button
-            onClick={() => router.post(route('public.news.like', { news: news.id }))}
-            className="rounded border px-3 py-1 text-sm"
-          >
-            {news.isLiked ? 'Unlike' : 'Like'} ({news.likesCount})
-          </button>
-        </div>
-
-        <section className="mt-8">
-          <h2 className="text-lg font-medium">Comments</h2>
-          {isLoggedIn ? (
-            <form onSubmit={submit} className="mt-3 flex gap-2">
-              <input
-                className="flex-1 rounded border px-3 py-2"
-                value={data.comment}
-                onChange={(e) => setData('comment', e.target.value)}
-                placeholder="Write a comment"
+        {/* Article */}
+        <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          {/* Featured Media */}
+          {news.attachmentType === 'image' && news.attachmentUrl && (
+            <div className="aspect-video bg-gray-100 overflow-hidden">
+              <img
+                src={news.attachmentUrl}
+                alt={news.title}
+                className="w-full h-full object-cover"
               />
-              <button className="rounded bg-blue-600 text-white px-4" disabled={processing}>
-                Post
-              </button>
-            </form>
-          ) : (
-            <p className="mt-3 text-sm text-gray-600">Please <Link href={route('login')} className="text-blue-600">login</Link> to comment.</p>
+            </div>
+          )}
+          
+          {news.attachmentType === 'video' && news.attachmentUrl && (
+            <div className="aspect-video bg-gray-900">
+              <video
+                src={news.attachmentUrl}
+                controls
+                className="w-full h-full object-contain"
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
           )}
 
-          <ul className="mt-4 space-y-3">
-            {news.comments.map((c) => (
-              <li key={c.id} className="rounded border p-3">
-                <div className="text-sm text-gray-500">{c.author.name}</div>
-                <div className="mt-1">{c.text}</div>
-              </li>
-            ))}
-          </ul>
+          {/* Article Content */}
+          <div className="p-8">
+            <header className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">{news.title}</h1>
+              
+              {/* Meta Information */}
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
+                {news.createdAt && (
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    {new Date(news.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </div>
+                )}
+                <div className="flex items-center">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  {news.comments.length} comments
+                </div>
+                <div className="flex items-center">
+                  <Heart className="h-4 w-4 mr-2" />
+                  {news.likesCount} likes
+                </div>
+              </div>
+            </header>
+
+            {/* Article Body */}
+            <div 
+              className="prose prose-lg max-w-none text-gray-700"
+              dangerouslySetInnerHTML={{ __html: news.description }} 
+            />
+
+            {/* Actions */}
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <button
+                onClick={() => router.post(like({ news: news.id }).url)}
+                className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  news.isLiked
+                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <Heart className={`h-4 w-4 mr-2 ${news.isLiked ? 'fill-current' : ''}`} />
+                {news.isLiked ? 'Unlike' : 'Like'} ({news.likesCount})
+              </button>
+            </div>
+          </div>
+        </article>
+
+        {/* Comments Section */}
+        <section className="mt-12">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <MessageSquare className="h-6 w-6 mr-3 text-blue-600" />
+              Comments ({news.comments.length})
+            </h2>
+
+            {/* Comment Form */}
+            {isLoggedIn ? (
+              <form onSubmit={submit} className="mb-8">
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <textarea
+                      className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      rows={3}
+                      value={data.comment}
+                      onChange={(e) => setData('comment', e.target.value)}
+                      placeholder="Write a comment..."
+                      required
+                    />
+                  </div>
+                  <button 
+                    type="submit"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                    disabled={processing || !data.comment.trim()}
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    {processing ? 'Posting...' : 'Post'}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="mb-8 p-4 bg-blue-50 rounded-lg">
+                <p className="text-blue-800">
+                  Please <Link href={login().url} className="font-medium underline hover:no-underline">login</Link> to comment.
+                </p>
+              </div>
+            )}
+
+            {/* Comments List */}
+            {news.comments.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <MessageSquare className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                <p>No comments yet. Be the first to comment!</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {news.comments.map((comment) => (
+                  <div key={comment.id} className="flex gap-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <User className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-medium text-gray-900">{comment.author.name}</span>
+                        {comment.createdAt && (
+                          <span className="text-sm text-gray-500">
+                            {new Date(comment.createdAt).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-gray-700">{comment.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       </div>
-    </div>
+    </PublicLayout>
   );
 }
 
