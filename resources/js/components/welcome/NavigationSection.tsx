@@ -154,13 +154,13 @@ export default function NavigationSection() {
                                             // When unauthenticated, show signup/signin. If future role-based public state needed, adjust here.
                                             <div className="flex items-center gap-2 sm:gap-3">
                                                 <Link
-                                                    href="/register"
+                                                    href="/register#auth-form"
                                                     className="rounded-md px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
                                                 >
                                                     {t("cta.signUp")}
                                                 </Link>
                                                 <Link
-                                                    href="/login"
+                                                    href="/login#auth-form"
                                                     className="rounded-md px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
                                                 >
                                                     {t("cta.signIn")}
