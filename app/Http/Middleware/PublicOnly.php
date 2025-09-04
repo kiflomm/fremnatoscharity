@@ -20,7 +20,7 @@ class PublicOnly
                 return redirect()->route('admin.dashboard');
             }
             if (method_exists($user, 'isEditor') && $user->isEditor()) {
-                return redirect()->route('admin.dashboard');
+                return redirect()->route('editor.dashboard');
             }
         }
 

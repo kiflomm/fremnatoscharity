@@ -18,7 +18,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return redirect()->route('home');
         }
 
-        // Default for admins/editors or other roles
+        if ($user && method_exists($user, 'isEditor') && $user->isEditor()) {
+            return redirect()->route('editor.dashboard');
+        }
+
         return redirect()->route('admin.dashboard');
     })->name('dashboard');
 });
@@ -26,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
+require __DIR__.'/editor.php';
 
 // Public content routes (accessible to guests and logged-in guests only)
 Route::middleware(['public.only'])->group(function () {
