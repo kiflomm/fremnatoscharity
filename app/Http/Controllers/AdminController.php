@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Story;
 use App\Models\News;
+use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class AdminController extends Controller
@@ -34,25 +36,51 @@ class AdminController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role?->name ?? 'user',
+                    'role' => $user->role?->name ?? 'guest',
                     'status' => $user->email_verified_at ? 'active' : 'inactive',
                     'created_at' => $user->created_at->toISOString(),
                     'avatar' => $user->profile_photo_url,
                 ];
             });
 
+        $editorRoleId = Role::query()->where('name', 'editor')->value('id');
+        $guestRoleId = Role::query()->where('name', 'guest')->value('id');
+
         $stats = [
             'totalUsers' => User::count(),
-            'activeUsers' => User::whereNotNull('email_verified_at')->count(),
-            'inactiveUsers' => User::whereNull('email_verified_at')->count(),
+            'editorUsers' => $editorRoleId ? User::where('role_id', $editorRoleId)->count() : 0,
+            'guestUsers' => $guestRoleId ? User::where('role_id', $guestRoleId)->count() : 0,
         ];
 
         return Inertia::render('admin/users', [
             'users' => $users,
             'totalUsers' => $stats['totalUsers'],
-            'activeUsers' => $stats['activeUsers'],
-            'inactiveUsers' => $stats['inactiveUsers'],
+            'editorUsers' => $stats['editorUsers'],
+            'guestUsers' => $stats['guestUsers'],
         ]);
+    }
+
+    /**
+     * Create a new editor user.
+     */
+    public function storeUser(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $editorRoleId = Role::query()->where('name', 'editor')->value('id');
+
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role_id' => $editorRoleId,
+        ]);
+
+        return redirect()->route('admin.users')->with('success', 'Editor created');
     }
 
     public function stories()
@@ -92,6 +120,52 @@ class AdminController extends Controller
             'publishedStories' => $stats['publishedStories'],
             'draftStories' => $stats['draftStories'],
         ]);
+    }
+
+    /**
+     * Update user's basic details.
+     */
+    public function updateUser(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email,'.$user->id],
+            'password' => ['nullable', 'confirmed', 'min:8'],
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+        $user->save();
+
+        return back()->with('success', 'User updated');
+    }
+
+    /**
+     * Update only the user's role.
+     */
+    public function updateUserRole(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'role' => ['required', 'in:editor,guest'],
+        ]);
+
+        $roleId = Role::query()->where('name', $validated['role'])->value('id');
+        $user->role_id = $roleId;
+        $user->save();
+
+        return back()->with('success', 'Role updated');
+    }
+
+    /**
+     * Delete a user.
+     */
+    public function destroyUser(User $user)
+    {
+        $user->delete();
+        return back()->with('success', 'User deleted');
     }
 
     public function news()
