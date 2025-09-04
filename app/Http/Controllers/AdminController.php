@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\BeneficiaryStory;
-use App\Models\NewsPost;
+use App\Models\Story;
+use App\Models\News;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,8 +14,9 @@ class AdminController extends Controller
     {
         $stats = [
             'totalUsers' => User::count(),
-            'totalBeneficiaries' => BeneficiaryStory::count(),
-            'totalNewsPosts' => NewsPost::count(),
+            // Keep prop names expected by the frontend, sourced from existing models
+            'totalBeneficiaries' => Story::count(),
+            'totalNewsPosts' => News::count(),
         ];
 
         return Inertia::render('admin/dashboard', [
@@ -56,31 +57,33 @@ class AdminController extends Controller
 
     public function stories()
     {
-        $stories = BeneficiaryStory::with(['user', 'category'])
-            ->orderBy('created_at', 'desc')
+        $stories = Story::with(['author'])
+            ->withCount('comments')
+            ->latest('created_at')
             ->get()
-            ->map(function ($story) {
+            ->map(function (Story $story) {
                 return [
                     'id' => $story->id,
-                    'title' => $story->title,
-                    'content' => $story->content,
+                    'title' => $story->story_title,
+                    'content' => $story->story_description,
                     'beneficiary_name' => $story->beneficiary_name,
-                    'beneficiary_photo' => $story->beneficiary_photo,
-                    'status' => $story->status ?? 'draft',
+                    'beneficiary_photo' => null,
+                    'status' => 'published',
                     'author' => [
-                        'name' => $story->user->name,
-                        'email' => $story->user->email,
+                        'name' => $story->author?->name ?? 'Unknown',
+                        'email' => $story->author?->email ?? '',
                     ],
-                    'created_at' => $story->created_at->toISOString(),
-                    'updated_at' => $story->updated_at->toISOString(),
-                    'views' => $story->views ?? 0,
+                    'created_at' => $story->created_at?->toISOString(),
+                    'updated_at' => $story->updated_at?->toISOString(),
+                    'views' => 0,
+                    'comments_count' => $story->comments_count,
                 ];
             });
 
         $stats = [
-            'totalStories' => BeneficiaryStory::count(),
-            'publishedStories' => BeneficiaryStory::where('status', 'published')->count(),
-            'draftStories' => BeneficiaryStory::where('status', 'draft')->count(),
+            'totalStories' => Story::count(),
+            'publishedStories' => Story::count(),
+            'draftStories' => 0,
         ];
 
         return Inertia::render('admin/stories', [
@@ -93,37 +96,39 @@ class AdminController extends Controller
 
     public function news()
     {
-        $posts = NewsPost::with(['user', 'category'])
-            ->orderBy('created_at', 'desc')
+        $posts = News::with(['author'])
+            ->withCount('comments')
+            ->latest('created_at')
             ->get()
-            ->map(function ($post) {
+            ->map(function (News $post) {
                 return [
                     'id' => $post->id,
-                    'title' => $post->title,
-                    'content' => $post->content,
-                    'excerpt' => $post->excerpt,
-                    'status' => $post->status ?? 'draft',
+                    'title' => $post->news_title,
+                    'content' => $post->news_description,
+                    'excerpt' => str(\strip_tags($post->news_description))->limit(140)->toString(),
+                    'status' => 'published',
                     'author' => [
-                        'name' => $post->user->name,
-                        'email' => $post->user->email,
-                        'avatar' => $post->user->profile_photo_url,
+                        'name' => $post->author?->name ?? 'Unknown',
+                        'email' => $post->author?->email ?? '',
+                        'avatar' => null,
                     ],
                     'category' => [
-                        'name' => $post->category->name ?? 'Uncategorized',
-                        'color' => $post->category->color ?? '#6b7280',
+                        'name' => 'General',
+                        'color' => '#6b7280',
                     ],
-                    'created_at' => $post->created_at->toISOString(),
-                    'updated_at' => $post->updated_at->toISOString(),
-                    'published_at' => $post->published_at?->toISOString(),
-                    'views' => $post->views ?? 0,
-                    'featured_image' => $post->featured_image,
+                    'created_at' => $post->created_at?->toISOString(),
+                    'updated_at' => $post->updated_at?->toISOString(),
+                    'published_at' => null,
+                    'views' => 0,
+                    'comments_count' => $post->comments_count,
+                    'featured_image' => $post->attachment_url,
                 ];
             });
 
         $stats = [
-            'totalPosts' => NewsPost::count(),
-            'publishedPosts' => NewsPost::where('status', 'published')->count(),
-            'draftPosts' => NewsPost::where('status', 'draft')->count(),
+            'totalPosts' => News::count(),
+            'publishedPosts' => News::count(),
+            'draftPosts' => 0,
         ];
 
         return Inertia::render('admin/news', [

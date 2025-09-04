@@ -132,11 +132,11 @@ export default function NavigationSection() {
                                 {/* Secondary Navigation */}
                                 <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-3">
                                     <nav className="flex items-center gap-3 sm:gap-4 text-sm">
-                                        <Link href="/admin/news" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                                        <Link href="/news" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
                                             {t("cta.news")}
                                         </Link>
                                         <span className="text-slate-300 dark:text-slate-600">|</span>
-                                        <Link href="/admin/stories" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                                        <Link href="/stories" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
                                             {t("cta.stories")}
                                         </Link>
                                     </nav>
