@@ -62,26 +62,23 @@ class User extends Authenticatable
     /**
      * Get the news posts authored by the user.
      */
-    public function newsPosts(): HasMany
+    public function news(): HasMany
     {
-        return $this->hasMany(NewsPost::class, 'author_id');
+        return $this->hasMany(News::class, 'created_by');
     }
 
     /**
      * Get the beneficiary stories authored by the user.
      */
-    public function beneficiaryStories(): HasMany
+    public function stories(): HasMany
     {
-        return $this->hasMany(BeneficiaryStory::class, 'author_id');
+        return $this->hasMany(Story::class, 'created_by');
     }
 
     /**
      * Get the comments made by the user.
      */
-    public function comments(): HasMany
-    {
-        return $this->hasMany(Comment::class);
-    }
+    // Per-type comment relations can be defined on comment models
 
     /**
      * Check if user has a specific role.
