@@ -242,7 +242,7 @@ class AdminController extends Controller
     public function news()
     {
         $posts = News::with(['author'])
-            ->withCount('comments')
+            ->withCount(['comments', 'likes'])
             ->latest('created_at')
             ->get()
             ->map(function (News $post) {
@@ -266,6 +266,7 @@ class AdminController extends Controller
                     'published_at' => null,
                     'views' => 0,
                     'comments_count' => $post->comments_count,
+                    'likes_count' => $post->likes_count,
                     'featured_image' => $post->attachment_url,
                 ];
             });
@@ -279,9 +280,69 @@ class AdminController extends Controller
         return Inertia::render('admin/news', [
             'posts' => $posts,
             'totalPosts' => $stats['totalPosts'],
-            'publishedPosts' => $stats['publishedPosts'],
-            'draftPosts' => $stats['draftPosts'],
         ]);
+    }
+
+    /**
+     * Store a new news post.
+     */
+    public function storeNews(Request $request)
+    {
+        $validated = $request->validate([
+            'news_title' => ['required', 'string', 'max:255'],
+            'news_description' => ['required', 'string'],
+            'attachment_type' => ['required', 'in:image,video,none'],
+            'attachment_url' => ['nullable', 'url', 'max:2048'],
+        ]);
+
+        if (in_array($validated['attachment_type'], ['image', 'video']) && empty($validated['attachment_url'])) {
+            return back()->withErrors(['attachment_url' => 'Attachment URL is required for images or videos.'])->withInput();
+        }
+
+        News::create([
+            'news_title' => $validated['news_title'],
+            'news_description' => $validated['news_description'],
+            'attachment_type' => $validated['attachment_type'],
+            'attachment_url' => $validated['attachment_url'] ?? null,
+            'created_by' => $request->user()->id,
+        ]);
+
+        return redirect()->route('admin.news')->with('success', 'News created');
+    }
+
+    /**
+     * Update an existing news post.
+     */
+    public function updateNews(Request $request, News $news)
+    {
+        $validated = $request->validate([
+            'news_title' => ['required', 'string', 'max:255'],
+            'news_description' => ['required', 'string'],
+            'attachment_type' => ['required', 'in:image,video,none'],
+            'attachment_url' => ['nullable', 'url', 'max:2048'],
+        ]);
+
+        if (in_array($validated['attachment_type'], ['image', 'video']) && empty($validated['attachment_url'])) {
+            return back()->withErrors(['attachment_url' => 'Attachment URL is required for images or videos.'])->withInput();
+        }
+
+        $news->update([
+            'news_title' => $validated['news_title'],
+            'news_description' => $validated['news_description'],
+            'attachment_type' => $validated['attachment_type'],
+            'attachment_url' => $validated['attachment_url'] ?? null,
+        ]);
+
+        return back()->with('success', 'News updated');
+    }
+
+    /**
+     * Delete a news post.
+     */
+    public function destroyNews(News $news)
+    {
+        $news->delete();
+        return back()->with('success', 'News deleted');
     }
 
 
