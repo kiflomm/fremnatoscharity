@@ -8,7 +8,7 @@ use App\Http\Controllers\PublicStoriesController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
-})->name('home');
+})->middleware('public.only')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function (Request $request) {
