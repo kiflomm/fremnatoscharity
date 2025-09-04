@@ -91,16 +91,16 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Admin - News" />
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-6 p-4 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">News Management</h1>
                         <p className="text-muted-foreground">
                             Manage news and announcements
                         </p>
                     </div>
-                    <Button onClick={() => setOpenCreate(true)}>
+                    <Button className="w-full sm:w-auto" onClick={() => setOpenCreate(true)}>
                         <Plus className="mr-2 h-4 w-4" />
                         Add news
                     </Button>
@@ -129,12 +129,12 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                         <CardDescription>
                             Manage news and announcements
                         </CardDescription>
-                        <div className="flex items-center space-x-2">
-                            <div className="relative">
+                        <div className="flex items-center gap-2 max-sm:flex-col sm:justify-between">
+                            <div className="relative w-full sm:w-auto">
                                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     placeholder="Search by title, content, author..."
-                                    className="pl-8 w-[300px]"
+                                    className="pl-8 w-full sm:w-[300px]"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                 />
@@ -149,9 +149,9 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                             {filteredPosts.map((post) => (
                                 <div
                                     key={post.id}
-                                    className="flex items-start justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                                    className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                                 >
-                                    <div className="flex items-start space-x-4 flex-1">
+                                    <div className="flex items-start gap-4 flex-1">
                                         {post.featured_image && (
                                             <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                                                 <img 
@@ -168,7 +168,7 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                             <p className="text-sm text-muted-foreground mb-2">
                                                 {truncateText(post.excerpt || post.content, 150)}
                                             </p>
-                                            <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                                            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
                                                 <div className="flex items-center">
                                                     <User className="mr-1 h-3 w-3" />
                                                     {post.author.name}
@@ -191,42 +191,55 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                             </div>
                                         </div>
                                     </div>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                <MoreHorizontal className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem
-                                                onClick={() => {
-                                                    router.get(`/news/${post.id}`);
-                                                }}
-                                            >
-                                                View News
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onClick={() => {
-                                                    setEditNewsId(post.id);
-                                                    setData({
-                                                        ...data,
-                                                        news_title: post.title,
-                                                        news_description: post.content,
-                                                        attachment_type: (post.featured_image ? 'image' : 'none') as 'image' | 'video' | 'none',
-                                                        attachment_url: post.featured_image ?? '',
-                                                    });
-                                                }}
-                                            >
-                                                Edit News
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                className="text-red-600"
-                                                onClick={() => setDeleteNewsId(post.id)}
-                                            >
-                                                Delete News
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    {/* Mobile actions */}
+                                    <div className="flex sm:hidden w-full justify-around">
+                                        <Button variant="outline" size="sm" onClick={() => router.get(`/news/${post.id}`)}>View</Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                setEditNewsId(post.id);
+                                                setData({
+                                                    ...data,
+                                                    news_title: post.title,
+                                                    news_description: post.content,
+                                                    attachment_type: (post.featured_image ? 'image' : 'none') as 'image' | 'video' | 'none',
+                                                    attachment_url: post.featured_image ?? '',
+                                                });
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button variant="destructive" size="sm" onClick={() => setDeleteNewsId(post.id)}>Delete</Button>
+                                    </div>
+                                    {/* Desktop actions */}
+                                    <div className="hidden sm:block">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onClick={() => router.get(`/news/${post.id}`)}>View News</DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() => {
+                                                        setEditNewsId(post.id);
+                                                        setData({
+                                                            ...data,
+                                                            news_title: post.title,
+                                                            news_description: post.content,
+                                                            attachment_type: (post.featured_image ? 'image' : 'none') as 'image' | 'video' | 'none',
+                                                            attachment_url: post.featured_image ?? '',
+                                                        });
+                                                    }}
+                                                >
+                                                    Edit News
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem className="text-red-600" onClick={() => setDeleteNewsId(post.id)}>Delete News</DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </div>
                             ))}
                         </div>

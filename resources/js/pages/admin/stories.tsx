@@ -106,16 +106,16 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Admin - Beneficiary Stories" />
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-6 p-4 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Beneficiary Stories</h1>
                         <p className="text-muted-foreground">
                             Manage and review beneficiary impact stories
                         </p>
                     </div>
-                    <Button onClick={() => setOpenCreate(true)}>
+                    <Button className="w-full sm:w-auto" onClick={() => setOpenCreate(true)}>
                         <Plus className="mr-2 h-4 w-4" />
                         Add Story
                     </Button>
@@ -144,12 +144,12 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                         <CardDescription>
                             Manage beneficiary impact stories
                         </CardDescription>
-                        <div className="flex items-center space-x-2">
-                            <div className="relative">
+                        <div className="flex items-center gap-2 max-sm:flex-col sm:justify-between">
+                            <div className="relative w-full sm:w-auto">
                                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     placeholder="Search by title, content, author, beneficiary..."
-                                    className="pl-8 w-[300px]"
+                                    className="pl-8 w-full sm:w-[300px]"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                 />
@@ -164,9 +164,9 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                             {filteredStories.map((story) => (
                                 <div
                                     key={story.id}
-                                    className="flex items-start justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                                    className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                                 >
-                                    <div className="flex items-start space-x-4 flex-1">
+                                    <div className="flex items-start gap-4 flex-1">
                                         <Avatar className="h-12 w-12">
                                             <AvatarImage src={story.beneficiary_photo} alt={story.beneficiary_name} />
                                             <AvatarFallback>
@@ -180,7 +180,7 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                                             <p className="text-sm text-muted-foreground mb-2">
                                                 {truncateText(story.content, 150)}
                                             </p>
-                                            <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                                            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
                                                 <div className="flex items-center">
                                                     <User className="mr-1 h-3 w-3" />
                                                     {story.beneficiary_name}
@@ -203,47 +203,79 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                                             </div>
                                         </div>
                                     </div>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                <MoreHorizontal className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem
-                                                onClick={() => {
-                                                    // Navigate to public story view if available
-                                                    router.get(`/stories/${story.id}`);
-                                                }}
-                                            >
-                                                View Story
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onClick={() => {
-                                                    setEditStoryId(story.id);
-                                                    setData({
-                                                        ...data,
-                                                        story_title: story.title,
-                                                        story_description: story.content,
-                                                        beneficiary_name: story.beneficiary_name ?? '',
-                                                        attachment_type: (story.attachment_type ?? 'none') as 'image' | 'video' | 'none',
-                                                        attachment_url: story.attachment_url ?? '',
-                                                        beneficiary_age_group: (story.beneficiary_age_group ?? '') as '' | 'child' | 'youth' | 'elder',
-                                                        beneficiary_gender: (story.beneficiary_gender ?? '') as '' | 'male' | 'female',
-                                                    });
-                                                    setOpenCreate(false);
-                                                }}
-                                            >
-                                                Edit Story
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                className="text-red-600"
-                                                onClick={() => setDeleteStoryId(story.id)}
-                                            >
-                                                Delete Story
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    {/* Mobile actions */}
+                                    <div className="flex sm:hidden w-full justify-around">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => router.get(`/stories/${story.id}`)}
+                                        >
+                                            View
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                setEditStoryId(story.id);
+                                                setData({
+                                                    ...data,
+                                                    story_title: story.title,
+                                                    story_description: story.content,
+                                                    beneficiary_name: story.beneficiary_name ?? '',
+                                                    attachment_type: (story.attachment_type ?? 'none') as 'image' | 'video' | 'none',
+                                                    attachment_url: story.attachment_url ?? '',
+                                                    beneficiary_age_group: (story.beneficiary_age_group ?? '') as '' | 'child' | 'youth' | 'elder',
+                                                    beneficiary_gender: (story.beneficiary_gender ?? '') as '' | 'male' | 'female',
+                                                });
+                                                setOpenCreate(false);
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() => setDeleteStoryId(story.id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                    {/* Desktop actions */}
+                                    <div className="hidden sm:block">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onClick={() => router.get(`/stories/${story.id}`)}>
+                                                    View Story
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() => {
+                                                        setEditStoryId(story.id);
+                                                        setData({
+                                                            ...data,
+                                                            story_title: story.title,
+                                                            story_description: story.content,
+                                                            beneficiary_name: story.beneficiary_name ?? '',
+                                                            attachment_type: (story.attachment_type ?? 'none') as 'image' | 'video' | 'none',
+                                                            attachment_url: story.attachment_url ?? '',
+                                                            beneficiary_age_group: (story.beneficiary_age_group ?? '') as '' | 'child' | 'youth' | 'elder',
+                                                            beneficiary_gender: (story.beneficiary_gender ?? '') as '' | 'male' | 'female',
+                                                        });
+                                                        setOpenCreate(false);
+                                                    }}
+                                                >
+                                                    Edit Story
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem className="text-red-600" onClick={() => setDeleteStoryId(story.id)}>
+                                                    Delete Story
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </div>
                             ))}
                         </div>

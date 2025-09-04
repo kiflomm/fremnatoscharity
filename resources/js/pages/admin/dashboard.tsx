@@ -1,10 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-import { Users, Heart, Newspaper, TrendingUp, Calendar } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
+import { Users, Heart, Newspaper } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,9 +14,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface DashboardStats {
     totalUsers: number;
-    totalBeneficiaries: number;
+    totalStories: number;
     totalNewsPosts: number;
-    totalComments: number;
 }
 
 interface AdminDashboardProps {
@@ -28,26 +26,23 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
     const statCards = [
         {
             title: 'Total Users',
-            value: stats.totalUsers,
+            value: stats.totalUsers ?? 0,
             icon: Users,
             description: 'Registered users',
-            trend: '+12% from last month',
             color: 'text-blue-600',
         },
         {
-            title: 'Beneficiary Stories',
-            value: stats.totalBeneficiaries,
+            title: 'Total Stories',
+            value: stats.totalStories ?? 0,
             icon: Heart,
             description: 'Impact stories',
-            trend: '+8% from last month',
             color: 'text-red-600',
         },
         {
-            title: 'News Posts',
-            value: stats.totalNewsPosts,
+            title: 'Total News',
+            value: stats.totalNewsPosts ?? 0,
             icon: Newspaper,
             description: 'Published articles',
-            trend: '+15% from last month',
             color: 'text-green-600',
         },
 
@@ -65,12 +60,7 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                             Manage your charity platform and monitor key metrics
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline">
-                            <Calendar className="mr-2 h-4 w-4" />
-                            Last 30 days
-                        </Button>
-                    </div>
+                    <div className="flex items-center gap-2"></div>
                 </div>
 
                 {/* Stats Grid */}
@@ -88,10 +78,6 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                                 <p className="text-xs text-muted-foreground">
                                     {card.description}
                                 </p>
-                                <div className="flex items-center mt-2">
-                                    <TrendingUp className="mr-1 h-3 w-3 text-green-600" />
-                                    <span className="text-xs text-green-600">{card.trend}</span>
-                                </div>
                             </CardContent>
                         </Card>
                     ))}
@@ -106,17 +92,29 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-3 md:grid-cols-2">
-                        <Button variant="outline" className="justify-start">
+                        <Button
+                            variant="outline"
+                            className="justify-start"
+                            onClick={() => router.get('/admin/users')}
+                        >
                             <Users className="mr-2 h-4 w-4" />
                             Manage Users
                         </Button>
-                        <Button variant="outline" className="justify-start">
+                        <Button
+                            variant="outline"
+                            className="justify-start"
+                            onClick={() => router.get('/admin/stories')}
+                        >
                             <Heart className="mr-2 h-4 w-4" />
                             Review Stories
                         </Button>
-                        <Button variant="outline" className="justify-start">
+                        <Button
+                            variant="outline"
+                            className="justify-start"
+                            onClick={() => router.get('/admin/news')}
+                        >
                             <Newspaper className="mr-2 h-4 w-4" />
-                            Create Post
+                            Manage News
                         </Button>
                     </CardContent>
                 </Card>
