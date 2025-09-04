@@ -11,6 +11,7 @@ import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface LoginProps {
     status?: string;
@@ -19,9 +20,10 @@ interface LoginProps {
 
 export default function Login({ status, canResetPassword }: LoginProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const { t } = useTranslation();
 
     return (
-        <AuthLayout title="Welcome Back" description="Sign in to your account to continue supporting our mission">
+        <AuthLayout title={t("auth.welcome_back")} description={t("auth.sign_in_description")}>
             <Head title="Log in" />
 
             <Form {...AuthenticatedSessionController.store.form()} resetOnSuccess={['password']} className="space-y-6">
@@ -30,7 +32,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="space-y-5">
                             <div className="space-y-2">
                                 <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Email address
+                                    {t("auth.email_address")}
                                 </Label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -42,7 +44,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                         autoFocus
                                         tabIndex={1}
                                         autoComplete="email"
-                                        placeholder="Enter your email"
+                                        placeholder={t("auth.enter_email")}
                                         className="pl-10 h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 dark:border-slate-600 dark:focus:border-blue-400"
                                     />
                                 </div>
@@ -52,7 +54,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        Password
+                                        {t("auth.password")}
                                     </Label>
                                     {canResetPassword && (
                                         <TextLink 
@@ -60,7 +62,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                             className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors" 
                                             tabIndex={5}
                                         >
-                                            Forgot password?
+                                            {t("auth.forgot_password")}
                                         </TextLink>
                                     )}
                                 </div>
@@ -73,7 +75,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                         required
                                         tabIndex={2}
                                         autoComplete="current-password"
-                                        placeholder="Enter your password"
+                                        placeholder={t("auth.enter_password")}
                                         className="pl-10 pr-10 h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 dark:border-slate-600 dark:focus:border-blue-400"
                                     />
                                     <button
@@ -98,7 +100,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     htmlFor="remember" 
                                     className="text-sm text-slate-600 dark:text-slate-300 cursor-pointer"
                                 >
-                                    Remember me for 30 days
+                                    {t("auth.remember_me")}
                                 </Label>
                             </div>
 
@@ -111,11 +113,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 {processing ? (
                                     <>
                                         <LoaderCircle className="h-4 w-4 animate-spin mr-2" />
-                                        Signing in...
+                                        {t("auth.signing_in")}
                                     </>
                                 ) : (
                                     <>
-                                        Sign in
+                                        {t("auth.sign_in")}
                                         <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
@@ -128,7 +130,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </div>
                             <div className="relative flex justify-center text-sm">
                                 <span className="px-4 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400">
-                                    Don't have an account?
+                                    {t("auth.dont_have_account")}
                                 </span>
                             </div>
                         </div>
@@ -139,7 +141,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors" 
                                 tabIndex={5}
                             >
-                                Create an account
+                                {t("auth.create_account_link")}
                             </TextLink>
                         </div>
                     </>

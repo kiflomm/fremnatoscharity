@@ -333,5 +333,36 @@
     "dark_mode": "Dark Mode"
   },
   "switch_to_light_mode": "Switch to light mode",
-  "switch_to_dark_mode": "Switch to dark mode"
+  "switch_to_dark_mode": "Switch to dark mode",
+  "auth": {
+    "welcome_back": "Welcome Back",
+    "sign_in_description": "Sign in to your account to continue supporting our mission",
+    "join_mission": "Join Our Mission",
+    "create_account_description": "Create your account to start making a difference in the community",
+    "email_address": "Email address",
+    "password": "Password",
+    "full_name": "Full name",
+    "confirm_password": "Confirm password",
+    "enter_email": "Enter your email",
+    "enter_password": "Enter your password",
+    "create_password": "Create a password",
+    "confirm_password_placeholder": "Confirm your password",
+    "remember_me": "Remember me for 30 days",
+    "forgot_password": "Forgot password?",
+    "sign_in": "Sign in",
+    "create_account": "Create account",
+    "dont_have_account": "Don't have an account?",
+    "already_have_account": "Already have an account?",
+    "create_account_link": "Create an account",
+    "sign_in_instead": "Sign in instead",
+    "signing_in": "Signing in...",
+    "creating_account": "Creating account...",
+    "password_requirements": "Password requirements:",
+    "at_least_8_chars": "At least 8 characters",
+    "mix_letters_numbers": "Mix of letters and numbers",
+    "forgot_password_title": "Forgot password",
+    "forgot_password_description": "Enter your email to receive a password reset link",
+    "confirm_password_title": "Confirm password",
+    "reset_password": "Reset password"
+  }
 }
