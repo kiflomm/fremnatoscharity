@@ -108,18 +108,43 @@ class AdminController extends Controller
                 ];
             });
 
-        $stats = [
-            'totalStories' => Story::count(),
-            'publishedStories' => Story::count(),
-            'draftStories' => 0,
-        ];
-
         return Inertia::render('admin/stories', [
             'stories' => $stories,
-            'totalStories' => $stats['totalStories'],
-            'publishedStories' => $stats['publishedStories'],
-            'draftStories' => $stats['draftStories'],
+            'totalStories' => Story::count(),
         ]);
+    }
+
+    /**
+     * Store a new story.
+     */
+    public function storeStory(Request $request)
+    {
+        $validated = $request->validate([
+            'story_title' => ['required', 'string', 'max:255'],
+            'story_description' => ['required', 'string'],
+            'attachment_type' => ['required', 'in:image,video,none'],
+            'attachment_url' => ['nullable', 'url', 'max:2048'],
+            'beneficiary_name' => ['nullable', 'string', 'max:255'],
+            'beneficiary_age_group' => ['required', 'in:child,youth,elder'],
+            'beneficiary_gender' => ['required', 'in:male,female'],
+        ]);
+
+        if (in_array($validated['attachment_type'], ['image', 'video']) && empty($validated['attachment_url'])) {
+            return back()->withErrors(['attachment_url' => 'Attachment URL is required for images or videos.'])->withInput();
+        }
+
+        Story::create([
+            'story_title' => $validated['story_title'],
+            'story_description' => $validated['story_description'],
+            'attachment_type' => $validated['attachment_type'],
+            'attachment_url' => $validated['attachment_url'] ?? null,
+            'beneficiary_name' => $validated['beneficiary_name'] ?? null,
+            'beneficiary_age_group' => $validated['beneficiary_age_group'],
+            'beneficiary_gender' => $validated['beneficiary_gender'],
+            'created_by' => $request->user()->id,
+        ]);
+
+        return redirect()->route('admin.stories')->with('success', 'Story created');
     }
 
     /**

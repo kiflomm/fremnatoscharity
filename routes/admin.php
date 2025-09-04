@@ -12,5 +12,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::put('/users/{user}/role', [AdminController::class, 'updateUserRole'])->name('users.role');
     Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
     Route::get('/stories', [AdminController::class, 'stories'])->name('stories');
+    Route::post('/stories', [AdminController::class, 'storeStory'])->name('stories.store');
     Route::get('/news', [AdminController::class, 'news'])->name('news');
 });

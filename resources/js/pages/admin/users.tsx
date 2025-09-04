@@ -74,6 +74,17 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
 
     const activeUser = useMemo(() => users.find(u => u.id === action.userId) || null, [users, action.userId]);
 
+    const [query, setQuery] = useState('');
+    const filteredUsers = useMemo(() => {
+        if (!query.trim()) return users;
+        const q = query.trim().toLowerCase();
+        return users.filter(u =>
+            u.name.toLowerCase().includes(q) ||
+            u.email.toLowerCase().includes(q) ||
+            u.role.toLowerCase().includes(q)
+        );
+    }, [users, query]);
+
     const closeDialog = () => setAction({ type: null, userId: null });
 
     const submitNewEditor = (e: React.FormEvent) => {
@@ -89,9 +100,9 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Admin - Users" />
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-6 p-4 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
                         <p className="text-muted-foreground">
@@ -100,7 +111,7 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                     </div>
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button>
+                            <Button className="w-full sm:w-auto" aria-label="Add editor">
                                 <Plus className="mr-2 h-4 w-4" />
                                 Add Editor
                             </Button>
@@ -112,7 +123,7 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                             <form className="space-y-4" onSubmit={submitNewEditor}>
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Full name</Label>
-                                    <Input id="name" name="name" value={data.name} onChange={(e) => setData('name', e.target.value)} required />
+                                    <Input id="name" name="name" value={data.name} onChange={(e) => setData('name', e.target.value)} required autoFocus />
                                     {errors?.name && <p className="text-sm text-red-600">{errors.name}</p>}
                                 </div>
                                 <div className="space-y-2">
@@ -132,7 +143,7 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button type="submit" disabled={processing}>
+                                    <Button type="submit" disabled={processing} className="w-full sm:w-auto">
                                         {processing ? (
                                             <>
                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -149,7 +160,7 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                 </div>
 
                 {/* Stats */}
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -191,26 +202,32 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                         <CardDescription>
                             A list of all users in the system
                         </CardDescription>
-                        <div className="flex items-center space-x-2">
-                            <div className="relative">
+                        <div className="flex items-center gap-2 max-sm:flex-col sm:justify-between">
+                            <div className="relative w-full sm:w-auto">
                                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
-                                    placeholder="Search users..."
-                                    className="pl-8 w-[300px]"
+                                    placeholder="Search users by name, email, or role..."
+                                    aria-label="Search users"
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    className="pl-8 w-full sm:w-[300px]"
                                 />
                             </div>
                         </div>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {users.map((user) => {
+                            {filteredUsers.length === 0 && (
+                                <div className="text-center text-sm text-muted-foreground py-10">No users found.</div>
+                            )}
+                            {filteredUsers.map((user) => {
                                 const RoleIcon = getRoleIcon(user.role);
                                 return (
                                     <div
                                         key={user.id}
-                                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                                     >
-                                        <div className="flex items-center space-x-4">
+                                        <div className="flex items-center gap-4">
                                             <Avatar>
                                                 <AvatarImage src={user.avatar} alt={user.name} />
                                                 <AvatarFallback>
@@ -225,7 +242,7 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                                                         {user.role}
                                                     </Badge>
                                                 </div>
-                                                <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                                                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                                     <div className="flex items-center">
                                                         <Mail className="mr-1 h-3 w-3" />
                                                         {user.email}
@@ -238,18 +255,51 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                                             </div>
                                         </div>
                                         {user.role !== 'admin' && (
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setData('name', user.name); setData('email', user.email); setData('password', ''); setData('password_confirmation', ''); setAction({ type: 'edit', userId: user.id }); }}>Edit User</DropdownMenuItem>
-                                                <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setData('role', user.role as any); setAction({ type: 'role', userId: user.id }); }}>Change Role</DropdownMenuItem>
-                                                <DropdownMenuItem className="text-red-600" onSelect={(e) => { e.preventDefault(); setAction({ type: 'delete', userId: user.id }); }}>Delete User</DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                                            <>
+                                                {/* Mobile actions: visible on small screens */}
+                                                <div className="flex flex-row sm:hidden w-full justify-around">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => { setData('name', user.name); setData('email', user.email); setData('password', ''); setData('password_confirmation', ''); setAction({ type: 'edit', userId: user.id }); }}
+                                                        aria-label={`Edit ${user.name}`}
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => { setData('role', user.role as any); setAction({ type: 'role', userId: user.id }); }}
+                                                        aria-label={`Change role for ${user.name}`}
+                                                    >
+                                                        Role
+                                                    </Button>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => { setAction({ type: 'delete', userId: user.id }); }}
+                                                        aria-label={`Delete ${user.name}`}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </div>
+
+                                                {/* Desktop actions: 3-dot menu */}
+                                                <div className="hidden sm:block">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" className="h-9 w-9 p-0" aria-label={`Open actions for ${user.name}`}>
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setData('name', user.name); setData('email', user.email); setData('password', ''); setData('password_confirmation', ''); setAction({ type: 'edit', userId: user.id }); }}>Edit User</DropdownMenuItem>
+                                                            <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setData('role', user.role as any); setAction({ type: 'role', userId: user.id }); }}>Change Role</DropdownMenuItem>
+                                                            <DropdownMenuItem className="text-red-600" onSelect={(e) => { e.preventDefault(); setAction({ type: 'delete', userId: user.id }); }}>Delete User</DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </>
                                         )}
                                     </div>
                                 );
