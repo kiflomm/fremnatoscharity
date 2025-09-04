@@ -1,16 +1,16 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { Heart, Search, MoreHorizontal, Plus, Eye, Calendar, User, MessageSquare } from 'lucide-react';
+import { Heart, Search, MoreHorizontal, Plus, Calendar, User, MessageSquare } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,7 +28,11 @@ interface BeneficiaryStory {
     id: number;
     title: string;
     content: string;
+    attachment_type?: 'image' | 'video' | 'none';
+    attachment_url?: string | null;
     beneficiary_name: string;
+    beneficiary_age_group?: 'child' | 'youth' | 'elder';
+    beneficiary_gender?: 'male' | 'female';
     beneficiary_photo?: string;
     status: 'draft' | 'published' | 'archived';
     author: {
@@ -37,8 +41,8 @@ interface BeneficiaryStory {
     };
     created_at: string;
     updated_at: string;
-    views: number;
     comments_count: number;
+    likes_count?: number;
 }
 
 interface AdminStoriesProps {
@@ -48,6 +52,8 @@ interface AdminStoriesProps {
 
 export default function AdminStories({ stories, totalStories }: AdminStoriesProps) {
     const [openCreate, setOpenCreate] = useState(false);
+    const [editStoryId, setEditStoryId] = useState<number | null>(null);
+    const [deleteStoryId, setDeleteStoryId] = useState<number | null>(null);
     const { data, setData, post, processing, reset, errors, clearErrors } = useForm({
         story_title: '',
         story_description: '',
@@ -87,18 +93,10 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
             const inContent = s.content?.toLowerCase().includes(q);
             const inBeneficiary = s.beneficiary_name?.toLowerCase().includes(q);
             const inAuthor = `${s.author?.name ?? ''} ${s.author?.email ?? ''}`.toLowerCase().includes(q);
-            const inStatus = s.status?.toLowerCase().includes(q);
-            return inTitle || inContent || inBeneficiary || inAuthor || inStatus;
+            return inTitle || inContent || inBeneficiary || inAuthor;
         });
     }, [stories, query]);
-    const getStatusBadge = (status: string) => {
-        const variants = {
-            published: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-            draft: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-            archived: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
-        };
-        return variants[status as keyof typeof variants] || variants.draft;
-    };
+    
 
     const truncateText = (text: string, maxLength: number) => {
         if (text.length <= maxLength) return text;
@@ -178,9 +176,6 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <h3 className="font-medium text-lg">{story.title}</h3>
-                                                <Badge className={getStatusBadge(story.status)}>
-                                                    {story.status}
-                                                </Badge>
                                             </div>
                                             <p className="text-sm text-muted-foreground mb-2">
                                                 {truncateText(story.content, 150)}
@@ -195,8 +190,8 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                                                     {new Date(story.created_at).toLocaleDateString()}
                                                 </div>
                                                 <div className="flex items-center">
-                                                    <Eye className="mr-1 h-3 w-3" />
-                                                    {story.views} views
+                                                    <Heart className="mr-1 h-3 w-3" />
+                                                    {story.likes_count ?? 0} likes
                                                 </div>
                                                 <div className="flex items-center">
                                                     <MessageSquare className="mr-1 h-3 w-3" />
@@ -215,11 +210,36 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem>View Story</DropdownMenuItem>
-                                            <DropdownMenuItem>Edit Story</DropdownMenuItem>
-                                            <DropdownMenuItem>Approve Story</DropdownMenuItem>
-                                            <DropdownMenuItem>Archive Story</DropdownMenuItem>
-                                            <DropdownMenuItem className="text-red-600">
+                                            <DropdownMenuItem
+                                                onClick={() => {
+                                                    // Navigate to public story view if available
+                                                    router.get(`/stories/${story.id}`);
+                                                }}
+                                            >
+                                                View Story
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                onClick={() => {
+                                                    setEditStoryId(story.id);
+                                                    setData({
+                                                        ...data,
+                                                        story_title: story.title,
+                                                        story_description: story.content,
+                                                        beneficiary_name: story.beneficiary_name ?? '',
+                                                        attachment_type: (story.attachment_type ?? 'none') as 'image' | 'video' | 'none',
+                                                        attachment_url: story.attachment_url ?? '',
+                                                        beneficiary_age_group: (story.beneficiary_age_group ?? '') as '' | 'child' | 'youth' | 'elder',
+                                                        beneficiary_gender: (story.beneficiary_gender ?? '') as '' | 'male' | 'female',
+                                                    });
+                                                    setOpenCreate(false);
+                                                }}
+                                            >
+                                                Edit Story
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                className="text-red-600"
+                                                onClick={() => setDeleteStoryId(story.id)}
+                                            >
                                                 Delete Story
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -362,6 +382,156 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                                 <Button type="submit" disabled={!canSubmit || processing}>
                                     {processing ? 'Creating...' : 'Create Story'}
                                 </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+
+                {/* Delete Story AlertDialog */}
+                <AlertDialog open={deleteStoryId !== null} onOpenChange={(open) => { if (!open) setDeleteStoryId(null); }}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete this story?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete the story and its related data.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setDeleteStoryId(null)}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={() => {
+                                    if (deleteStoryId === null) return;
+                                    router.delete(`/admin/stories/${deleteStoryId}`, {
+                                        onSuccess: () => {
+                                            setDeleteStoryId(null);
+                                            router.reload({ only: ['stories', 'totalStories'] });
+                                        },
+                                    });
+                                }}
+                            >
+                                Delete
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                {/* Edit Story Dialog (schema-aligned) */}
+                <Dialog open={editStoryId !== null} onOpenChange={(open) => { if (!open) setEditStoryId(null); }}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Edit Story</DialogTitle>
+                        </DialogHeader>
+                        <form
+                            className="space-y-4"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                if (!editStoryId) return;
+                                const needsUrl = data.attachment_type === 'image' || data.attachment_type === 'video';
+                                if (!data.story_title.trim() || !data.story_description.trim()) return;
+                                if (needsUrl && !data.attachment_url.trim()) return;
+                                router.put(`/admin/stories/${editStoryId}`, {
+                                    story_title: data.story_title,
+                                    story_description: data.story_description,
+                                    attachment_type: data.attachment_type,
+                                    attachment_url: data.attachment_url || null,
+                                    beneficiary_name: data.beneficiary_name,
+                                    beneficiary_age_group: data.beneficiary_age_group,
+                                    beneficiary_gender: data.beneficiary_gender,
+                                }, {
+                                    onSuccess: () => {
+                                        setEditStoryId(null);
+                                        router.reload({ only: ['stories'] });
+                                    },
+                                });
+                            }}
+                        >
+                            <div className="space-y-2">
+                                <Label htmlFor="story-title-edit">Title</Label>
+                                <Input
+                                    id="story-title-edit"
+                                    value={data.story_title}
+                                    onChange={(e) => setData('story_title', e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="story-content-edit">Content</Label>
+                                <Textarea
+                                    id="story-content-edit"
+                                    value={data.story_description}
+                                    onChange={(e) => setData('story_description', e.target.value)}
+                                    rows={6}
+                                    required
+                                />
+                            </div>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="attachment-type-edit">Attachment</Label>
+                                    <select
+                                        id="attachment-type-edit"
+                                        className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        value={data.attachment_type}
+                                        onChange={(e) => setData('attachment_type', e.target.value as 'image' | 'video' | 'none')}
+                                    >
+                                        <option value="none">None</option>
+                                        <option value="image">Image</option>
+                                        <option value="video">Video</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="attachment-url-edit">Attachment URL {data.attachment_type !== 'none' ? '(required)' : '(optional)'}</Label>
+                                    <Input
+                                        id="attachment-url-edit"
+                                        value={data.attachment_url}
+                                        onChange={(e) => setData('attachment_url', e.target.value)}
+                                        placeholder="https://..."
+                                        type="url"
+                                        required={data.attachment_type !== 'none'}
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="beneficiary-age-group-edit">Beneficiary age group</Label>
+                                    <select
+                                        id="beneficiary-age-group-edit"
+                                        className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        value={data.beneficiary_age_group}
+                                        onChange={(e) => setData('beneficiary_age_group', e.target.value as 'child' | 'youth' | 'elder')}
+                                        required
+                                    >
+                                        <option value="" disabled>Select age group</option>
+                                        <option value="child">Child</option>
+                                        <option value="youth">Youth</option>
+                                        <option value="elder">Elder</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="beneficiary-gender-edit">Beneficiary gender</Label>
+                                    <select
+                                        id="beneficiary-gender-edit"
+                                        className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        value={data.beneficiary_gender}
+                                        onChange={(e) => setData('beneficiary_gender', e.target.value as 'male' | 'female')}
+                                        required
+                                    >
+                                        <option value="" disabled>Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="beneficiary-name-edit">Beneficiary name</Label>
+                                <Input
+                                    id="beneficiary-name-edit"
+                                    value={data.beneficiary_name}
+                                    onChange={(e) => setData('beneficiary_name', e.target.value)}
+                                />
+                            </div>
+                            <DialogFooter>
+                                <Button type="button" variant="ghost" onClick={() => setEditStoryId(null)}>Cancel</Button>
+                                <Button type="submit">Save changes</Button>
                             </DialogFooter>
                         </form>
                     </DialogContent>

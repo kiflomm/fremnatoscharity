@@ -13,5 +13,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
     Route::get('/stories', [AdminController::class, 'stories'])->name('stories');
     Route::post('/stories', [AdminController::class, 'storeStory'])->name('stories.store');
+    Route::put('/stories/{story}', [AdminController::class, 'updateStory'])->name('stories.update');
+    Route::delete('/stories/{story}', [AdminController::class, 'destroyStory'])->name('stories.destroy');
     Route::get('/news', [AdminController::class, 'news'])->name('news');
 });
