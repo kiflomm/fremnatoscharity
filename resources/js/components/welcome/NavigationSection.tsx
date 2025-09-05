@@ -1,14 +1,12 @@
-import ImageSlideshow from '@/components/ImageSlideshow';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { Heart, Users, Calendar, Target, ArrowRight, Home, Newspaper, BookOpen, Menu, X, DollarSign, Info } from 'lucide-react';
+import { Users, Home, Newspaper, BookOpen, Menu, X, DollarSign, Info, UserPlus, LogIn } from 'lucide-react';
 import { SimpleLanguageSwitcher } from '../LanguageSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 import type { SharedData } from '@/types';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface Slide {
     id: number;
@@ -166,19 +164,21 @@ export default function NavigationSection() {
                                                         {t("cta.profile")}
                                                     </Link>
                                                 ) : (
-                                                    <div className="flex flex-col space-y-1.5">
+                                                    <div className="flex flex-col space-y-3">
                                                         <Link
-                                                            href="/register#auth-form"
+                                                            href="/register"
                                                             className="flex items-center justify-center gap-2 w-full rounded-lg px-3 py-2 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
                                                             onClick={() => setIsMobileMenuOpen(false)}
                                                         >
+                                                            <UserPlus className="h-4 w-4" />
                                                             {t("cta.signUp")}
                                                         </Link>
                                                         <Link
-                                                            href="/login#auth-form"
+                                                            href="/login"
                                                             className="flex items-center justify-center gap-2 w-full rounded-lg px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
                                                             onClick={() => setIsMobileMenuOpen(false)}
                                                         >
+                                                            <LogIn className="h-4 w-4" />
                                                             {t("cta.signIn")}
                                                         </Link>
                                                     </div>
@@ -230,17 +230,19 @@ export default function NavigationSection() {
                                                     <span className="hidden lg:inline">{t("cta.profile")}</span>
                                                 </Link>
                                             ) : (
-                                                <div className="flex items-center gap-1.5 lg:gap-2">
+                                                <div className="flex items-center gap-3 lg:gap-4">
                                                     <Link
                                                         href="/register#auth-form"
-                                                        className="rounded-md px-2.5 py-1 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
+                                                        className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
                                                     >
+                                                        <UserPlus className="h-3.5 w-3.5" />
                                                         {t("cta.signUp")}
                                                     </Link>
                                                     <Link
                                                         href="/login#auth-form"
-                                                        className="rounded-md px-2.5 py-1 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
+                                                        className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
                                                     >
+                                                        <LogIn className="h-3.5 w-3.5" />
                                                         {t("cta.signIn")}
                                                     </Link>
                                                 </div>
