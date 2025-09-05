@@ -300,6 +300,16 @@ class AdminController extends Controller
             return back()->withErrors(['attachment_url' => 'Attachment URL is required for images or videos.'])->withInput();
         }
 
+        // Normalize and validate YouTube URLs for video attachments
+        if ($validated['attachment_type'] === 'video') {
+            $videoId = $this->extractYouTubeId($validated['attachment_url'] ?? '');
+            if (!$videoId) {
+                return back()->withErrors(['attachment_url' => 'Please provide a valid YouTube link (watch, share, or embed URL).'])->withInput();
+            }
+            // Store a canonical embed URL for consistent rendering on the client
+            $validated['attachment_url'] = 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1';
+        }
+
         News::create([
             'news_title' => $validated['news_title'],
             'news_description' => $validated['news_description'],
@@ -327,6 +337,14 @@ class AdminController extends Controller
             return back()->withErrors(['attachment_url' => 'Attachment URL is required for images or videos.'])->withInput();
         }
 
+        if ($validated['attachment_type'] === 'video') {
+            $videoId = $this->extractYouTubeId($validated['attachment_url'] ?? '');
+            if (!$videoId) {
+                return back()->withErrors(['attachment_url' => 'Please provide a valid YouTube link (watch, share, or embed URL).'])->withInput();
+            }
+            $validated['attachment_url'] = 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1';
+        }
+
         $news->update([
             'news_title' => $validated['news_title'],
             'news_description' => $validated['news_description'],
@@ -346,16 +364,58 @@ class AdminController extends Controller
         return back()->with('success', 'News deleted');
     }
 
+    /**
+     * Extract a YouTube video ID from various URL formats.
+     */
+    private function extractYouTubeId(string $url): ?string
+    {
+        if ($url === '') {
+            return null;
+        }
+
+        // Patterns: youtu.be/VIDEOID, youtube.com/watch?v=VIDEOID, youtube.com/embed/VIDEOID, shorts/VIDEOID
+        $patterns = [
+            '#youtu\.be/([A-Za-z0-9_-]{11})#',
+            '#youtube\.com\/(?:watch\?v=|embed/|v/|shorts/)([A-Za-z0-9_-]{11})#',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $url, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        // Fallback: parse query param v
+        $parts = parse_url($url);
+        if (!empty($parts['query'])) {
+            parse_str($parts['query'], $q);
+            if (!empty($q['v']) && is_string($q['v']) && preg_match('/^[A-Za-z0-9_-]{11}$/', $q['v'])) {
+                return $q['v'];
+            }
+        }
+
+        return null;
+    }
+
     public function showNews(News $news)
     {
         $news->load(['author', 'comments.user', 'likes']);
+
+        // Normalize existing stored URLs to a safe embeddable URL
+        $attachmentUrl = $news->attachment_url;
+        if ($news->attachment_type === 'video') {
+            $videoId = $this->extractYouTubeId($attachmentUrl ?? '');
+            if ($videoId) {
+                $attachmentUrl = 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1';
+            }
+        }
 
         $payload = [
             'id' => $news->id,
             'title' => $news->news_title,
             'description' => $news->news_description,
             'attachmentType' => $news->attachment_type,
-            'attachmentUrl' => $news->attachment_url,
+            'attachmentUrl' => $attachmentUrl,
             'createdAt' => $news->created_at?->toISOString(),
             'likesCount' => $news->likes()->count(),
             'comments' => $news->comments->map(function (NewsComment $c) {

@@ -69,13 +69,13 @@ export default function NewsShow() {
           
           {news.attachmentType === 'video' && news.attachmentUrl && (
             <div className="aspect-video bg-gray-900">
-              <video
+              <iframe
                 src={news.attachmentUrl}
-                controls
-                className="w-full h-full object-contain"
-              >
-                Your browser does not support the video tag.
-              </video>
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen={true}
+                title="YouTube video player"
+              />
             </div>
           )}
 

@@ -19,12 +19,19 @@ class PublicNewsController extends Controller
             ->latest('created_at')
             ->paginate(10)
             ->through(function (News $n) {
+                $attachmentUrl = $n->attachment_url;
+                if ($n->attachment_type === 'video') {
+                    $videoId = $this->extractYouTubeId($attachmentUrl ?? '');
+                    if ($videoId) {
+                        $attachmentUrl = 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1';
+                    }
+                }
                 return [
                     'id' => $n->id,
                     'title' => $n->news_title,
                     'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
                     'attachmentType' => $n->attachment_type,
-                    'attachmentUrl' => $n->attachment_url,
+                    'attachmentUrl' => $attachmentUrl,
                     'commentsCount' => $n->comments_count,
                     'likesCount' => $n->likes_count,
                     'createdAt' => $n->created_at?->toIso8601String(),
@@ -49,7 +56,7 @@ class PublicNewsController extends Controller
                 'title' => $news->news_title,
                 'description' => $news->news_description,
                 'attachmentType' => $news->attachment_type,
-                'attachmentUrl' => $news->attachment_url,
+                'attachmentUrl' => ($news->attachment_type === 'video' && ($id = $this->extractYouTubeId($news->attachment_url ?? ''))) ? ('https://www.youtube-nocookie.com/embed/' . $id . '?rel=0&modestbranding=1') : $news->attachment_url,
                 'createdAt' => $news->created_at?->toIso8601String(),
                 'comments' => $news->comments->map(function (NewsComment $c) {
                     return [
@@ -66,6 +73,37 @@ class PublicNewsController extends Controller
                 'isLiked' => $isLiked,
             ],
         ]);
+    }
+
+    /**
+     * Extract a YouTube video ID from various URL formats.
+     */
+    private function extractYouTubeId(string $url): ?string
+    {
+        if ($url === '') {
+            return null;
+        }
+
+        $patterns = [
+            '#youtu\.be/([A-Za-z0-9_-]{11})#',
+            '#youtube\.com\/(?:watch\?v=|embed/|v/|shorts/)([A-Za-z0-9_-]{11})#',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $url, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        $parts = parse_url($url);
+        if (!empty($parts['query'])) {
+            parse_str($parts['query'], $q);
+            if (!empty($q['v']) && is_string($q['v']) && preg_match('/^[A-Za-z0-9_-]{11}$/', $q['v'])) {
+                return $q['v'];
+            }
+        }
+
+        return null;
     }
 
     public function comment(Request $request, News $news): RedirectResponse
