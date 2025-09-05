@@ -123,7 +123,7 @@ export default function DonationSection() {
   }
 
   return (
-    <section id="donate" className="py-8 sm:py-10 bg-background">
+    <section id="donate" className="py-8 sm:py-4 bg-background">
       <motion.div
         initial="hidden"
         whileInView="visible"

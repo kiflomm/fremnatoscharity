@@ -8,13 +8,7 @@ import { ThemeToggle } from '../ThemeToggle';
 import type { SharedData } from '@/types';
 import { motion } from 'framer-motion';
 
-interface Slide {
-    id: number;
-    imageUrl: string;
-    alt: string;
-    title: string;
-    description: string;
-}
+
 
 export default function NavigationSection() {
     const page = usePage<SharedData>();
@@ -26,43 +20,7 @@ export default function NavigationSection() {
     // but loaded for future role-based adjustments
     const userRole = auth?.user?.role?.name ?? null;
 
-    const slides: Slide[] = [
-        {
-            id: 1,
-            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/la_vznqng.jpg',
-            alt: t('slideshow.slide1.alt'),
-            title: t('slideshow.slide1.title'),
-            description: t('slideshow.slide1.description')
-        },
-        {
-            id: 2,
-            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/chicago_j8ekxp.jpg',
-            alt: t('slideshow.slide2.alt'),
-            title: t('slideshow.slide2.title'),
-            description: t('slideshow.slide2.description')
-        },
-        {
-            id: 3,
-            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg',
-            alt: t('slideshow.slide3.alt'),
-            title: t('slideshow.slide3.title'),
-            description: t('slideshow.slide3.description')
-        },
-        {
-            id: 4,
-            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg',
-            alt: t('slideshow.slide4.alt'),
-            title: t('slideshow.slide4.title'),
-            description: t('slideshow.slide4.description')
-        },
-        {
-            id: 5,
-            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/chicago_j8ekxp.jpg',
-            alt: t('slideshow.slide5.alt'),
-            title: t('slideshow.slide5.title'),
-            description: t('slideshow.slide5.description')
-        }
-    ];
+    
     return (
         <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 w-full">
             <CardContent className="border-0 shadow-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-0 pb-1"> 
@@ -118,7 +76,7 @@ export default function NavigationSection() {
                                                     </Link>
                                                 )}
                                                 <Link 
-                                                    href="/news#news" 
+                                                    href="/news" 
                                                     className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
@@ -232,14 +190,14 @@ export default function NavigationSection() {
                                             ) : (
                                                 <div className="flex items-center gap-3 lg:gap-4">
                                                     <Link
-                                                        href="/register#auth-form"
+                                                        href="/register"
                                                         className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
                                                     >
                                                         <UserPlus className="h-3.5 w-3.5" />
                                                         {t("cta.signUp")}
                                                     </Link>
                                                     <Link
-                                                        href="/login#auth-form"
+                                                        href="/login"
                                                         className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
                                                     >
                                                         <LogIn className="h-3.5 w-3.5" />

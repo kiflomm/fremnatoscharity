@@ -5,6 +5,7 @@ import { AboutSection, DonationSection } from '@/components/welcome';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
+import ImageSlideshow from '@/components/ImageSlideshow';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
@@ -25,6 +26,7 @@ export default function Welcome() {
         };
     }, [i18n]);
     
+    
     // Don't render until i18next is ready
     if (!ready) {
         return (
@@ -36,6 +38,9 @@ export default function Welcome() {
 
     return (
         <FixedHeaderLayout title={t('organization')}>
+            <div className="block md:hidden">
+                <ImageSlideshow />
+            </div>
             <DonationSection />
             <AboutSection />
         </FixedHeaderLayout>

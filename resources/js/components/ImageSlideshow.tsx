@@ -1,16 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Card, CardContent } from './ui/card';
+import { useTranslation } from 'react-i18next';
 
-interface Slide {
-    id: number;
-    imageUrl: string;
-    alt: string;
-    title?: string;
-    description?: string;
-}
 
 interface ImageSlideshowProps {
-    slides: Slide[];
     autoPlay?: boolean;
     interval?: number;
     showIndicators?: boolean;
@@ -22,7 +16,6 @@ interface ImageSlideshowProps {
 }
 
 export default function ImageSlideshow({
-    slides,
     autoPlay = true,
     interval = 5000,
     showIndicators = true,
@@ -38,8 +31,46 @@ export default function ImageSlideshow({
     const containerRef = useRef<HTMLDivElement | null>(null);
     const touchStartX = useRef<number | null>(null);
     const { theme } = useTheme();
-
+    const { t } = useTranslation();
+    const slides = [
+        {
+            id: 1,
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/la_vznqng.jpg',
+            alt: t('slideshow.slide1.alt'),
+            title: t('slideshow.slide1.title'),
+            description: t('slideshow.slide1.description')
+        },
+        {
+            id: 2,
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/chicago_j8ekxp.jpg',
+            alt: t('slideshow.slide2.alt'),
+            title: t('slideshow.slide2.title'),
+            description: t('slideshow.slide2.description')
+        },
+        {
+            id: 3,
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg',
+            alt: t('slideshow.slide3.alt'),
+            title: t('slideshow.slide3.title'),
+            description: t('slideshow.slide3.description')
+        },
+        {
+            id: 4,
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg',
+            alt: t('slideshow.slide4.alt'),
+            title: t('slideshow.slide4.title'),
+            description: t('slideshow.slide4.description')
+        },
+        {
+            id: 5,
+            imageUrl: 'https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/chicago_j8ekxp.jpg',
+            alt: t('slideshow.slide5.alt'),
+            title: t('slideshow.slide5.title'),
+            description: t('slideshow.slide5.description')
+        }
+    ];
     const total = slides.length;
+
 
     const goToSlide = useCallback((index: number) => {
         setCurrentSlide(((index % total) + total) % total);
@@ -103,8 +134,10 @@ export default function ImageSlideshow({
 
     if (total === 0) {
         return (
-            <div className={`${className} relative rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900`}> 
-                <div className="h-56 sm:h-72 md:h-[24rem] flex items-center justify-center">
+            <Card>
+                <CardContent>
+                <div className={`${className} relative rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900`}> 
+                <div className="aspect-[16/9] sm:aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9] flex items-center justify-center">
                     <div className="text-center">
                         <div className="mx-auto mb-4 size-14 rounded-full bg-white/60 dark:bg-white/10 backdrop-blur flex items-center justify-center shadow">
                             <svg className="w-7 h-7 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,6 +148,8 @@ export default function ImageSlideshow({
                     </div>
                 </div>
             </div>
+                </CardContent>
+            </Card>
         );
     }
 
@@ -136,12 +171,12 @@ export default function ImageSlideshow({
             onTouchEnd={onTouchEnd}
         >
             {/* Background image */}
-            <div className={`relative h-56 sm:h-72 md:h-[24rem] ${theme === 'dark' ? 'bg-slate-900' : 'bg-slate-100'}`}>
+            <div className={`relative aspect-[16/9] sm:aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9] ${theme === 'dark' ? 'bg-slate-900' : 'bg-slate-100'}`}>
                 <img
                     key={slide.id}
                     src={slide.imageUrl}
                     alt={slide.alt}
-                    className="absolute inset-0 w-full h-full object-cover will-change-transform scale-105 transition-transform duration-700 ease-out group-hover:scale-110"
+                    className="absolute inset-0 w-full h-full object-cover object-center will-change-transform scale-105 transition-transform duration-700 ease-out group-hover:scale-110"
                     onError={(e) => {
                         (e.currentTarget as HTMLImageElement).style.display = 'none';
                         const fallback = e.currentTarget.nextElementSibling as HTMLElement;
