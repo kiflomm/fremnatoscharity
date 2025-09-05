@@ -157,7 +157,7 @@ export default function NavigationSection() {
                                                     <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                                 </>
                                             )}
-                                            <Link href="/news#news" className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                            <Link href="/news" className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
                                                 <Newspaper className="h-3.5 w-3.5" />
                                                 {t("cta.news")}
                                             </Link>

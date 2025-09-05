@@ -4,6 +4,7 @@ import { SimpleLanguageSwitcher } from "./LanguageSwitcher"
 import { ThemeToggle } from "./ThemeToggle"
 import { useTheme } from "@/contexts/ThemeContext"
 import { motion } from "framer-motion"
+import ContactCard from "./ContactCard"
 
 export default function Footer() {
   const { t } = useTranslation()
@@ -20,10 +21,10 @@ export default function Footer() {
 
       {/* Main content */}
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Brand & Description */}
           <motion.div 
-            className="md:col-span-1"
+            className="lg:col-span-2 lg:order-1 order-1"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -83,11 +84,11 @@ export default function Footer() {
               </div>
             </div>
           </motion.div>
+          
+          {/* Contact Card - Mobile: Bottom, Desktop: Right */}
+          <div className="lg:order-2 order-2">
+            <ContactCard className="w-full max-w-sm mx-auto lg:mx-0" />
           </div>
-
-{/* Utilities */}
-<div className="flex items-center gap-3">
-
         </div>
       </div>
 
