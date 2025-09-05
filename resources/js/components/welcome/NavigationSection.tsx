@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { Link, usePage } from '@inertiajs/react';
-import { Heart, Users, Calendar, Target, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Heart, Users, Calendar, Target, ArrowRight, Home, Newspaper, BookOpen, Menu, X, DollarSign, Info } from 'lucide-react';
 import { SimpleLanguageSwitcher } from '../LanguageSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 import type { SharedData } from '@/types';
@@ -22,6 +23,7 @@ export default function NavigationSection() {
     const { auth } = page.props;
     const { t } = useTranslation();
     const isHomeRoute = page.url === "/";
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     // Role currently not used to toggle any additional UI here,
     // but loaded for future role-based adjustments
     const userRole = auth?.user?.role?.name ?? null;
@@ -63,177 +65,190 @@ export default function NavigationSection() {
             description: t('slideshow.slide5.description')
         }
     ];
-
-    const stats = [
-        {
-            icon: Heart,
-            value: '500+',
-            label: t('stats.livesTouched'),
-            color: 'text-red-500',
-            bgColor: 'bg-red-50 dark:bg-red-950/20'
-        },
-        {
-            icon: Calendar,
-            value: '15+',
-            label: t('stats.yearsService'),
-            color: 'text-green-500',
-            bgColor: 'bg-green-50 dark:bg-green-950/20'
-        },
-        {
-            icon: Target,
-            value: '3',
-            label: t('stats.focusAreas'),
-            color: 'text-purple-500',
-            bgColor: 'bg-purple-50 dark:bg-purple-950/20'
-        }
-    ];
-
-    const itemVariants: Variants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: {
-            duration: 0.5,
-            ease: [0.22, 1, 0.36, 1],
-          },
-        },
-      }
-      
     return (
-        <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 max-h-none lg:max-h-[calc(100svh-150px)] overflow-y-auto mb-10">
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                {/* Main Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-                    {/* Image Slideshow */}
-                    <div className="order-2 lg:order-1">
-                        <Card className="overflow-hidden border-0 shadow-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
-                            <CardContent className="p-0">
-                                <ImageSlideshow slides={slides} autoPlay={true} interval={5000} />
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Mission Content */}
-                    <div className="order-1 lg:order-2 space-y-6">
-                        <Card className="border-0 shadow-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-0 pb-4">
-                            <CardHeader className="pb-4 px-2">
-                                <div className="flex justify-between items-center">
-                                    <div className="ml-auto flex items-center space-x-2 sm:space-x-4 py-4">
-                                        {/* Always visible theme and language switchers */}
-                                        <div className="flex items-center space-x-2 sm:space-x-3">
+        <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 w-full">
+            <CardContent className="border-0 shadow-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-0 pb-1"> 
+                                <div className="flex justify-between items-center pt-1">
+                                    <div className="ml-auto flex items-center space-x-2 sm:space-x-3">
+                                        <div className="flex items-center space-x-1.5 sm:space-x-2">
                                             <ThemeToggle className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
                                             <SimpleLanguageSwitcher
-                                                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                                                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Secondary Navigation */}
-                                <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-3">
-                                    <nav className="flex items-center gap-3 sm:gap-4 text-sm">
-                                        {!isHomeRoute && (
-                                            <>
-                                                <Link href="/" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
-                                                    {t("cta.home")}
-                                                </Link>
-                                                <span className="text-slate-300 dark:text-slate-600">|</span>
-                                            </>
-                                        )}
-                                        <Link href="/news#news" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
-                                            {t("cta.news")}
-                                        </Link>
-                                        <span className="text-slate-300 dark:text-slate-600">|</span>
-                                        <Link href="/stories" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
-                                            {t("cta.stories")}
-                                        </Link>
-                                    </nav>
-                                    <div className="ml-auto flex items-center gap-2 sm:gap-3">
-                                        {auth?.user ? (
-                                            <Link
-                                                href="/settings/profile"
-                                                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
-                                                aria-label={t('aria.profileSettings')}
-                                            >
-                                                <Users className="h-4 w-4" />
-                                                <span className="hidden sm:inline">{t("cta.profile")}</span>
-                                            </Link>
-                                        ) : (
-                                            // When unauthenticated, show signup/signin. If future role-based public state needed, adjust here.
-                                            <div className="flex items-center gap-2 sm:gap-3">
-                                                <Link
-                                                    href="/register#auth-form"
-                                                    className="rounded-md px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+                                <div className="border-t border-slate-200 dark:border-slate-700 pt-1">
+                                    {/* Mobile Header with Hamburger */}
+                                    <div className="flex items-center sm:hidden">
+                                        <button
+                                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                            className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                                        >
+                                            {isMobileMenuOpen ? (
+                                                <X className="h-5 w-5" />
+                                            ) : (
+                                                <Menu className="h-5 w-5" />
+                                            )}
+                                        </button>
+                                        <h2 className="text-base font-semibold text-slate-800 dark:text-slate-200 ml-2">
+                                            {t("navigation.title", "Menu")}
+                                        </h2>
+                                    </div>
+
+                                    {/* Mobile Menu - Collapsible */}
+                                    {isMobileMenuOpen && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="mt-2 space-y-2 sm:hidden"
+                                        >
+                                            {/* Navigation Links */}
+                                            <nav className="flex flex-col space-y-1.5">
+                                                {!isHomeRoute && (
+                                                    <Link 
+                                                        href="/" 
+                                                        className="flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                        onClick={() => setIsMobileMenuOpen(false)}
+                                                    >
+                                                        <Home className="h-4 w-4" />
+                                                        {t("cta.home")}
+                                                    </Link>
+                                                )}
+                                                <Link 
+                                                    href="/news#news" 
+                                                    className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                    onClick={() => setIsMobileMenuOpen(false)}
                                                 >
-                                                    {t("cta.signUp")}
+                                                    <Newspaper className="h-4 w-4" />
+                                                    {t("cta.news")}
                                                 </Link>
-                                                <Link
-                                                    href="/login#auth-form"
-                                                    className="rounded-md px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+                                                <Link 
+                                                    href="/stories" 
+                                                    className="flex items-center gap-2 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                    onClick={() => setIsMobileMenuOpen(false)}
                                                 >
-                                                    {t("cta.signIn")}
+                                                    <BookOpen className="h-4 w-4" />
+                                                    {t("cta.stories")}
                                                 </Link>
+                                                <Link 
+                                                    href="/#donation" 
+                                                    className="flex items-center gap-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                >
+                                                    <DollarSign className="h-4 w-4" />
+                                                    {t("nav.donate")}
+                                                </Link>
+                                                <Link 
+                                                    href="/#about" 
+                                                    className="flex items-center gap-2 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                >
+                                                    <Info className="h-4 w-4" />
+                                                    {t("nav.about")}
+                                                </Link>
+                                            </nav>
+                                            
+                                            {/* Auth Buttons - Full width on mobile */}
+                                            <div className="pt-1.5 border-t border-slate-200 dark:border-slate-700">
+                                                {auth?.user ? (
+                                                    <Link
+                                                        href="/settings/profile"
+                                                        className="flex items-center justify-center gap-2 w-full rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/30 transition-all duration-200"
+                                                        aria-label={t('aria.profileSettings')}
+                                                        onClick={() => setIsMobileMenuOpen(false)}
+                                                    >
+                                                        <Users className="h-4 w-4" />
+                                                        {t("cta.profile")}
+                                                    </Link>
+                                                ) : (
+                                                    <div className="flex flex-col space-y-1.5">
+                                                        <Link
+                                                            href="/register#auth-form"
+                                                            className="flex items-center justify-center gap-2 w-full rounded-lg px-3 py-2 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
+                                                            onClick={() => setIsMobileMenuOpen(false)}
+                                                        >
+                                                            {t("cta.signUp")}
+                                                        </Link>
+                                                        <Link
+                                                            href="/login#auth-form"
+                                                            className="flex items-center justify-center gap-2 w-full rounded-lg px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
+                                                            onClick={() => setIsMobileMenuOpen(false)}
+                                                        >
+                                                            {t("cta.signIn")}
+                                                        </Link>
+                                                    </div>
+                                                )}
                                             </div>
-                                        )}
+                                        </motion.div>
+                                    )}
+
+                                    {/* Desktop Navigation - Horizontal layout */}
+                                    <div className="hidden sm:flex items-center justify-between py-1">
+                                        <nav className="flex items-center gap-1.5 lg:gap-3 text-sm">
+                                            {!isHomeRoute && (
+                                                <>
+                                                    <Link href="/" className="flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                                        <Home className="h-3.5 w-3.5" />
+                                                        {t("cta.home")}
+                                                    </Link>
+                                                    <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
+                                                </>
+                                            )}
+                                            <Link href="/news#news" className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                                <Newspaper className="h-3.5 w-3.5" />
+                                                {t("cta.news")}
+                                            </Link>
+                                            <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
+                                            <Link href="/stories" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                                <BookOpen className="h-3.5 w-3.5" />
+                                                {t("cta.stories")}
+                                            </Link>
+                                            <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
+                                            <Link href="/#donation" className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                                <DollarSign className="h-3.5 w-3.5" />
+                                                {t("nav.donate")}
+                                            </Link>
+                                            <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
+                                            <Link href="/#about" className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                                <Info className="h-3.5 w-3.5" />
+                                                {t("nav.about")}
+                                            </Link>
+                                        </nav>
+                                        <div className="flex items-center gap-1.5 lg:gap-2">
+                                            {auth?.user ? (
+                                                <Link
+                                                    href="/settings/profile"
+                                                    className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/30 transition-all duration-200"
+                                                    aria-label={t('aria.profileSettings')}
+                                                >
+                                                    <Users className="h-3.5 w-3.5" />
+                                                    <span className="hidden lg:inline">{t("cta.profile")}</span>
+                                                </Link>
+                                            ) : (
+                                                <div className="flex items-center gap-1.5 lg:gap-2">
+                                                    <Link
+                                                        href="/register#auth-form"
+                                                        className="rounded-md px-2.5 py-1 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
+                                                    >
+                                                        {t("cta.signUp")}
+                                                    </Link>
+                                                    <Link
+                                                        href="/login#auth-form"
+                                                        className="rounded-md px-2.5 py-1 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
+                                                    >
+                                                        {t("cta.signIn")}
+                                                    </Link>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                                <CardDescription className="text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
-                                    
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="pt-0">
-                                <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
-                                    {stats.map((stat, index) => (
-                                        <div
-                                            key={index}
-                                            className={`${stat.bgColor} p-4 rounded-xl border border-slate-200/50 dark:border-slate-700/50 transition-all duration-300 hover:scale-105 hover:shadow-lg`}
-                                        >
-                                            <div className="flex flex-col items-center text-center space-y-2">
-                                                <div className={`p-2 rounded-lg ${stat.bgColor} border border-slate-200/50 dark:border-slate-700/50`}>
-                                                    <stat.icon className={`w-5 h-5 ${stat.color}`} />
-                                                </div>
-                                                <div className={`text-2xl font-bold ${stat.color}`}>
-                                                    {stat.value}
-                                                </div>
-                                                <div className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                                                    {stat.label}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </Card>
-
-              {/* Call to Action */}
-              <motion.div
-                variants={itemVariants}
-                className="mt-8 lg:mt-10 flex flex-col flex-row gap-4 justify-center items-center"
-              >
-                <Button asChild size="lg" className="group font-medium">
-                  <Link href="#donate">
-                    <Heart className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" aria-hidden="true" />
-                    {t("cta.donate")}
-                    <ArrowRight
-                      className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="group font-medium bg-transparent">
-                  <Link href="#about">
-                    {t("cta.learnMore")}
-                    <ArrowRight
-                      className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                </Button>
-              </motion.div>
-                    </div>
-                </div>
-            </div>
+            </CardContent>
         </section>
     );
 }

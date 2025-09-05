@@ -1,12 +1,9 @@
 import { Link, useForm, usePage, router } from '@inertiajs/react';
 import React from 'react';
-import PublicLayout from '@/layouts/public-layout';
+import FixedHeaderLayout from '@/layouts/FixedHeaderLayout';
 import { ArrowLeft, Heart, MessageSquare, Calendar, User, Send } from 'lucide-react';
 import { index, comment, like } from '@/routes/public/news';
 import { login } from '@/routes';
-import Header from '@/components/welcome/Header';
-import NavigationSection from '@/components/welcome/NavigationSection';
-import Footer from '@/components/Footer';
 
 type Comment = {
   id: number;
@@ -46,9 +43,7 @@ export default function NewsShow() {
   };
 
   return (
-    <PublicLayout title={news.title} hideHeader hideFooter fullBleed>
-      <Header />
-      <NavigationSection />
+    <FixedHeaderLayout title={news.title}>
       <div className="w-full">
         {/* Back Button */}
         <Link 
@@ -206,8 +201,7 @@ export default function NewsShow() {
           </div>
         </section>
       </div>
-      <Footer />
-    </PublicLayout>
+    </FixedHeaderLayout>
   );
 }
 

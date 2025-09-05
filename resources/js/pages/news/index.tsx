@@ -1,12 +1,8 @@
-import { Link, usePage } from '@inertiajs/react';
-import React from 'react';
-import PublicLayout from '@/layouts/public-layout';
+import { Link, usePage } from '@inertiajs/react'; 
+import FixedHeaderLayout from '@/layouts/FixedHeaderLayout';
 import { Calendar, MessageSquare, Heart, Newspaper, Search, Filter as FilterIcon, X } from 'lucide-react';
 import { show } from '@/routes/public/news';
-import Header from '@/components/welcome/Header';
-import NavigationSection from '@/components/welcome/NavigationSection';
 import { useTranslation } from 'react-i18next';
-import Footer from '@/components/Footer';
 
 type NewsItem = {
   id: number;
@@ -38,9 +34,7 @@ export default function NewsIndex() {
   const items = props.news?.data ?? [];
 
   return (
-    <PublicLayout title="News" hideHeader hideFooter fullBleed>
-      <Header />
-      <NavigationSection />
+    <FixedHeaderLayout title="News">
       <div id="top" className="w-full">
         {/* Header */}
         <div className="text-center mb-6 px-0 mx-0">
@@ -234,8 +228,7 @@ export default function NewsIndex() {
           </div>
         )}
       </div>
-      <Footer />
-    </PublicLayout>
+    </FixedHeaderLayout>
   );
 }
 
