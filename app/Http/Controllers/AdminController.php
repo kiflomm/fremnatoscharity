@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Story;
 use App\Models\News;
 use App\Models\Role;
+use App\Models\NewsComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -17,7 +18,7 @@ class AdminController extends Controller
         $stats = [
             'totalUsers' => User::count(),
             // Keep prop names expected by the frontend, sourced from existing models
-            'totalBeneficiaries' => Story::count(),
+            'totalStories' => Story::count(),
             'totalNewsPosts' => News::count(),
         ];
 
@@ -345,5 +346,43 @@ class AdminController extends Controller
         return back()->with('success', 'News deleted');
     }
 
+    public function showNews(News $news)
+    {
+        $news->load(['author', 'comments.user', 'likes']);
+
+        $payload = [
+            'id' => $news->id,
+            'title' => $news->news_title,
+            'description' => $news->news_description,
+            'attachmentType' => $news->attachment_type,
+            'attachmentUrl' => $news->attachment_url,
+            'createdAt' => $news->created_at?->toISOString(),
+            'likesCount' => $news->likes()->count(),
+            'comments' => $news->comments->map(function (NewsComment $c) {
+                return [
+                    'id' => $c->id,
+                    'text' => $c->comment_text,
+                    'author' => [
+                        'id' => $c->user?->id,
+                        'name' => $c->user?->name ?? 'Unknown',
+                    ],
+                    'createdAt' => $c->created_at?->toISOString(),
+                ];
+            }),
+        ];
+
+        return Inertia::render('admin/news-show', [
+            'news' => $payload,
+        ]);
+    }
+
+    public function destroyNewsComment(News $news, NewsComment $comment)
+    {
+        if ($comment->news_id !== $news->id) {
+            abort(404);
+        }
+        $comment->delete();
+        return back()->with('success', 'Comment deleted');
+    }
 
 }

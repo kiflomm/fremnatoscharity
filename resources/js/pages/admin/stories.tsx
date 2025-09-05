@@ -359,20 +359,22 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                                 </div>
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="space-y-2">
-                                    <Label htmlFor="attachment-url">Attachment URL {data.attachment_type !== 'none' ? '(required)' : '(optional)'}</Label>
-                                    <Input
-                                        id="attachment-url"
-                                        value={data.attachment_url}
-                                        onChange={(e) => setData('attachment_url', e.target.value)}
-                                        placeholder="https://..."
-                                        type="url"
-                                        required={data.attachment_type !== 'none'}
-                                    />
-                                    {errors.attachment_url ? (
-                                        <p className="text-xs text-red-600">{errors.attachment_url}</p>
-                                    ) : null}
-                                </div>
+                                {data.attachment_type !== 'none' ? (
+                                    <div className="space-y-2">
+                                        <Label htmlFor="attachment-url">Attachment URL (required)</Label>
+                                        <Input
+                                            id="attachment-url"
+                                            value={data.attachment_url}
+                                            onChange={(e) => setData('attachment_url', e.target.value)}
+                                            placeholder="https://..."
+                                            type="url"
+                                            required
+                                        />
+                                        {errors.attachment_url ? (
+                                            <p className="text-xs text-red-600">{errors.attachment_url}</p>
+                                        ) : null}
+                                    </div>
+                                ) : null}
                                 <div className="space-y-2">
                                     <Label htmlFor="beneficiary-age-group">Beneficiary age group</Label>
                                     <select
@@ -510,17 +512,19 @@ export default function AdminStories({ stories, totalStories }: AdminStoriesProp
                                         <option value="video">Video</option>
                                     </select>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="attachment-url-edit">Attachment URL {data.attachment_type !== 'none' ? '(required)' : '(optional)'}</Label>
-                                    <Input
-                                        id="attachment-url-edit"
-                                        value={data.attachment_url}
-                                        onChange={(e) => setData('attachment_url', e.target.value)}
-                                        placeholder="https://..."
-                                        type="url"
-                                        required={data.attachment_type !== 'none'}
-                                    />
-                                </div>
+                                {data.attachment_type !== 'none' ? (
+                                    <div className="space-y-2">
+                                        <Label htmlFor="attachment-url-edit">Attachment URL (required)</Label>
+                                        <Input
+                                            id="attachment-url-edit"
+                                            value={data.attachment_url}
+                                            onChange={(e) => setData('attachment_url', e.target.value)}
+                                            placeholder="https://..."
+                                            type="url"
+                                            required
+                                        />
+                                    </div>
+                                ) : null}
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">

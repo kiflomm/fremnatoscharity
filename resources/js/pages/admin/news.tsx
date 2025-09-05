@@ -152,15 +152,7 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                     className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                                 >
                                     <div className="flex items-start gap-4 flex-1">
-                                        {post.featured_image && (
-                                            <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                                                <img 
-                                                    src={post.featured_image} 
-                                                    alt={post.title}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </div>
-                                        )}
+                                        
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <h3 className="font-medium text-lg">{post.title}</h3>
@@ -193,7 +185,7 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                     </div>
                                     {/* Mobile actions */}
                                     <div className="flex sm:hidden w-full justify-around">
-                                        <Button variant="outline" size="sm" onClick={() => router.get(`/news/${post.id}`)}>View</Button>
+                                        <Button variant="outline" size="sm" onClick={() => router.get(`/admin/news/${post.id}`)}>View</Button>
                                         <Button
                                             variant="outline"
                                             size="sm"
@@ -221,7 +213,7 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => router.get(`/news/${post.id}`)}>View News</DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => router.get(`/admin/news/${post.id}`)}>View News</DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     onClick={() => {
                                                         setEditNewsId(post.id);
@@ -309,20 +301,22 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                         <p className="text-xs text-red-600">{errors.attachment_type}</p>
                                     ) : null}
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="attachment-url">Attachment URL {data.attachment_type !== 'none' ? '(required)' : '(optional)'}</Label>
-                                    <Input
-                                        id="attachment-url"
-                                        value={data.attachment_url}
-                                        onChange={(e) => setData('attachment_url', e.target.value)}
-                                        placeholder="https://..."
-                                        type="url"
-                                        required={data.attachment_type !== 'none'}
-                                    />
-                                    {errors.attachment_url ? (
-                                        <p className="text-xs text-red-600">{errors.attachment_url}</p>
-                                    ) : null}
-                                </div>
+                                {data.attachment_type !== 'none' ? (
+                                    <div className="space-y-2">
+                                        <Label htmlFor="attachment-url">Attachment URL (required)</Label>
+                                        <Input
+                                            id="attachment-url"
+                                            value={data.attachment_url}
+                                            onChange={(e) => setData('attachment_url', e.target.value)}
+                                            placeholder="https://..."
+                                            type="url"
+                                            required
+                                        />
+                                        {errors.attachment_url ? (
+                                            <p className="text-xs text-red-600">{errors.attachment_url}</p>
+                                        ) : null}
+                                    </div>
+                                ) : null}
                             </div>
                             <DialogFooter>
                                 <Button type="button" variant="ghost" onClick={closeCreate} disabled={processing}>Cancel</Button>
@@ -393,17 +387,19 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                         <option value="video">Video</option>
                                     </select>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="attachment-url-edit">Attachment URL {data.attachment_type !== 'none' ? '(required)' : '(optional)'}</Label>
-                                    <Input
-                                        id="attachment-url-edit"
-                                        value={data.attachment_url}
-                                        onChange={(e) => setData('attachment_url', e.target.value)}
-                                        placeholder="https://..."
-                                        type="url"
-                                        required={data.attachment_type !== 'none'}
-                                    />
-                                </div>
+                                {data.attachment_type !== 'none' ? (
+                                    <div className="space-y-2">
+                                        <Label htmlFor="attachment-url-edit">Attachment URL (required)</Label>
+                                        <Input
+                                            id="attachment-url-edit"
+                                            value={data.attachment_url}
+                                            onChange={(e) => setData('attachment_url', e.target.value)}
+                                            placeholder="https://..."
+                                            type="url"
+                                            required
+                                        />
+                                    </div>
+                                ) : null}
                             </div>
                             <DialogFooter>
                                 <Button type="button" variant="ghost" onClick={() => setEditNewsId(null)}>Cancel</Button>
