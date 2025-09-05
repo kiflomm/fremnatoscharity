@@ -4,6 +4,9 @@ import PublicLayout from '@/layouts/public-layout';
 import { ArrowLeft, Heart, MessageSquare, Calendar, User, Send } from 'lucide-react';
 import { index, comment, like } from '@/routes/public/news';
 import { login } from '@/routes';
+import Header from '@/components/welcome/Header';
+import NavigationSection from '@/components/welcome/NavigationSection';
+import Footer from '@/components/Footer';
 
 type Comment = {
   id: number;
@@ -43,19 +46,21 @@ export default function NewsShow() {
   };
 
   return (
-    <PublicLayout title={news.title}>
-      <div className="max-w-4xl mx-auto">
+    <PublicLayout title={news.title} hideHeader hideFooter fullBleed>
+      <Header />
+      <NavigationSection />
+      <div className="w-full">
         {/* Back Button */}
         <Link 
           href={index().url} 
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6"
+          className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6 px-4 sm:px-6 lg:px-8"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to News
         </Link>
 
         {/* Article */}
-        <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mx-4 sm:mx-6 lg:mx-8">
           {/* Featured Media */}
           {news.attachmentType === 'image' && news.attachmentUrl && (
             <div className="aspect-video bg-gray-100 overflow-hidden">
@@ -131,7 +136,7 @@ export default function NewsShow() {
         </article>
 
         {/* Comments Section */}
-        <section className="mt-12">
+        <section className="mt-12 px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
               <MessageSquare className="h-6 w-6 mr-3 text-blue-600" />
@@ -201,6 +206,7 @@ export default function NewsShow() {
           </div>
         </section>
       </div>
+      <Footer />
     </PublicLayout>
   );
 }

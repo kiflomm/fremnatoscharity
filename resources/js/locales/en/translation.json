@@ -113,7 +113,7 @@
   "category": "Category",
   "tags": "Tags",
   "related_stories": "Related Stories",
-  "latest_news": "Latest News",
+  "latest_news": "News feed",
   "featured_stories": "Featured Stories",
   "contact_us": "Contact Us",
   "get_in_touch": "Get in Touch",
@@ -280,6 +280,7 @@
     }
   },
   "cta": {
+    "home": "Home",
     "news": "News",
     "stories": "Stories",
     "profile": "Profile",

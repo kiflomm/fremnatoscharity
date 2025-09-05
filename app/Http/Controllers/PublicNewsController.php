@@ -14,10 +14,37 @@ class PublicNewsController extends Controller
 {
     public function index(Request $request): Response
     {
-        $news = News::query()
+        $query = News::query()
             ->withCount(['comments', 'likes'])
-            ->latest('created_at')
+            ->latest('created_at');
+
+        // Filters: q (search), type (attachment_type), from/to (created_at range)
+        $search = trim((string) $request->query('q', ''));
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('news_title', 'like', "%{$search}%")
+                  ->orWhere('news_description', 'like', "%{$search}%");
+            });
+        }
+
+        $type = $request->query('type');
+        if (in_array($type, ['image', 'video', 'none'], true)) {
+            $query->where('attachment_type', $type);
+        }
+
+        $from = $request->query('from');
+        if (is_string($from) && $from !== '') {
+            $query->whereDate('created_at', '>=', $from);
+        }
+
+        $to = $request->query('to');
+        if (is_string($to) && $to !== '') {
+            $query->whereDate('created_at', '<=', $to);
+        }
+
+        $news = $query
             ->paginate(10)
+            ->appends($request->query())
             ->through(function (News $n) {
                 $attachmentUrl = $n->attachment_url;
                 if ($n->attachment_type === 'video') {
@@ -40,6 +67,12 @@ class PublicNewsController extends Controller
 
         return Inertia::render('news/index', [
             'news' => $news,
+            'filters' => [
+                'q' => $search,
+                'type' => in_array($type, ['image', 'video', 'none'], true) ? $type : null,
+                'from' => is_string($from) ? $from : null,
+                'to' => is_string($to) ? $to : null,
+            ],
         ]);
     }
 

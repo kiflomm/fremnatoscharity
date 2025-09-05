@@ -9,7 +9,7 @@ export default function Header() {
     const { theme } = useTheme();
 
     return (
-        <header className="relative">
+        <header className="relative pt-4 sm:pt-0">
             {/* Full-width logo banner with responsive height */}
             <div className="w-full overflow-hidden">
                 {/* Logo for small devices */}

@@ -21,6 +21,7 @@ export default function NavigationSection() {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const { t } = useTranslation();
+    const isHomeRoute = page.url === "/";
     // Role currently not used to toggle any additional UI here,
     // but loaded for future role-based adjustments
     const userRole = auth?.user?.role?.name ?? null;
@@ -132,7 +133,15 @@ export default function NavigationSection() {
                                 {/* Secondary Navigation */}
                                 <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-3">
                                     <nav className="flex items-center gap-3 sm:gap-4 text-sm">
-                                        <Link href="/news" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                                        {!isHomeRoute && (
+                                            <>
+                                                <Link href="/" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+                                                    {t("cta.home")}
+                                                </Link>
+                                                <span className="text-slate-300 dark:text-slate-600">|</span>
+                                            </>
+                                        )}
+                                        <Link href="/news#news" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
                                             {t("cta.news")}
                                         </Link>
                                         <span className="text-slate-300 dark:text-slate-600">|</span>
