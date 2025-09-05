@@ -9,6 +9,7 @@ import { Copy, Check, Building2, ChevronDown } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Toaster } from "@/components/ui/sonner"
 
 type BankInfo = {
@@ -223,18 +224,18 @@ export default function DonationSection() {
           </div>
         </div>
 
-        {/* Desktop/Tablet: expand/collapse grid */}
+        {/* Desktop/Tablet: dialog grid */}
         <motion.div
           variants={listVariants}
           className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4"
         >
           {banks.map((bank) => (
             <motion.div key={bank.nameKey} variants={itemVariants} className="group">
-              <Collapsible>
-                <Card className="border-border/50 bg-card h-full">
-                  <CardHeader className="py-3">
-                    <CollapsibleTrigger asChild>
-                      <button className="w-full flex items-center gap-3 text-left">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Card className="border-border/50 bg-card h-full cursor-pointer hover:shadow-md transition-all duration-200 hover:border-primary/20">
+                    <CardHeader className="py-3">
+                      <div className="w-full flex items-center gap-3 text-left">
                         <Avatar className="size-10 ring-1 ring-border group-hover:ring-primary/20 transition-all duration-300">
                           <AvatarImage
                             src={bank.logoSrc || "/placeholder.svg"}
@@ -253,46 +254,63 @@ export default function DonationSection() {
                             {bank.accounts.length === 1 ? "1 account" : `${bank.accounts.length} accounts`}
                           </p>
                         </div>
-                        <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
-                      </button>
-                    </CollapsibleTrigger>
-                  </CardHeader>
-                  <CollapsibleContent>
-                    <CardContent className="pt-0 pb-3">
-                      <div className="space-y-2.5">
-                        {bank.accounts.map((account, index) => (
-                          <div
-                            key={account}
-                            className="flex items-center justify-between gap-3 p-2.5 bg-muted/40 rounded-md border border-border/30 hover:bg-muted/60 transition-colors duration-200"
-                          >
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[11px] text-muted-foreground mb-0.5">
-                                Account {bank.accounts.length > 1 ? index + 1 : ""}
-                              </p>
-                              <code className="text-sm font-mono font-medium text-card-foreground select-all">
-                                {account}
-                              </code>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="shrink-0 h-8 w-8 p-0 hover:bg-accent hover:text-accent-foreground"
-                              onClick={() => handleCopyAccount(account, t(bank.nameKey))}
-                              aria-label={`Copy ${t(bank.nameKey)} account ${account}`}
-                            >
-                              {copiedAccount === account ? (
-                                <Check className="size-4 text-primary" />
-                              ) : (
-                                <Copy className="size-4" />
-                              )}
-                            </Button>
-                          </div>
-                        ))}
+                        <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform duration-200" />
                       </div>
-                    </CardContent>
-                  </CollapsibleContent>
-                </Card>
-              </Collapsible>
+                    </CardHeader>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-3">
+                      <Avatar className="size-8 ring-1 ring-border">
+                        <AvatarImage
+                          src={bank.logoSrc || "/placeholder.svg"}
+                          alt={bank.alt ?? t(bank.nameKey)}
+                          className="object-contain"
+                        />
+                        <AvatarFallback className="bg-muted text-muted-foreground">
+                          <Building2 className="size-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                      {t(bank.nameKey)}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-3">
+                    {bank.accounts.map((account, index) => (
+                      <div
+                        key={account}
+                        className="flex items-center justify-between gap-3 p-3 bg-muted/40 rounded-lg border border-border/30 hover:bg-muted/60 transition-colors duration-200"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Account {bank.accounts.length > 1 ? index + 1 : ""}
+                          </p>
+                          <code className="text-sm font-mono font-medium text-card-foreground select-all break-all">
+                            {account}
+                          </code>
+                        </div>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="shrink-0 h-8 px-3"
+                          onClick={() => handleCopyAccount(account, t(bank.nameKey))}
+                          aria-label={`Copy ${t(bank.nameKey)} account ${account}`}
+                        >
+                          {copiedAccount === account ? (
+                            <>
+                              <Check className="size-4 mr-1.5" /> Copied
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="size-4 mr-1.5" /> Copy
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
             </motion.div>
           ))}
         </motion.div>

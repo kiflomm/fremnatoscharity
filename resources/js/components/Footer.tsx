@@ -3,214 +3,131 @@ import { useTranslation } from "react-i18next"
 import { SimpleLanguageSwitcher } from "./LanguageSwitcher"
 import { ThemeToggle } from "./ThemeToggle"
 import { useTheme } from "@/contexts/ThemeContext"
+import { motion } from "framer-motion"
 
 export default function Footer() {
   const { t } = useTranslation()
   const { theme } = useTheme()
 
   return (
-    <footer className={`relative ${theme === "dark" ? "bg-gray-950" : "bg-gray-900"} text-white`}>
-      {/* Decorative gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-purple-600/10 pointer-events-none" />
+    <footer className={`relative overflow-hidden ${theme === "dark" ? "bg-gray-950" : "bg-gray-900"} text-white`}>
+      {/* Enhanced gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-pink-600/20 pointer-events-none" />
+      
+      {/* Decorative elements */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full -translate-x-48 -translate-y-48 blur-3xl" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-purple-500/10 to-transparent rounded-full translate-x-48 translate-y-48 blur-3xl" />
 
       {/* Main content */}
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Brand & Description */}
-          <div className="lg:col-span-1">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Freminatos
-              </h2>
-              <p className="text-gray-300 text-sm mt-2 leading-relaxed">
-                {t("footer.description", {
-                  defaultValue: "Making a difference in communities through compassion and action.",
-                })}
-              </p>
-            </div>
-
-            {/* Social Media Links */}
+          <motion.div 
+            className="md:col-span-1"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+              Freminatos
+            </h2>
+            <p className="text-gray-300 text-base leading-relaxed mb-8">
+              {t("footer.description", {
+                defaultValue: "Making a difference in communities through compassion and action.",
+              })}
+            </p>
+            
+            {/* Enhanced Social Media Links */}
             <div className="space-y-4">
-              <h4 className="text-white font-semibold text-sm uppercase tracking-wide">
+              <h4 className="text-white font-semibold text-sm uppercase tracking-wider flex items-center gap-2">
+                <div className="w-1 h-1 rounded-full bg-blue-400"></div>
                 {t("footer.follow_us", { defaultValue: "Follow Us" })}
               </h4>
-              <div className="flex gap-4">
+              <div className="flex gap-3">
+                {/* LinkedIn */}
                 <a href="#" className="group">
-                  <div className="w-10 h-10 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/25">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
                   </div>
                 </a>
+                
+                {/* X (Former Twitter) */}
                 <a href="#" className="group">
-                  <div className="w-10 h-10 bg-blue-700 hover:bg-blue-600 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-gray-500/25">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  </div>
+                </a>
+                
+                {/* Facebook */}
+                <a href="#" className="group">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/25">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                     </svg>
                   </div>
                 </a>
+                
+                {/* YouTube */}
                 <a href="#" className="group">
-                  <div className="w-10 h-10 bg-pink-600 hover:bg-pink-500 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z" />
-                    </svg>
-                  </div>
-                </a>
-                <a href="#" className="group">
-                  <div className="w-10 h-10 bg-red-600 hover:bg-red-500 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-red-500/25">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                     </svg>
                   </div>
                 </a>
               </div>
             </div>
+          </motion.div>
           </div>
 
+{/* Utilities */}
+<div className="flex items-center gap-3">
 
-
-          {/* Contact Information */}
-          <div>
-            <h3 className="text-white text-lg font-semibold mb-6">
-              {t("footer.contact_info", { defaultValue: "Contact Info" })}
-            </h3>
-            <div className="space-y-6 flex flex-col gap-4">
-              {/* Freminatos Contact */}
-              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <h4 className="text-blue-400 font-medium mb-2">{t("footer.freminatos_contact")}</h4>
-                <div className="space-y-2 text-sm text-gray-300">
-                  <p className="flex items-center">
-                    <svg className="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    {t("footer.location")}
-                  </p>
-                  <a
-                    href="mailto:fremnatoscharity@gmail.com"
-                    className="flex items-center hover:text-white transition-colors"
-                  >
-                    <svg className="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                    fremnatoscharity@gmail.com
-                  </a>
-                  <a href="tel:+251993110999" className="flex items-center hover:text-white transition-colors">
-                    <svg className="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                      />
-                    </svg>
-                    +251993110999
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Other Contacts (Desktop third column) */}
-          <div>
-            <h3 className="text-white text-lg font-semibold mb-6">
-              {t("footer.other_contacts", { defaultValue: "Other Contacts" })}
-            </h3>
-            <div className="space-y-6 flex flex-col gap-4">
-              {/* Aba Samuel Card */}
-              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <h4 className="text-purple-400 font-medium mb-2">{t("footer.aba_samuel_contact")}</h4>
-                <div className="space-y-2 text-sm text-gray-300">
-                  <a href="tel:+972543046018" className="flex items-center hover:text-white transition-colors">
-                    <svg className="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                      />
-                    </svg>
-                    +972543046018
-                  </a>
-                </div>
-              </div>
-
-              {/* Aba Gebremedhn Card */}
-              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <h4 className="text-purple-400 font-medium mb-2">{t("footer.aba_gebremedhn_contact")}</h4>
-                <div className="space-y-2 text-sm text-gray-300">
-                  <a
-                    href="mailto:abagebremedhnzeselama@gmail.com"
-                    className="flex items-center hover:text-white transition-colors"
-                  >
-                    <svg className="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                    abagebremedhnzeselama@gmail.com
-                  </a>
-                  <a href="tel:+25192010219" className="flex items-center hover:text-white transition-colors">
-                    <svg className="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                      />
-                    </svg>
-                    +25192010219
-                  </a>
-                </div>
-              </div>
-
-              {/* Utilities */}
-              <div className="flex items-center gap-3">
-                <SimpleLanguageSwitcher />
-                <ThemeToggle />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-white/10 bg-black/20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-2">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-gray-400 text-sm text-center sm:text-left">
-              {t("footer.copyright", { year: new Date().getFullYear() })}
-            </p>
-            <div className="flex items-center gap-6 text-sm">
-              <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
+      {/* Enhanced Bottom bar */}
+      <div className="border-t border-white/10 bg-gradient-to-r from-black/30 via-black/20 to-black/30 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+          <motion.div 
+            className="flex flex-col sm:flex-row items-center justify-between gap-6"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <p className="text-gray-400 text-sm text-center sm:text-left">
+                {t("footer.copyright", { year: new Date().getFullYear() })}
+              </p>
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-1 rounded-full bg-gray-500"></div>
+                <span className="text-gray-500 text-xs">Made with</span>
+                <div className="w-4 h-4 text-red-500 flex items-center justify-center">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                </div>
+                <span className="text-gray-500 text-xs">for communities</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-8 text-sm">
+              <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors duration-300 hover:scale-105">
                 {t("footer.privacy")}
               </Link>
-              <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="/terms" className="text-gray-400 hover:text-white transition-colors duration-300 hover:scale-105">
                 {t("footer.terms")}
               </Link>
-              <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="/contact" className="text-gray-400 hover:text-white transition-colors duration-300 hover:scale-105">
                 {t("footer.contact")}
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </footer>

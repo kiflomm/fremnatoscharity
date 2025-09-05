@@ -141,88 +141,166 @@ export default function AboutSection() {
                 </AlertDialogContent>
               </AlertDialog>
             </motion.div>
-            {/* Navigation - Hidden on mobile, sidebar on desktop */}
-            <motion.aside variants={itemVariants} className="hidden lg:block lg:col-span-3">
-              <div className="sticky top-24">
-                <nav className="space-y-2" role="tablist" aria-label="About section navigation">
-                  {sections.map((item, idx) => {
-                    const isActive = activeId === item.id
-                    return (
-                      <motion.button
-                        key={item.id}
-                        type="button"
-                        onClick={() => setActiveId(item.id)}
-                        role="tab"
-                        aria-selected={isActive}
-                        aria-controls={`${item.id}-panel`}
-                        className={`group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-all duration-200 ${
-                          isActive
-                            ? "text-foreground bg-muted/60"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                        }`}
-                        whileHover={{ x: 4 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <Badge variant="outline" className="w-6 h-6 p-0 flex items-center justify-center text-xs">
-                          {String(idx + 1).padStart(2, "0")}
-                        </Badge>
-                        <span className="text-pretty">{item.title}</span>
-                      </motion.button>
-                    )
-                  })}
-                </nav>
-              </div>
-            </motion.aside>
 
-            {/* Content */}
-            <div className="lg:col-span-9">
-              <motion.div variants={containerVariants} className="space-y-6 md:space-y-8">
-                {(() => {
-                  const activeIndex = sections.findIndex(s => s.id === activeId)
-                  const section = sections[Math.max(0, activeIndex)]
-                  const IconComponent = section.icon
-                  return (
-                    <motion.div
-                      key={section.id}
-                      variants={itemVariants}
-                      id={section.id}
-                      role="tabpanel"
-                      aria-labelledby={section.id}
-                      className="scroll-mt-24"
-                      tabIndex={0}
-                      aria-live="polite"
-                    >
-                      <Card id={`${section.id}-panel`} className="group hover:shadow-lg transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm">
-                        <CardHeader className="pb-4">
-                          <div className="flex items-start gap-4">
-                            <motion.div
-                              className="hidden sm:flex flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 items-center justify-center"
-                              whileHover={{ scale: 1.05, rotate: 5 }}
-                              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            {/* Desktop: Modern Card Grid Layout */}
+            <div className="hidden lg:block lg:col-span-12">
+              <motion.div 
+                variants={containerVariants}
+                className="grid grid-cols-1 xl:grid-cols-2 gap-8"
+              >
+                {/* Left side: Navigation */}
+                <motion.div variants={itemVariants} className="space-y-4">
+                  <div className="sticky top-24">
+                    <div className="bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl rounded-2xl border border-border/50 p-6 shadow-xl">
+                      <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-primary"></div>
+                        About Our Organization
+                      </h3>
+                      <nav className="space-y-3" role="tablist" aria-label="About section navigation">
+                        {sections.map((item, idx) => {
+                          const isActive = activeId === item.id
+                          const IconComponent = item.icon
+                          return (
+                            <motion.button
+                              key={item.id}
+                              type="button"
+                              onClick={() => setActiveId(item.id)}
+                              role="tab"
+                              aria-selected={isActive}
+                              aria-controls={`${item.id}-panel`}
+                              className={`group w-full text-left transition-all duration-300 ${
+                                isActive
+                                  ? "transform scale-[1.02]"
+                                  : "hover:scale-[1.01]"
+                              }`}
+                              whileHover={{ x: 8 }}
+                              whileTap={{ scale: 0.98 }}
                             >
-                              <IconComponent className="w-6 h-6 text-primary" aria-hidden="true" />
-                            </motion.div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-3 mb-2">
-                                <CardTitle className="hidden sm:block text-xl sm:text-2xl font-semibold text-balance">
-                                  {section.title}
-                                </CardTitle>
-                                <Badge variant="secondary" className="hidden sm:inline-flex text-xs font-medium">
-                                  {String(activeIndex + 1).padStart(2, "0")}
-                                </Badge>
+                              <div className={`relative overflow-hidden rounded-xl p-4 transition-all duration-300 ${
+                                isActive
+                                  ? "bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 shadow-lg"
+                                  : "bg-muted/30 border border-border/30 hover:bg-muted/50 hover:border-primary/20"
+                              }`}>
+                                <div className="flex items-center gap-4">
+                                  <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                                    isActive 
+                                      ? "bg-primary text-primary-foreground shadow-lg" 
+                                      : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
+                                  }`}>
+                                    <IconComponent className="w-6 h-6" />
+                                    {isActive && (
+                                      <motion.div
+                                        className="absolute inset-0 rounded-xl bg-primary/20"
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ duration: 0.3 }}
+                                      />
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-3 mb-1">
+                                      <h4 className="font-semibold text-foreground text-sm">
+                                        {item.title}
+                                      </h4>
+                                      <Badge 
+                                        variant={isActive ? "default" : "outline"} 
+                                        className="text-xs px-2 py-0.5"
+                                      >
+                                        {String(idx + 1).padStart(2, "0")}
+                                      </Badge>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground line-clamp-2">
+                                      {item.description.substring(0, 80)}...
+                                    </p>
+                                  </div>
+                                </div>
+                                {isActive && (
+                                  <motion.div
+                                    className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/50 rounded-b-xl"
+                                    initial={{ scaleX: 0 }}
+                                    animate={{ scaleX: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                  />
+                                )}
+                              </div>
+                            </motion.button>
+                          )
+                        })}
+                      </nav>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Right side: Content */}
+                <motion.div variants={itemVariants} className="space-y-6">
+                  {sections.map((section, index) => {
+                    const activeIndex = sections.findIndex(s => s.id === activeId)
+                    const isActive = section.id === activeId
+                    const IconComponent = section.icon
+                    
+                    return (
+                      <motion.div
+                        key={section.id}
+                        variants={itemVariants}
+                        id={section.id}
+                        role="tabpanel"
+                        aria-labelledby={section.id}
+                        className={`transition-all duration-500 ${
+                          isActive 
+                            ? 'opacity-100 translate-y-0' 
+                            : 'opacity-0 translate-y-4 pointer-events-none absolute'
+                        }`}
+                        tabIndex={0}
+                        aria-live="polite"
+                      >
+                        <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-card/80 via-card/60 to-card/40 backdrop-blur-xl shadow-2xl">
+                          {/* Background decoration */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-50"></div>
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
+                          
+                          <CardHeader className="relative pb-6">
+                            <div className="flex items-start gap-6">
+                              <motion.div
+                                className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-lg"
+                                whileHover={{ scale: 1.05, rotate: 5 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                              >
+                                <IconComponent className="w-8 h-8 text-primary" />
+                              </motion.div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-4 mb-3">
+                                  <CardTitle className="text-2xl font-bold text-foreground">
+                                    {section.title}
+                                  </CardTitle>
+                                  <Badge 
+                                    variant="secondary" 
+                                    className="text-sm px-3 py-1 font-medium bg-primary/10 text-primary border-primary/20"
+                                  >
+                                    {String(activeIndex + 1).padStart(2, "0")}
+                                  </Badge>
+                                </div>
+                                <div className="w-16 h-1 bg-gradient-to-r from-primary to-primary/50 rounded-full"></div>
                               </div>
                             </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <CardDescription className="hidden sm:block text-base leading-relaxed text-pretty">
-                            {section.description}
-                          </CardDescription>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  )
-                })()}
+                          </CardHeader>
+                          
+                          <CardContent className="relative pt-0">
+                            <CardDescription className="text-lg leading-relaxed text-muted-foreground font-medium">
+                              {section.description}
+                            </CardDescription>
+                            
+                            {/* Decorative elements */}
+                            <div className="mt-6 flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full bg-primary/60"></div>
+                              <div className="w-1 h-1 rounded-full bg-primary/40"></div>
+                              <div className="w-1 h-1 rounded-full bg-primary/20"></div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    )
+                  })}
+                </motion.div>
               </motion.div>
             </div>
           </div> 
