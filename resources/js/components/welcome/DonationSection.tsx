@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { motion, type Variants } from "framer-motion"
 import { Copy, Check, Building2, ChevronDown } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { toast } from "sonner"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Toaster } from "@/components/ui/sonner"
@@ -60,7 +60,13 @@ const itemVariants: Variants = {
 
 export default function DonationSection() {
   const { t } = useTranslation()
-  const [copiedAccount, setCopiedAccount] = useState<string | null>(null) 
+  const [copiedAccount, setCopiedAccount] = useState<string | null>(null)
+  const [isUserScrolling, setIsUserScrolling] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, scrollLeft: 0 })
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const animationRef = useRef<number | null>(null) 
 
   const banks: BankInfo[] = [
     {
@@ -120,6 +126,133 @@ export default function DonationSection() {
     }
   }
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollContainerRef.current) return
+    
+    setIsDragging(true)
+    setIsUserScrolling(true)
+    
+    // Cancel any existing animation
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current)
+    }
+    
+    // Clear any existing timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current)
+    }
+    
+    // Get current scroll position and mouse position
+    const container = scrollContainerRef.current
+    const rect = container.getBoundingClientRect()
+    const scrollLeft = container.scrollLeft || 0
+    const x = e.clientX - rect.left
+    
+    setDragStart({ x, scrollLeft })
+    
+    // Prevent default to avoid text selection
+    e.preventDefault()
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return
+    
+    const container = scrollContainerRef.current
+    const rect = container.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const walk = (x - dragStart.x) * 2 // Scroll speed multiplier
+    const newScrollLeft = dragStart.scrollLeft - walk
+    
+    container.scrollLeft = newScrollLeft
+  }
+
+  const handleMouseUp = () => {
+    if (!isDragging) return
+    
+    setIsDragging(false)
+    
+    // Resume auto-scroll after 3 seconds of no user interaction
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsUserScrolling(false)
+    }, 3000)
+  }
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      handleMouseUp()
+    }
+  }
+
+  const handleWheel = (e: React.WheelEvent) => {
+    if (!scrollContainerRef.current) return
+    
+    setIsUserScrolling(true)
+    
+    // Cancel any existing animation
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current)
+    }
+    
+    // Clear any existing timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current)
+    }
+    
+    const container = scrollContainerRef.current
+    container.scrollLeft += e.deltaY
+    
+    // Resume auto-scroll after 3 seconds of no user interaction
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsUserScrolling(false)
+    }, 3000)
+  }
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (isUserScrolling || !scrollContainerRef.current) return
+
+    const container = scrollContainerRef.current
+    const scrollWidth = container.scrollWidth
+    const clientWidth = container.clientWidth
+    const maxScroll = scrollWidth - clientWidth
+
+    const autoScroll = () => {
+      if (isUserScrolling || !scrollContainerRef.current) return
+
+      const currentScroll = container.scrollLeft
+      const newScroll = currentScroll + 1 // 1px per frame
+
+      if (newScroll >= maxScroll) {
+        // Reset to beginning for seamless loop
+        container.scrollLeft = 0
+      } else {
+        container.scrollLeft = newScroll
+      }
+
+      animationRef.current = requestAnimationFrame(autoScroll)
+    }
+
+    animationRef.current = requestAnimationFrame(autoScroll)
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [isUserScrolling])
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [])
+
   return (
     <section id="donate" className="py-8 sm:py-6 bg-gradient-to-br from-background via-background to-muted/20">
       <motion.div
@@ -141,8 +274,26 @@ export default function DonationSection() {
         </div>
 
         {/* Auto-scrolling bank logos */}
-        <div className="relative overflow-hidden">
-          <div className="flex animate-scroll gap-8 lg:gap-12">
+        <div className="relative overflow-hidden group">
+          {/* Scroll hint */}
+          <div className="absolute top-0 right-4 z-10 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-muted-foreground border border-border/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {isDragging ? 'Dragging...' : isUserScrolling ? 'Scroll to explore' : 'Drag to scroll'}
+          </div>
+          
+          <div 
+            ref={scrollContainerRef}
+            className="flex gap-8 lg:gap-12 overflow-x-auto scrollbar-hide"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+            onWheel={handleWheel}
+            style={{
+              cursor: isDragging ? 'grabbing' : 'grab',
+              userSelect: 'none',
+              scrollBehavior: 'auto',
+            }}
+          >
             {/* Duplicate banks for seamless loop */}
             {[...banks, ...banks].map((bank, index) => (
               <Dialog key={`${bank.nameKey}-${index}`}>
