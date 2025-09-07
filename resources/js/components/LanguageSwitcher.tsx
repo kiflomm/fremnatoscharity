@@ -3,6 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { router } from '@inertiajs/react';
 import { Globe, Check } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 interface LanguageSwitcherProps {
     currentLocale?: string;
@@ -136,16 +143,24 @@ export function SimpleLanguageSwitcher({
     };
 
     return (
-        <select
-            value={activeLocale}
-            onChange={(e) => handleLanguageChange(e.target.value)}
-            className={`px-3 py-2 text-sm ${theme === 'dark' ? 'bg-gray-800 border-gray-600 text-gray-200' : 'bg-white border-gray-300 text-gray-700'} border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300 ${className}`}
-        >
-            {languages.map((language) => (
-                <option key={language.code} value={language.code}>
-                    {language.nativeName}
-                </option>
-            ))}
-        </select>
+        <Select value={activeLocale} onValueChange={handleLanguageChange}>
+            <SelectTrigger className={`w-full ${className}`}>
+                <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    <SelectValue placeholder="Select language" />
+                </div>
+            </SelectTrigger>
+            <SelectContent>
+                {languages.map((language) => (
+                    <SelectItem key={language.code} value={language.code}>
+                        <div className="flex flex-col">
+                            <span className="font-medium">
+                                {language.nativeName}
+                            </span>
+                        </div>
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
     );
 }

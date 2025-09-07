@@ -1,5 +1,5 @@
 import { type SharedData } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import FixedHeaderLayout from '@/layouts/FixedHeaderLayout';
 import { AboutSection, DonationSection } from '@/components/welcome';
 import { useTranslations } from '@/hooks/useTranslations';

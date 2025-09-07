@@ -1,7 +1,5 @@
 import { Link } from "@inertiajs/react"
-import { useTranslation } from "react-i18next"
-import { SimpleLanguageSwitcher } from "./LanguageSwitcher"
-import { ThemeToggle } from "./ThemeToggle"
+import { useTranslation } from "react-i18next" 
 import { useTheme } from "@/contexts/ThemeContext"
 import { motion } from "framer-motion"
 import ContactCard from "./ContactCard"
