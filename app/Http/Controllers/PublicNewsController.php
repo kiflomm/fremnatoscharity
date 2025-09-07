@@ -16,6 +16,7 @@ class PublicNewsController extends Controller
     {
         $query = News::query()
             ->withCount(['comments', 'likes'])
+            ->with(['comments.user', 'likes'])
             ->latest('created_at');
 
         // Filters: q (search), type (attachment_type), from/to (created_at range)
@@ -42,10 +43,12 @@ class PublicNewsController extends Controller
             $query->whereDate('created_at', '<=', $to);
         }
 
+        $authUserId = $request->user()?->id;
+        
         $news = $query
             ->paginate(10)
             ->appends($request->query())
-            ->through(function (News $n) {
+            ->through(function (News $n) use ($authUserId) {
                 $attachmentUrl = $n->attachment_url;
                 if ($n->attachment_type === 'video') {
                     $videoId = $this->extractYouTubeId($attachmentUrl ?? '');
@@ -53,14 +56,29 @@ class PublicNewsController extends Controller
                         $attachmentUrl = 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1';
                     }
                 }
+                
+                $isLiked = $authUserId ? $n->likes->contains('user_id', $authUserId) : false;
+                
                 return [
                     'id' => $n->id,
                     'title' => $n->news_title,
                     'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
                     'attachmentType' => $n->attachment_type,
                     'attachmentUrl' => $attachmentUrl,
+                    'comments' => $n->comments->map(function ($c) {
+                        return [
+                            'id' => $c->id,
+                            'text' => $c->comment_text,
+                            'author' => [
+                                'id' => $c->user->id,
+                                'name' => $c->user->name,
+                            ],
+                            'createdAt' => $c->created_at?->toIso8601String(),
+                        ];
+                    }),
                     'commentsCount' => $n->comments_count,
                     'likesCount' => $n->likes_count,
+                    'isLiked' => $isLiked,
                     'createdAt' => $n->created_at?->toIso8601String(),
                 ];
             });
