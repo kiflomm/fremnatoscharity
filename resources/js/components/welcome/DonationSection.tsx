@@ -1,14 +1,12 @@
 "use client"
 
 import { useTranslation } from "react-i18next"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { motion, type Variants } from "framer-motion"
 import { Copy, Check, Building2, ChevronDown } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Toaster } from "@/components/ui/sonner"
 
@@ -62,8 +60,7 @@ const itemVariants: Variants = {
 
 export default function DonationSection() {
   const { t } = useTranslation()
-  const [copiedAccount, setCopiedAccount] = useState<string | null>(null)
-  const [activeBankIndex, setActiveBankIndex] = useState<number>(0)
+  const [copiedAccount, setCopiedAccount] = useState<string | null>(null) 
 
   const banks: BankInfo[] = [
     {
@@ -124,17 +121,17 @@ export default function DonationSection() {
   }
 
   return (
-    <section id="donate" className="py-8 sm:py-4 bg-background">
+    <section id="donate" className="py-8 sm:py-6 bg-gradient-to-br from-background via-background to-muted/20">
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         variants={containerVariants}
-        className="mx-auto max-w-4xl px-3 sm:px-4"
+        className="mx-auto max-w-5xl px-3 sm:px-4"
       >
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-balance text-2xl sm:text-3xl font-bold text-foreground tracking-tight mb-2">
+          <h2 className="text-balance text-2xl sm:text-3xl font-bold text-foreground tracking-tight mb-3">
             {t("donation.title")}
           </h2>
           <p className="text-balance text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -143,166 +140,81 @@ export default function DonationSection() {
           </p>
         </div>
 
-        {/* Mobile: horizontal bank selector + details panel */}
-        <div className="sm:hidden">
-          <div className="-mx-3 px-3 overflow-x-auto">
-            <div className="flex gap-3 snap-x snap-mandatory">
-              {banks.map((bank, index) => (
-                <button
-                  key={bank.nameKey}
-                  type="button"
-                  onClick={() => setActiveBankIndex(index)}
-                  className={`snap-start inline-flex items-center gap-2 rounded-xl border px-3 py-2 transition-all ${
-                    activeBankIndex === index
-                      ? "border-primary/50 bg-primary/5 ring-2 ring-primary/20"
-                      : "border-border/50 bg-card hover:bg-card/80"
-                  }`}
-                  aria-pressed={activeBankIndex === index}
-                >
-                  <Avatar className="size-8 ring-1 ring-border">
-                    <AvatarImage
-                      src={bank.logoSrc || "/placeholder.svg"}
-                      alt={bank.alt ?? t(bank.nameKey)}
-                      className="object-contain"
-                    />
-                    <AvatarFallback className="bg-muted text-muted-foreground">
-                      <Building2 className="size-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-medium whitespace-nowrap">
-                    {t(bank.nameKey)}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <Card className="border-border/50 bg-card">
-              <CardHeader className="py-3">
-                <CardTitle className="text-base">
-                  {t(banks[activeBankIndex]?.nameKey)}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 pb-3">
-                <div className="space-y-2.5">
-                  {banks[activeBankIndex]?.accounts.map((account, index) => (
-                    <div
-                      key={account}
-                      className="flex items-center justify-between gap-3 p-2.5 bg-muted/40 rounded-md border border-border/30"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[11px] text-muted-foreground mb-0.5">
-                          Account {banks[activeBankIndex]?.accounts.length > 1 ? index + 1 : ""}
-                        </p>
-                        <code className="text-sm font-mono font-medium text-card-foreground select-all">
-                          {account}
-                        </code>
-                      </div>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="shrink-0 h-8 px-3"
-                        onClick={() => handleCopyAccount(account, t(banks[activeBankIndex]?.nameKey))}
-                        aria-label={`Copy ${t(banks[activeBankIndex]?.nameKey)} account ${account}`}
-                      >
-                        {copiedAccount === account ? (
-                          <>
-                            <Check className="size-4 mr-1.5" /> Copied
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="size-4 mr-1.5" /> Copy
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Desktop/Tablet: dialog grid */}
-        <motion.div
-          variants={listVariants}
-          className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4"
-        >
-          {banks.map((bank) => (
-            <motion.div key={bank.nameKey} variants={itemVariants} className="group">
-              <Dialog>
+        {/* Auto-scrolling bank logos */}
+        <div className="relative overflow-hidden">
+          <div className="flex animate-scroll gap-8 lg:gap-12">
+            {/* Duplicate banks for seamless loop */}
+            {[...banks, ...banks].map((bank, index) => (
+              <Dialog key={`${bank.nameKey}-${index}`}>
                 <DialogTrigger asChild>
-                  <Card className="border-border/50 bg-card h-full cursor-pointer hover:shadow-md transition-all duration-200 hover:border-primary/20">
-                    <CardHeader className="py-3">
-                      <div className="w-full flex items-center gap-3 text-left">
-                        <Avatar className="size-10 ring-1 ring-border group-hover:ring-primary/20 transition-all duration-300">
-                          <AvatarImage
-                            src={bank.logoSrc || "/placeholder.svg"}
-                            alt={bank.alt ?? t(bank.nameKey)}
-                            className="object-contain"
-                          />
-                          <AvatarFallback className="bg-muted text-muted-foreground">
-                            <Building2 className="size-5" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-base font-semibold text-card-foreground">
-                            {t(bank.nameKey)}
-                          </CardTitle>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {bank.accounts.length === 1 ? "1 account" : `${bank.accounts.length} accounts`}
-                          </p>
-                        </div>
-                        <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-                      </div>
-                    </CardHeader>
-                  </Card>
+                  <motion.div
+                    variants={itemVariants}
+                    className="flex flex-col items-center gap-3 cursor-pointer group hover:scale-110 transition-transform duration-300"
+                  >
+                    <Avatar className="size-16 lg:size-20 ring-2 ring-border/30 group-hover:ring-primary/50 transition-all duration-300 shadow-lg group-hover:shadow-xl">
+                      <AvatarImage
+                        src={bank.logoSrc || "/placeholder.svg"}
+                        alt={bank.alt ?? t(bank.nameKey)}
+                        className="object-contain"
+                      />
+                      <AvatarFallback className="bg-gradient-to-br from-muted to-muted/80 text-muted-foreground text-lg font-bold">
+                        <Building2 className="size-8" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm lg:text-base font-medium text-foreground group-hover:text-primary transition-colors duration-300 text-center whitespace-nowrap">
+                      {t(bank.nameKey)}
+                    </span>
+                  </motion.div>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-3">
-                      <Avatar className="size-8 ring-1 ring-border">
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader className="pb-4">
+                    <DialogTitle className="flex items-center gap-4 text-xl">
+                      <Avatar className="size-12 ring-2 ring-primary/20">
                         <AvatarImage
                           src={bank.logoSrc || "/placeholder.svg"}
                           alt={bank.alt ?? t(bank.nameKey)}
                           className="object-contain"
                         />
-                        <AvatarFallback className="bg-muted text-muted-foreground">
-                          <Building2 className="size-4" />
+                        <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/5 text-primary text-lg font-bold">
+                          <Building2 className="size-6" />
                         </AvatarFallback>
                       </Avatar>
-                      {t(bank.nameKey)}
+                      <div>
+                        <h3 className="font-bold">{t(bank.nameKey)}</h3>
+                        <p className="text-sm text-muted-foreground font-normal">
+                          {bank.accounts.length} account{bank.accounts.length > 1 ? 's' : ''} available
+                        </p>
+                      </div>
                     </DialogTitle>
                   </DialogHeader>
-                  <div className="space-y-3">
-                    {bank.accounts.map((account, index) => (
+                  <div className="space-y-4">
+                    {bank.accounts.map((account, accountIndex) => (
                       <div
                         key={account}
-                        className="flex items-center justify-between gap-3 p-3 bg-muted/40 rounded-lg border border-border/30 hover:bg-muted/60 transition-colors duration-200"
+                        className="flex items-center justify-between gap-4 p-4 bg-gradient-to-r from-muted/30 to-muted/10 rounded-xl border border-border/20 hover:border-primary/30 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 transition-all duration-200"
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs text-muted-foreground mb-1">
-                            Account {bank.accounts.length > 1 ? index + 1 : ""}
+                          <p className="text-sm text-muted-foreground mb-2 font-medium">
+                            Account {bank.accounts.length > 1 ? accountIndex + 1 : ""}
                           </p>
-                          <code className="text-sm font-mono font-medium text-card-foreground select-all break-all">
+                          <code className="text-base font-mono font-semibold text-card-foreground select-all break-all bg-muted/50 px-3 py-2 rounded-lg border">
                             {account}
                           </code>
                         </div>
                         <Button
                           variant="default"
                           size="sm"
-                          className="shrink-0 h-8 px-3"
+                          className="shrink-0 h-10 px-4 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md hover:shadow-lg transition-all duration-200"
                           onClick={() => handleCopyAccount(account, t(bank.nameKey))}
                           aria-label={`Copy ${t(bank.nameKey)} account ${account}`}
                         >
                           {copiedAccount === account ? (
                             <>
-                              <Check className="size-4 mr-1.5" /> Copied
+                              <Check className="size-4 mr-2" /> Copied
                             </>
                           ) : (
                             <>
-                              <Copy className="size-4 mr-1.5" /> Copy
+                              <Copy className="size-4 mr-2" /> Copy
                             </>
                           )}
                         </Button>
@@ -311,9 +223,9 @@ export default function DonationSection() {
                   </div>
                 </DialogContent>
               </Dialog>
-            </motion.div>
-          ))}
-        </motion.div>
+            ))}
+          </div>
+        </div>
 
         <Toaster position="top-center" richColors />
       </motion.div>
