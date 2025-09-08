@@ -115,78 +115,7 @@ export default function Footer() {
 
           {/* Contact Info - Ultra Compact Horizontal */}
           <div className="lg:col-span-3 space-y-3">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
-              {t("footer.contact_info", { defaultValue: "Contact" })}
-            </h3>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* Freminatos */}
-              <Card className="bg-white/5 border-white/10 min-w-0">
-                <CardContent className="p-4">
-                  <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-300 border-blue-400/30 mb-3">
-                    Freminatos
-                  </Badge>
-                  <div className="space-y-2">
-                    <a 
-                      href="mailto:fremnatoscharity@gmail.com" 
-                      className="flex items-start gap-2 text-xs text-gray-300 hover:text-white transition-colors group"
-                    >
-                      <Mail className="w-3 h-3 text-blue-400 flex-shrink-0 mt-0.5" />
-                      <span className="break-all leading-relaxed">fremnatoscharity@gmail.com</span>
-                    </a>
-                    <a 
-                      href="tel:+251993110999" 
-                      className="flex items-center gap-2 text-xs text-gray-300 hover:text-white transition-colors group"
-                    >
-                      <Phone className="w-3 h-3 text-blue-400 flex-shrink-0" />
-                      <span>+251993110999</span>
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Aba Samuel */}
-              <Card className="bg-white/5 border-white/10 min-w-0">
-                <CardContent className="p-4">
-                  <Badge variant="secondary" className="text-xs bg-purple-500/20 text-purple-300 border-purple-400/30 mb-3">
-                    Aba Samuel
-                  </Badge>
-                  <a 
-                    href="tel:+972543046018" 
-                    className="flex items-center gap-2 text-xs text-gray-300 hover:text-white transition-colors group"
-                  >
-                    <Phone className="w-3 h-3 text-blue-400 flex-shrink-0" />
-                    <span>+972543046018</span>
-                  </a>
-                </CardContent>
-              </Card>
-
-              {/* Aba Gebremedhn */}
-              <Card className="bg-white/5 border-white/10 min-w-0">
-                <CardContent className="p-4">
-                  <Badge variant="secondary" className="text-xs bg-purple-500/20 text-purple-300 border-purple-400/30 mb-3">
-                    Aba Gebremedhn
-                  </Badge>
-                  <div className="space-y-2">
-                    <a 
-                      href="mailto:abagebremedhnzeselama@gmail.com" 
-                      className="flex items-start gap-2 text-xs text-gray-300 hover:text-white transition-colors group"
-                    >
-                      <Mail className="w-3 h-3 text-blue-400 flex-shrink-0 mt-0.5" />
-                      <span className="break-all leading-relaxed">abagebremedhnzeselama@gmail.com</span>
-                    </a>
-                    <a 
-                      href="tel:+25192010219" 
-                      className="flex items-center gap-2 text-xs text-gray-300 hover:text-white transition-colors group"
-                    >
-                      <Phone className="w-3 h-3 text-blue-400 flex-shrink-0" />
-                      <span>+25192010219</span>
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+           
           </div>
 
         </motion.div>
