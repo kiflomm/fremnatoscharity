@@ -20,6 +20,10 @@ export default function ContactSection() {
     message: "",
   })
 
+  // Google Maps URL to search for the organization's office
+  const googleMapsUrl = "https://www.google.com/maps/search/13%C2%B029'48.1%22N+39%C2%B028'31.1%22E/@13.4967031,39.4750848,62m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D"
+    
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle form submission here
@@ -185,12 +189,15 @@ export default function ContactSection() {
 
                       {/* Action Button */}
                       <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-200/60">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          asChild
+                          variant="outline"
                           className="w-full group-hover:bg-blue-50 group-hover:border-blue-200 group-hover:text-blue-700 transition-all duration-300 font-medium text-sm sm:text-base py-2 sm:py-3"
                         >
-                          <MapPin className="w-4 h-4 mr-2" />
-                          {t("contact_section.visit_our_office")}
+                          <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                            <MapPin className="w-4 h-4 mr-2" />
+                            {t("contact_section.visit_our_office")}
+                          </a>
                         </Button>
                       </div>
                     </div>

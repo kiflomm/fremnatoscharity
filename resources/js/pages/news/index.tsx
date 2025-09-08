@@ -5,6 +5,7 @@ import { comment, like } from '@/routes/public/news';
 import { login } from '@/routes';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
+import { useTranslations } from '@/hooks/useTranslations';
 
 type Comment = {
   id: number;
@@ -42,6 +43,7 @@ type PageProps = {
 
 export default function NewsIndex() {
   const { t } = useTranslation();
+  const { i18n } = useTranslations();
   const { props } = usePage<PageProps>();
   const items = props.news?.data ?? [];
   const { auth } = props;
@@ -56,6 +58,11 @@ export default function NewsIndex() {
       setSelectedNewsId(items[0].id);
     }
   }, [items, selectedNewsId]);
+
+  // Force English for public page regardless of stored preference
+  useEffect(() => {
+    i18n.changeLanguage('en');
+  }, [i18n]);
 
   const handleNewsSelect = (newsId: number) => {
     setSelectedNewsId(newsId);

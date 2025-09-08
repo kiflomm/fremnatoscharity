@@ -13,6 +13,11 @@ export default function Welcome() {
     const { t } = useTranslation();
     const [forceUpdate, setForceUpdate] = useState(0);
     
+    // Force English for public page regardless of stored preference
+    useEffect(() => {
+        i18n.changeLanguage('en');
+    }, [i18n]);
+    
     // Force re-render when language changes
     useEffect(() => {
         const handleLanguageChange = () => {
