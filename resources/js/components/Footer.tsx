@@ -7,10 +7,12 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Heart, Mail, Phone } from "lucide-react"
+import { useState } from "react"
 
 export default function Footer() {
   const { t } = useTranslation()
   const { theme } = useTheme()
+  const [expandedCard, setExpandedCard] = useState<string | null>(null)
 
   const socialLinks = [
     {
@@ -61,39 +63,56 @@ export default function Footer() {
     { name: t("footer.contact", { defaultValue: "Contact" }), href: "/contact" }
   ]
 
+  const contactPersons = [
+    {
+      name: "Aba Selama",
+      title: "Spiritual Leader",
+      phone: "+1 (555) 123-4567",
+      email: "aba.selama@freminatos.org",
+      image: "/images/contact/aba_selama.png"
+    },
+    {
+      name: "Aba Gebremedhn",
+      title: "Community Director",
+      phone: "+1 (555) 987-6543",
+      email: "aba.gebremedhn@freminatos.org",
+      image: "/images/contact/aba_gebremedhn.png"
+    }
+  ]
+
   return (
     <footer className={`relative ${theme === "dark" ? "bg-gray-950" : "bg-gray-900"} text-white`}>
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-600/3 to-pink-600/5 pointer-events-none" />
       
       {/* Main content - Compact design */}
-      <div className="relative max-w-7xl mx-auto px-4 lg:px-6 py-8">
+      <div className="relative max-w-7xl mx-auto px-3 lg:px-4 py-4">
           <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-5 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-5 gap-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
           {/* Brand Section */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">F</span>
+          <div className="lg:col-span-2 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xs">F</span>
               </div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h2 className="text-lg font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Freminatos
             </h2>
             </div>
             
-            <p className="text-gray-300 text-sm leading-relaxed max-w-md">
+            <p className="text-gray-300 text-xs leading-relaxed max-w-md">
               {t("footer.description", {
                 defaultValue: "Making a difference in communities through compassion and action.",
               })}
             </p>
             
             {/* Social Links - Compact */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <span className="text-gray-400 text-xs font-medium">Follow us:</span>
               <div className="flex gap-1">
                 {socialLinks.map((social) => (
@@ -101,7 +120,7 @@ export default function Footer() {
                     key={social.name}
                     variant="ghost"
                     size="sm"
-                    className={`h-8 w-8 p-0 text-gray-400 ${social.color} transition-all duration-200`}
+                    className={`h-6 w-6 p-0 text-gray-400 ${social.color} transition-all duration-200`}
                     asChild
                   >
                     <a href={social.href} aria-label={social.name}>
@@ -114,8 +133,55 @@ export default function Footer() {
                   </div>
 
           {/* Contact Info - Ultra Compact Horizontal */}
-          <div className="lg:col-span-3 space-y-3">
-           
+          <div className="lg:col-span-3 space-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {contactPersons.map((person, index) => (
+                <Card 
+                  key={person.name}
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20"
+                  onMouseEnter={() => setExpandedCard(person.name)}
+                  onMouseLeave={() => setExpandedCard(null)}
+                  onClick={() => setExpandedCard(expandedCard === person.name ? null : person.name)}
+                >
+                  <CardContent className="p-1.5">
+                    <div className="flex items-center gap-2">
+                      {/* Image and Basic Info */}
+                      <div className="flex-shrink-0 text-center">
+                        <div className="w-10 h-10 mx-auto mb-0.5 rounded-full overflow-hidden border-2 border-white/20">
+                          <img 
+                            src={person.image} 
+                            alt={person.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <h3 className="font-semibold text-white text-xs leading-tight">{person.name}</h3>
+                        <p className="text-gray-300 text-xs leading-tight">{person.title}</p>
+                      </div>
+                      
+                      {/* Contact Details - Show on hover/click to the right */}
+                      {expandedCard === person.name && (
+                        <motion.div 
+                          className="flex-1 space-y-0.5"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -20 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div className="flex items-center gap-2 text-xs">
+                            <Phone className="w-3 h-3 text-blue-400 flex-shrink-0" />
+                            <span className="text-gray-300 text-xs">{person.phone}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs">
+                            <Mail className="w-3 h-3 text-purple-400 flex-shrink-0" />
+                            <span className="text-gray-300 text-xs truncate">{person.email}</span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
 
         </motion.div>
@@ -123,28 +189,24 @@ export default function Footer() {
 
       {/* Bottom bar - Ultra compact */}
       <Separator className="bg-white/10" />
-      <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4">
+      <div className="max-w-7xl mx-auto px-3 lg:px-4 py-2">
           <motion.div 
-          className="flex flex-col sm:flex-row items-center justify-between gap-3"
+          className="flex flex-col sm:flex-row items-center justify-between gap-2"
           initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
             viewport={{ once: true }}
           >
-          <div className="flex items-center gap-4 text-xs text-gray-400">
+          <div className="flex items-center gap-2 text-xs text-gray-400">
             <span>
                 {t("footer.copyright", { year: new Date().getFullYear() })}
             </span>
-            <div className="flex items-center gap-1">
-              <span>Made with</span>
-              <Heart className="w-3 h-3 text-red-500" />
-              <span>for communities</span>
-            </div>
+            
                 </div>
           
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-2 text-xs">
             {quickLinks.map((link, index) => (
-              <div key={link.name} className="flex items-center gap-4">
+              <div key={link.name} className="flex items-center gap-2">
                 <Link 
                   href={link.href} 
                   className="text-gray-400 hover:text-white transition-colors"
