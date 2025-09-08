@@ -114,16 +114,16 @@ export default function DonationSection() {
     try {
       await navigator.clipboard.writeText(account)
       setCopiedAccount(account)
-      toast.success("Account copied!", {
-        description: `${bankName} account number copied to clipboard`,
+      toast.success(t("donation.account_copied"), {
+        description: t("donation.account_copied_description", { bankName }),
         duration: 2000,
       })
 
       // Reset copied state after 2 seconds
       setTimeout(() => setCopiedAccount(null), 2000)
     } catch (err) {
-      toast.error("Copy failed", {
-        description: "Please copy the account number manually",
+      toast.error(t("donation.copy_failed"), {
+        description: t("donation.copy_failed_description"),
         duration: 3000,
       })
     }
@@ -272,7 +272,7 @@ export default function DonationSection() {
           </div>
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="ml-3 text-muted-foreground">Loading bank information...</span>
+            <span className="ml-3 text-muted-foreground">{t("donation.loading_bank_info")}</span>
           </div>
         </div>
       </section>
@@ -297,7 +297,7 @@ export default function DonationSection() {
             <div className="text-center">
               <p className="text-destructive mb-4">{error}</p>
               <Button onClick={() => window.location.reload()} variant="outline">
-                Try Again
+                {t("donation.try_again")}
               </Button>
             </div>
           </div>
@@ -330,7 +330,7 @@ export default function DonationSection() {
         <div className="relative overflow-hidden group">
           {/* Scroll hint */}
           <div className="absolute top-0 right-4 z-10 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-muted-foreground border border-border/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            {isDragging ? 'Dragging...' : isUserScrolling ? 'Scroll to explore' : 'Drag to scroll'}
+            {isDragging ? t("donation.dragging") : isUserScrolling ? t("donation.scroll_to_explore") : t("donation.drag_to_scroll")}
           </div>
           
           <div 
@@ -386,7 +386,7 @@ export default function DonationSection() {
                       <div>
                         <h3 className="font-bold">{bank.display_name}</h3>
                         <p className="text-sm text-muted-foreground font-normal">
-                          {bank.accounts.length} account{bank.accounts.length > 1 ? 's' : ''} available
+                          {t("donation.accounts_available", { count: bank.accounts.length })}
                         </p>
                       </div>
                     </DialogTitle>
@@ -399,7 +399,7 @@ export default function DonationSection() {
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-muted-foreground mb-2 font-medium">
-                            Account {bank.accounts.length > 1 ? accountIndex + 1 : ""}
+                            {t("donation.account")} {bank.accounts.length > 1 ? accountIndex + 1 : ""}
                           </p>
                           <code className="text-base font-mono font-semibold text-card-foreground select-all break-all bg-muted/50 px-3 py-2 rounded-lg border">
                             {account}
@@ -414,11 +414,11 @@ export default function DonationSection() {
                         >
                           {copiedAccount === account ? (
                             <>
-                              <Check className="size-4 mr-2" /> Copied
+                              <Check className="size-4 mr-2" /> {t("donation.copied")}
                             </>
                           ) : (
                             <>
-                              <Copy className="size-4 mr-2" /> Copy
+                              <Copy className="size-4 mr-2" /> {t("donation.copy")}
                             </>
                           )}
                         </Button>

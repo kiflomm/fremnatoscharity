@@ -255,7 +255,9 @@
       "established": "Since 2020",
       "established_desc": "4+ years of dedicated service",
       "focus": "Three Focus Areas",
-      "focus_desc": "Elders, Children & Mental Health"
+      "focus_desc": "Elders, Children & Mental Health",
+      "beneficiaries": "Beneficiaries Helped",
+      "beneficiaries_desc": "500+ beneficiaries helped"
     },
     "mission": {
       "title": "Our Mission",
@@ -269,7 +271,20 @@
   },
   "donation": {
     "title": "Your Support Changes Lives",
-    "subtitle": "Every contribution, no matter the size, makes a real difference in the lives of elders, children, and those with mental disabilities."
+    "subtitle": "Every contribution, no matter the size, makes a real difference in the lives of elders, children, and those with mental disabilities.",
+    "loading_bank_info": "Loading bank information...",
+    "try_again": "Try Again",
+    "account_copied": "Account copied!",
+    "account_copied_description": "{{bankName}} account number copied to clipboard",
+    "copy_failed": "Copy failed",
+    "copy_failed_description": "Please copy the account number manually",
+    "account": "Account",
+    "accounts_available": "{{count}} account{{count > 1 ? 's' : ''}} available",
+    "copy": "Copy",
+    "copied": "Copied",
+    "dragging": "Dragging...",
+    "scroll_to_explore": "Scroll to explore",
+    "drag_to_scroll": "Drag to scroll"
   },
   "bank_accounts": "Bank Accounts for Donations",
   "commercial_bank": "Commercial Bank of Ethiopia",
@@ -342,9 +357,9 @@
       "description": "To provide comprehensive services to unsupported elders, mentally disabled people and children, and to help them overcome their social, economic and psychological problems, as well as to provide all the necessary support for their work through various fundraising activities and to provide comprehensive support to reduce all kinds of poverty."
     },
     "slide3": {
-      "title": "Goal",
+      "title": "Our Team",
       "alt": "Charity work - Mental health support",
-      "description": "To provide comprehensive services to unsupported people at the regional level of Tigray and to help them overcome their problems in the 2020/21 budget year as an excellent center."
+      "description": "A diverse group of passionate professionals committed to excellence, innovation, and making a meaningful impact in everything we do."
     },
     "slide4": {
       "title": "Values",
@@ -365,6 +380,26 @@
   },
   "switch_to_light_mode": "Switch to light mode",
   "switch_to_dark_mode": "Switch to dark mode",
+  "contact_section": {
+    "title": "We'd Love to Hear From You!",
+    "get_involved": "Get Involved",
+    "form_description": "Fill out the form below and we'll get back to you as soon as possible.",
+    "full_name": "Full Name",
+    "full_name_placeholder": "Enter your full name",
+    "email_address": "Email Address",
+    "email_placeholder": "Enter your email address",
+    "message": "Message",
+    "message_placeholder": "Tell us how you'd like to get involved or any questions you have...",
+    "send_message": "Send Message",
+    "get_in_touch": "Get in Touch",
+    "get_in_touch_description": "We're here to help and answer any questions you may have",
+    "freminatos_charity": "Freminatos Charity",
+    "official": "Official",
+    "main_contact_description": "Main organization contact for inquiries, partnerships, and general information",
+    "email_address_label": "Email Address",
+    "phone_number_label": "Phone Number",
+    "visit_our_office": "Visit Our Office"
+  },
   "auth": {
     "welcome_back": "Welcome Back",
     "sign_in_description": "Sign in to your account to continue supporting our mission",

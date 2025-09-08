@@ -67,7 +67,7 @@ export default function HeroSection() {
     },
   ]
   return (
-    <section className="relative bg-gradient-to-br from-background via-background to-muted/20 overflow-hidden flex items-center">
+    <section className="relative bg-gradient-to-br from-background via-background to-muted/20 overflow-hidden flex items-center pb-20">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
       

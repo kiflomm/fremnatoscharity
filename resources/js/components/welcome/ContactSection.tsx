@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,6 +13,7 @@ import { Mail, Phone, MapPin, Shield } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
 export default function ContactSection() {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -35,7 +37,7 @@ export default function ContactSection() {
     <section className="py-16 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-foreground mb-4 text-balance">We'd Love to Hear From You!</h2>
+          <h2 className="text-4xl font-bold text-foreground mb-4 text-balance">{t("contact_section.title")}</h2>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
@@ -48,47 +50,47 @@ export default function ContactSection() {
                   alt="Freminatos Charity Logo" 
                   className="h-5 w-5 object-contain rounded"
                 />
-                Get Involved
+                {t("contact_section.get_involved")}
               </CardTitle>
-              <CardDescription>Fill out the form below and we'll get back to you as soon as possible.</CardDescription>
+              <CardDescription>{t("contact_section.form_description")}</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="name">{t("contact_section.full_name")}</Label>
                   <Input
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Enter your full name"
+                    placeholder={t("contact_section.full_name_placeholder")}
                     required
                     className="focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email">{t("contact_section.email_address")}</Label>
                   <Input
                     id="email"
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Enter your email address"
+                    placeholder={t("contact_section.email_placeholder")}
                     required
                     className="focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
+                  <Label htmlFor="message">{t("contact_section.message")}</Label>
                   <Textarea
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Tell us how you'd like to get involved or any questions you have..."
+                    placeholder={t("contact_section.message_placeholder")}
                     rows={5}
                     required
                     className="focus:ring-2 focus:ring-primary/20 resize-none"
@@ -99,7 +101,7 @@ export default function ContactSection() {
                   type="submit"
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 transition-colors"
                 >
-                  Send Message
+                  {t("contact_section.send_message")}
                 </Button>
               </form>
             </CardContent>
@@ -107,11 +109,6 @@ export default function ContactSection() {
 
           {/* Contact Information */}
           <div className="space-y-6 lg:space-y-8">
-            <div className="text-center lg:text-left">
-              <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-3">Get in Touch</h3>
-              <p className="text-base lg:text-lg text-muted-foreground">We're here to help and answer any questions you may have</p>
-            </div>
-
             {/* Contact Cards Grid */}
             <div className="space-y-4 lg:space-y-6">
               {/* Freminatos Contact */}
@@ -142,15 +139,15 @@ export default function ContactSection() {
                     <div className="flex-1 min-w-0 w-full">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-2">
                         <h4 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-blue-900 transition-colors duration-300 text-center sm:text-left">
-                          Freminatos Charity
+                          {t("contact_section.freminatos_charity")}
                         </h4>
                         <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200 font-medium self-center sm:self-auto">
-                          Official
+                          {t("contact_section.official")}
                         </Badge>
                       </div>
                       
                       <p className="text-slate-600 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed text-center sm:text-left">
-                        Main organization contact for inquiries, partnerships, and general information
+                        {t("contact_section.main_contact_description")}
                       </p>
 
                       {/* Contact Details */}
@@ -163,7 +160,7 @@ export default function ContactSection() {
                             <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm text-slate-500 font-medium">Email Address</p>
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact_section.email_address_label")}</p>
                             <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300 break-all sm:truncate">
                               fremnatoscharity@gmail.com
                             </p>
@@ -178,7 +175,7 @@ export default function ContactSection() {
                             <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm text-slate-500 font-medium">Phone Number</p>
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact_section.phone_number_label")}</p>
                             <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300">
                               +251 993 110 999
                             </p>
@@ -193,7 +190,7 @@ export default function ContactSection() {
                           className="w-full group-hover:bg-blue-50 group-hover:border-blue-200 group-hover:text-blue-700 transition-all duration-300 font-medium text-sm sm:text-base py-2 sm:py-3"
                         >
                           <MapPin className="w-4 h-4 mr-2" />
-                          Visit Our Office
+                          {t("contact_section.visit_our_office")}
                         </Button>
                       </div>
                     </div>

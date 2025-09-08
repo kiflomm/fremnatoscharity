@@ -144,7 +144,7 @@ export default function ImageSlideshow({
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">No images available</p>
+                        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">{t("slideshow.no_images_available")}</p>
                     </div>
                 </div>
             </div>
@@ -161,7 +161,7 @@ export default function ImageSlideshow({
             className={`${className} group relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-200/60 dark:ring-slate-700/50`}
             tabIndex={0}
             aria-roledescription="carousel"
-            aria-label="Image slideshow"
+            aria-label={t("slideshow.aria_label")}
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onFocus={() => setIsPaused(true)}
@@ -192,7 +192,7 @@ export default function ImageSlideshow({
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <p className="text-sm text-slate-600 dark:text-slate-300">Image not available</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">{t("slideshow.image_not_available")}</p>
                     </div>
                 </div>
 
@@ -255,7 +255,7 @@ export default function ImageSlideshow({
                         <button
                             className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 grid place-items-center size-9 sm:size-10 rounded-full bg-white/80 text-slate-900 shadow-xl backdrop-blur hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-all z-20"
                             onClick={goToPrevious}
-                            aria-label="Previous slide"
+                            aria-label={t("slideshow.previous_slide")}
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -264,7 +264,7 @@ export default function ImageSlideshow({
                         <button
                             className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 grid place-items-center size-9 sm:size-10 rounded-full bg-white/80 text-slate-900 shadow-xl backdrop-blur hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-all z-20"
                             onClick={goToNext}
-                            aria-label="Next slide"
+                            aria-label={t("slideshow.next_slide")}
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -285,7 +285,7 @@ export default function ImageSlideshow({
                                         ? 'w-6 bg-white shadow-md'
                                         : 'bg-white/50 hover:bg-white/80'
                                 }`}
-                                aria-label={`Go to slide ${i + 1}`}
+                                aria-label={t("slideshow.go_to_slide", { number: i + 1 })}
                                 aria-current={i === currentSlide}
                             />
                         ))}
