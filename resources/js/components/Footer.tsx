@@ -6,13 +6,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Heart, Mail, Phone } from "lucide-react"
-import { useState } from "react"
+import { Mail, Phone } from "lucide-react"
 
 export default function Footer() {
   const { t } = useTranslation()
   const { theme } = useTheme()
-  const [expandedCard, setExpandedCard] = useState<string | null>(null)
 
   const socialLinks = [
     {
@@ -66,16 +64,14 @@ export default function Footer() {
   const contactPersons = [
     {
       name: "Aba Selama",
-      title: "Spiritual Leader",
-      phone: "+1 (555) 123-4567",
+      phone: "+972543046018",
       email: "aba.selama@freminatos.org",
       image: "/images/contact/aba_selama.png"
     },
     {
       name: "Aba Gebremedhn",
-      title: "Community Director",
-      phone: "+1 (555) 987-6543",
-      email: "aba.gebremedhn@freminatos.org",
+      phone: "+25192010219",
+      email: "abagebremedhnzeselama@gmail.com",
       image: "/images/contact/aba_gebremedhn.png"
     }
   ]
@@ -132,51 +128,68 @@ export default function Footer() {
             </div>
                   </div>
 
-          {/* Contact Info - Ultra Compact Horizontal */}
-          <div className="lg:col-span-3 space-y-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Contact Info - Enhanced UI */}
+          <div className="lg:col-span-3 space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {contactPersons.map((person, index) => (
                 <Card 
                   key={person.name}
-                  className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20"
-                  onMouseEnter={() => setExpandedCard(person.name)}
-                  onMouseLeave={() => setExpandedCard(null)}
-                  onClick={() => setExpandedCard(expandedCard === person.name ? null : person.name)}
+                  className="group hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 border border-white/10 hover:border-blue-400/30 backdrop-blur-sm"
                 >
-                  <CardContent className="p-1.5">
-                    <div className="flex items-center gap-2">
-                      {/* Image and Basic Info */}
-                      <div className="flex-shrink-0 text-center">
-                        <div className="w-10 h-10 mx-auto mb-0.5 rounded-full overflow-hidden border-2 border-white/20">
-                          <img 
-                            src={person.image} 
-                            alt={person.name}
-                            className="w-full h-full object-cover"
-                          />
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      {/* Header with Image and Name */}
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 group-hover:border-blue-400/50 transition-colors duration-300">
+                            <img 
+                              src={person.image} 
+                              alt={person.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white/20 flex items-center justify-center">
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          </div>
                         </div>
-                        <h3 className="font-semibold text-white text-xs leading-tight">{person.name}</h3>
-                        <p className="text-gray-300 text-xs leading-tight">{person.title}</p>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-white text-base group-hover:text-blue-300 transition-colors duration-300">{person.name}</h3>
+                          <p className="text-gray-400 text-xs">Contact Person</p>
+                        </div>
                       </div>
                       
-                      {/* Contact Details - Show on hover/click to the right */}
-                      {expandedCard === person.name && (
-                        <motion.div 
-                          className="flex-1 space-y-0.5"
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <div className="flex items-center gap-2 text-xs">
-                            <Phone className="w-3 h-3 text-blue-400 flex-shrink-0" />
-                            <span className="text-gray-300 text-xs">{person.phone}</span>
+                      {/* Contact Details with Enhanced Styling */}
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors duration-300">
+                          <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/30 transition-colors duration-300">
+                            <Phone className="w-4 h-4 text-blue-400" />
                           </div>
-                          <div className="flex items-center gap-2 text-xs">
-                            <Mail className="w-3 h-3 text-purple-400 flex-shrink-0" />
-                            <span className="text-gray-300 text-xs truncate">{person.email}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs text-gray-400 mb-0.5">Phone</p>
+                            <a 
+                              href={`tel:${person.phone}`}
+                              className="text-white hover:text-blue-300 transition-colors duration-300 font-medium text-sm"
+                            >
+                              {person.phone}
+                            </a>
                           </div>
-                        </motion.div>
-                      )}
+                        </div>
+                        
+                        <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors duration-300">
+                          <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-colors duration-300">
+                            <Mail className="w-4 h-4 text-purple-400" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs text-gray-400 mb-0.5">Email</p>
+                            <a 
+                              href={`mailto:${person.email}`}
+                              className="text-white hover:text-purple-300 transition-colors duration-300 font-medium text-sm truncate block"
+                            >
+                              {person.email}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
