@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         // Seed roles first
         $this->call(RoleSeeder::class);
+        
+        // Seed banks and bank accounts
+        $this->call(BankSeeder::class);
 
         // Create a default admin user
         User::updateOrCreate(

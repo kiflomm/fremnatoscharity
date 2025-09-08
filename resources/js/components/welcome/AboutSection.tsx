@@ -80,7 +80,7 @@ export default function AboutSection() {
 
   return (
     <section
-      className="relative bg-background overflow-hidden py-4"
+      className="relative bg-gradient-to-br from-background via-background to-muted/20 overflow-hidden py-4"
       role="region"
       aria-labelledby="about-heading"
       id="about"
@@ -146,16 +146,13 @@ export default function AboutSection() {
             <div className="hidden lg:block lg:col-span-12">
               <motion.div 
                 variants={containerVariants}
-                className="grid grid-cols-1 xl:grid-cols-2 gap-8"
+                className="grid grid-cols-1 xl:grid-cols-5 gap-8"
               >
                 {/* Left side: Navigation */}
-                <motion.div variants={itemVariants} className="space-y-4">
+                <motion.div variants={itemVariants} className="space-y-4 xl:col-span-2">
                   <div className="sticky top-24">
                     <div className="bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl rounded-2xl border border-border/50 p-6 shadow-xl">
-                      <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        About Our Organization
-                      </h3>
+
                       <nav className="space-y-3" role="tablist" aria-label="About section navigation">
                         {sections.map((item, idx) => {
                           const isActive = activeId === item.id
@@ -232,7 +229,7 @@ export default function AboutSection() {
                 </motion.div>
 
                 {/* Right side: Content */}
-                <motion.div variants={itemVariants} className="space-y-6">
+                <motion.div variants={itemVariants} className="space-y-6 xl:col-span-3">
                   {sections.map((section, index) => {
                     const activeIndex = sections.findIndex(s => s.id === activeId)
                     const isActive = section.id === activeId

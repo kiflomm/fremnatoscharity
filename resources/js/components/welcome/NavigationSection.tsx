@@ -23,19 +23,19 @@ export default function NavigationSection() {
     
     return (
         <section id="navigation" className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 w-full">
-            <CardContent className="border-0 shadow-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-0 pb-1"> 
-                                <div className="flex justify-between items-center pt-1">
-                                    <div className="ml-auto flex items-center space-x-2 sm:space-x-3">
-                                        <div className="flex items-center space-x-1.5 sm:space-x-2">
+            <CardContent className="border-0 shadow-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-0 pb-0.5"> 
+                                <div className="flex justify-between items-center pt-0.5">
+                                    <div className="ml-auto flex items-center space-x-1.5 sm:space-x-2">
+                                        <div className="flex items-center space-x-1 sm:space-x-1.5">
                                             <ThemeToggle className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" />
                                             <SimpleLanguageSwitcher
-                                                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                                                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white px-1 sm:px-1.5 py-0.5 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="border-t border-slate-200 dark:border-slate-700 pt-1">
+                                <div className="border-t border-slate-200 dark:border-slate-700 pt-0.5">
                                     {/* Mobile Header with Hamburger */}
                                     <div className="flex items-center sm:hidden">
                                         <button
@@ -146,59 +146,59 @@ export default function NavigationSection() {
                                     )}
 
                                     {/* Desktop Navigation - Horizontal layout */}
-                                    <div className="hidden sm:flex items-center justify-between py-1">
-                                        <nav className="flex items-center gap-1.5 lg:gap-3 text-sm">
+                                    <div className="hidden sm:flex items-center justify-between py-0.5">
+                                        <nav className="flex items-center gap-1 lg:gap-2 text-sm">
                                             {!isHomeRoute && (
                                                 <>
-                                                    <Link href="/" className="flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                                    <Link href="/" className="flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                         <Home className="h-3.5 w-3.5" />
                                                         {t("cta.home")}
                                                     </Link>
                                                     <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                                 </>
                                             )}
-                                            <Link href="/news" className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                            <Link href="/news" className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Newspaper className="h-3.5 w-3.5" />
                                                 {t("cta.news")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
-                                            <Link href="/stories" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                            <Link href="/stories" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <BookOpen className="h-3.5 w-3.5" />
                                                 {t("cta.stories")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
-                                            <Link href="/#donation" className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                            <Link href="/#donation" className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <DollarSign className="h-3.5 w-3.5" />
                                                 {t("nav.donate")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
-                                            <Link href="/#about" className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-1.5 py-0.5 rounded-md transition-all duration-200">
+                                            <Link href="/#about" className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Info className="h-3.5 w-3.5" />
                                                 {t("nav.about")}
                                             </Link>
                                         </nav>
-                                        <div className="flex items-center gap-1.5 lg:gap-2">
+                                        <div className="flex items-center gap-1 lg:gap-1.5">
                                             {auth?.user ? (
                                                 <Link
                                                     href="/settings/profile"
-                                                    className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/30 transition-all duration-200"
+                                                    className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/30 transition-all duration-200"
                                                     aria-label={t('aria.profileSettings')}
                                                 >
                                                     <Users className="h-3.5 w-3.5" />
                                                     <span className="hidden lg:inline">{t("cta.profile")}</span>
                                                 </Link>
                                             ) : (
-                                                <div className="flex items-center gap-3 lg:gap-4">
+                                                <div className="flex items-center gap-2 lg:gap-3">
                                                     <Link
                                                         href="/register"
-                                                        className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
+                                                        className="flex items-center gap-1 rounded-md px-2 py-0.5 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
                                                     >
                                                         <UserPlus className="h-3.5 w-3.5" />
                                                         {t("cta.signUp")}
                                                     </Link>
                                                     <Link
                                                         href="/login"
-                                                        className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
+                                                        className="flex items-center gap-1 rounded-md px-2 py-0.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
                                                     >
                                                         <LogIn className="h-3.5 w-3.5" />
                                                         {t("cta.signIn")}

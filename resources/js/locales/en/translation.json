@@ -225,7 +225,7 @@
   "cancellation": "Cancellation",
   "nav": {
     "home": "Home",
-    "about": "About",
+    "about": "About Us",
     "donate": "Donate",
     "stories": "Stories",
     "news": "News",
@@ -237,6 +237,36 @@
   "main_title": "Helping others is the good deed of good people.",
   "about_mission": "About Our Mission",
   "mission_description": "In the 2020/21 fiscal year, this is an effort to provide better services and help solve the problems of people without support in the Tigray region. This organization was established to support elders, mentally disabled people and children.",
+  "hero": {
+    "badge": "Making a Difference",
+    "title": "Supporting Elders, Mentally Disabled, and Children in Need",
+    "description": "Fremnatos Charity Organization is dedicated to providing better services and solving problems for people without support in the Tigray region. Join us in making a meaningful impact.",
+    "cta": {
+      "donate": "Donate Now",
+      "learn_more": "Learn More"
+    },
+    "stats": {
+      "beneficiaries": "Beneficiaries Helped",
+      "subtitle": "and counting..."
+    },
+    "highlights": {
+      "location": "Tigray Region",
+      "location_desc": "Serving communities across Tigray",
+      "established": "Since 2020",
+      "established_desc": "4+ years of dedicated service",
+      "focus": "Three Focus Areas",
+      "focus_desc": "Elders, Children & Mental Health"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "To provide comprehensive support and care for elders, mentally disabled individuals, and children in the Tigray region, ensuring they receive the dignity and assistance they deserve."
+    },
+    "urgency": {
+      "title": "Every Day Matters",
+      "description": "Your support helps us reach more people in need every single day.",
+      "cta": "Help Today"
+    }
+  },
   "donation": {
     "title": "Your Support Changes Lives",
     "subtitle": "Every contribution, no matter the size, makes a real difference in the lives of elders, children, and those with mental disabilities."

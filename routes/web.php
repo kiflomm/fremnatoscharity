@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PublicNewsController;
 use App\Http\Controllers\PublicStoriesController;
+use App\Http\Controllers\Api\BankController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -52,4 +53,7 @@ Route::middleware(['public.only'])->group(function () {
     Route::post('/stories/{story}/like', [PublicStoriesController::class, 'toggleLike'])
         ->middleware(['auth', 'verified'])
         ->name('public.stories.like');
+
+    // Banks API for donation section
+    Route::get('/api/banks', [BankController::class, 'index'])->name('api.banks.index');
 });
