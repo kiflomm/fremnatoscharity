@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
+require __DIR__.'/guest.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
 require __DIR__.'/editor.php';
@@ -62,14 +63,4 @@ Route::middleware(['public.only'])->group(function () {
     Route::get('/api/banks', [BankController::class, 'index'])->name('api.banks.index');
 });
 
-// Guest user self-profile route (only for logged-in users with guest role)
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/guests/profile', function (Request $request) {
-        $user = $request->user();
-        if (!$user || !(method_exists($user, 'isGuest') && $user->isGuest())) {
-            abort(403);
-        }
-
-        return Inertia::render('guests/profile');
-    })->name('guest.profile');
-});
+// Guest-specific routes are declared in routes/guest.php
