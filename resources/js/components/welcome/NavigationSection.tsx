@@ -2,7 +2,7 @@ import { CardContent } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { Users, Home, Newspaper, BookOpen, Menu, X, DollarSign, Info, UserPlus, LogIn } from 'lucide-react';
+import { Users, Home, Newspaper, BookOpen, Menu, X, DollarSign, Info, UserPlus, LogIn, Mail } from 'lucide-react';
 import { SimpleLanguageSwitcher } from '../LanguageSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 import type { SharedData } from '@/types';
@@ -107,6 +107,14 @@ export default function NavigationSection() {
                                                     <Info className="h-4 w-4" />
                                                     {t("nav.about")}
                                                 </Link>
+                                                <Link 
+                                                    href="/#contact" 
+                                                    className="flex items-center gap-2 text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 font-medium hover:bg-sky-50 dark:hover:bg-sky-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                >
+                                                    <Mail className="h-4 w-4" />
+                                                    {t("nav.contact", "Contact")}
+                                                </Link>
                                             </nav>
                                             
                                             {/* Auth Buttons - Full width on mobile */}
@@ -175,6 +183,11 @@ export default function NavigationSection() {
                                             <Link href="/#about" className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Info className="h-3.5 w-3.5" />
                                                 {t("nav.about")}
+                                            </Link>
+                                            <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
+                                            <Link href="/#contact" className="flex items-center gap-1 text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 font-medium hover:bg-sky-50 dark:hover:bg-sky-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
+                                                <Mail className="h-3.5 w-3.5" />
+                                                {t("nav.contact", "Contact")}
                                             </Link>
                                         </nav>
                                         <div className="flex items-center gap-1 lg:gap-1.5">

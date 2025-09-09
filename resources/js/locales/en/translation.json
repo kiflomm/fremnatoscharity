@@ -378,6 +378,9 @@
     "light_mode": "Light Mode",
     "dark_mode": "Dark Mode"
   },
+  "common": {
+    "sending": "Sending..."
+  },
   "switch_to_light_mode": "Switch to light mode",
   "switch_to_dark_mode": "Switch to dark mode",
   "contact_section": {
@@ -398,7 +401,9 @@
     "main_contact_description": "Main organization contact for inquiries, partnerships, and general information",
     "email_address_label": "Email Address",
     "phone_number_label": "Phone Number",
-    "visit_our_office": "Visit Our Office"
+    "visit_our_office": "Visit Our Office",
+    "message_sent_success": "Your message has been sent.",
+    "message_sent_error": "Failed to send your message. Please try again."
   },
   "auth": {
     "welcome_back": "Welcome Back",

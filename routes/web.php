@@ -6,10 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\PublicNewsController;
 use App\Http\Controllers\PublicStoriesController;
 use App\Http\Controllers\Api\BankController;
+use App\Http\Controllers\ContactMessageController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->middleware('public.only')->name('home');
+
+// Public contact messages
+Route::post('/contact-messages', [ContactMessageController::class, 'store'])->name('contact-messages.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function (Request $request) {

@@ -259,7 +259,7 @@ export default function DonationSection() {
   // Show loading state
   if (loading) {
     return (
-      <section id="donate" className="py-8 sm:py-6 bg-gradient-to-br from-background via-background to-muted/20">
+      <section id="donation" className="py-8 sm:py-6 bg-gradient-to-br from-background via-background to-muted/20">
         <div className="mx-auto max-w-5xl px-3 sm:px-4">
           <div className="text-center mb-8">
             <h2 className="text-balance text-2xl sm:text-3xl font-bold text-foreground tracking-tight mb-3">

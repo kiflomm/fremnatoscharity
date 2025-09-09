@@ -367,6 +367,9 @@
     "light_mode": "ብርሃን ሞድ",
     "dark_mode": "ጸልማት ሞድ"
   },
+  "common": {
+    "sending": "ተላኢኹ ኣሎ..."
+  },
   "contact_section": {
     "title": "ካብኹም ንሰምዕ ንፈቱ!",
     "get_involved": "ተሳተፍ",
@@ -385,7 +388,9 @@
     "main_contact_description": "ንሕቶታት፣ ትብብርን ናይ ሓፈሻዊ ሓበሬታን ዋና ድርጅት ርክብ",
     "email_address_label": "ኣድራሻ ኢመይል",
     "phone_number_label": "ቁጽሪ ተሌፎን",
-    "visit_our_office": "ቢሮና ተጎብእ"
+    "visit_our_office": "ቢሮና ተጎብእ",
+    "message_sent_success": "መልእኽቲኹም ተላኢኹ እዩ።",
+    "message_sent_error": "መልእኽቲ ምላእ ኣይተሳኸነን። ደጊምኩም ፈትኑ።"
   },
   "auth": {
     "welcome_back": "እንኳን በደህና መጡ",

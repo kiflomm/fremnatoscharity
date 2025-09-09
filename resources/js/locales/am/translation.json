@@ -366,6 +366,9 @@
     "light_mode": "ብርሃን ሞድ",
     "dark_mode": "ጨለማ ሞድ"
   },
+  "common": {
+    "sending": "በመላክ ላይ..."
+  },
   "contact_section": {
     "title": "ከእናንተ ሰምተን እንደምንደስ!",
     "get_involved": "ተሳተፍ",
@@ -384,7 +387,9 @@
     "main_contact_description": "ለጥያቄዎች፣ ትብብር እና አጠቃላይ መረጃ ዋና ድርጅት ግንኙነት",
     "email_address_label": "የኢሜይል አድራሻ",
     "phone_number_label": "የስልክ ቁጥር",
-    "visit_our_office": "ቢሮችን ይጎበኙ"
+    "visit_our_office": "ቢሮችን ይጎበኙ",
+    "message_sent_success": "መልዕክትዎ ተልኳል።",
+    "message_sent_error": "መልዕክት መላክ አልተሳካም። እባክዎ ዳግም ይሞክሩ።"
   },
   "auth": {
     "welcome_back": "እንኳን በደህና መጡ",

@@ -3,6 +3,10 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useForm, usePage } from "@inertiajs/react"
+import contactMessages from "@/routes/contact-messages"
+import { toast } from "sonner"
+import { Toaster } from "@/components/ui/sonner"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,9 +16,16 @@ import { Textarea } from "@/components/ui/textarea"
 import { Mail, Phone, MapPin, Shield } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
+type PageProps = {
+  auth?: { user?: { id: number; name?: string | null; email?: string | null } | null }
+}
+
 export default function ContactSection() {
   const { t } = useTranslation()
-  const [formData, setFormData] = useState({
+  const { props } = usePage<PageProps>()
+  const isLoggedIn = Boolean(props.auth?.user)
+  const sessionEmail = props.auth?.user?.email ?? ""
+  const { data, setData, post, processing, reset, errors, clearErrors } = useForm({
     name: "",
     email: "",
     message: "",
@@ -26,19 +37,25 @@ export default function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission here
-    console.log("Form submitted:", formData)
+    clearErrors()
+    post(contactMessages.store.url(), {
+      preserveScroll: true,
+      onSuccess: () => {
+        reset('name', 'email', 'message')
+        toast.success(t('contact_section.message_sent_success') || 'Your message has been sent.')
+      },
+      onError: () => {
+        toast.error(t('contact_section.message_sent_error') || 'Failed to send your message.')
+      },
+    })
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
+    setData(e.target.name as 'name' | 'email' | 'message', e.target.value)
   }
 
   return (
-    <section className="py-16 px-4 bg-background">
+    <section id="contact" className="py-16 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-foreground mb-4 text-balance">{t("contact_section.title")}</h2>
@@ -65,47 +82,59 @@ export default function ContactSection() {
                   <Input
                     id="name"
                     name="name"
-                    value={formData.name}
+                    value={data.name}
                     onChange={handleChange}
                     placeholder={t("contact_section.full_name_placeholder")}
                     required
                     className="focus:ring-2 focus:ring-primary/20"
                   />
+                  {errors.name && (
+                    <p className="text-sm text-red-600">{errors.name}</p>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t("contact_section.email_address")}</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder={t("contact_section.email_placeholder")}
-                    required
-                    className="focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
+                {!isLoggedIn && (
+                  <div className="space-y-2">
+                    <Label htmlFor="email">{t("contact_section.email_address")}</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={data.email}
+                      onChange={handleChange}
+                      placeholder={t("contact_section.email_placeholder")}
+                      required
+                      className="focus:ring-2 focus:ring-primary/20"
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-red-600">{errors.email}</p>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="message">{t("contact_section.message")}</Label>
                   <Textarea
                     id="message"
                     name="message"
-                    value={formData.message}
+                    value={data.message}
                     onChange={handleChange}
                     placeholder={t("contact_section.message_placeholder")}
                     rows={5}
                     required
                     className="focus:ring-2 focus:ring-primary/20 resize-none"
                   />
+                  {errors.message && (
+                    <p className="text-sm text-red-600">{errors.message}</p>
+                  )}
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 transition-colors"
+                  disabled={processing}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 transition-colors disabled:opacity-60"
                 >
-                  {t("contact_section.send_message")}
+                  {processing ? t("common.sending") : t("contact_section.send_message")}
                 </Button>
               </form>
             </CardContent>
@@ -208,6 +237,7 @@ export default function ContactSection() {
           </div>
         </div>
       </div>
+      <Toaster position="top-center" richColors />
     </section>
   )
 }
