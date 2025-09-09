@@ -10,7 +10,7 @@ use App\Http\Controllers\ContactMessageController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
-})->middleware('public.only')->name('home');
+})->middleware(['public.only', 'require.email.verification'])->name('home');
 
 // Public contact messages
 Route::post('/contact-messages', [ContactMessageController::class, 'store'])->name('contact-messages.store');

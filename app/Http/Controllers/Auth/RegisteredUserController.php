@@ -47,15 +47,15 @@ class RegisteredUserController extends Controller
             'role_id' => $guestRoleId,
         ]);
 
+        // Fire the Registered event (sends verification email)
         event(new Registered($user));
-
         Auth::login($user);
 
         // After registration, redirect guests to welcome (home), others to dashboard
         if ($user && method_exists($user, 'isGuest') && $user->isGuest()) {
-            return redirect()->intended(route('home', absolute: false));
+            return redirect()->route('home');
         }
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->route('dashboard');
     }
 }

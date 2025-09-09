@@ -37,6 +37,10 @@ class AuthenticatedSessionController extends Controller
 
         // Role-based redirect: guests to welcome (home), others to dashboard (admin redirect handled in route)
         if ($user && method_exists($user, 'isGuest') && $user->isGuest()) {
+            // Check if guest user is verified, if not redirect to verification page
+            if (!$user->isVerified()) {
+                return redirect()->route('verification.notice');
+            }
             return redirect()->intended(route('home', absolute: false));
         }
 
