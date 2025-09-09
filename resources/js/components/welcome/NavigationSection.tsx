@@ -16,9 +16,9 @@ export default function NavigationSection() {
     const { t } = useTranslation();
     const isHomeRoute = page.url === "/";
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    // Role currently not used to toggle any additional UI here,
-    // but loaded for future role-based adjustments
+    // Determine role for conditional profile route
     const userRole = auth?.user?.role?.name ?? null;
+    const profileHref = userRole === 'guest' ? '/guests/profile' : '/settings/profile';
 
     
     return (
@@ -121,7 +121,7 @@ export default function NavigationSection() {
                                             <div className="pt-1.5 border-t border-slate-200 dark:border-slate-700">
                                                 {auth?.user ? (
                                                     <Link
-                                                        href="/settings/profile"
+                                                        href={profileHref}
                                                         className="flex items-center justify-center gap-2 w-full rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/30 transition-all duration-200"
                                                         aria-label={t('aria.profileSettings')}
                                                         onClick={() => setIsMobileMenuOpen(false)}
@@ -193,7 +193,7 @@ export default function NavigationSection() {
                                         <div className="flex items-center gap-1 lg:gap-1.5">
                                             {auth?.user ? (
                                                 <Link
-                                                    href="/settings/profile"
+                                                    href={profileHref}
                                                     className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/30 transition-all duration-200"
                                                     aria-label={t('aria.profileSettings')}
                                                 >

@@ -4,6 +4,7 @@ use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\PublicOnly;
+use App\Http\Middleware\AdminOrEditor;
 use App\Http\Middleware\EditorMiddleware;
 use App\Http\Middleware\RequireEmailVerification;
 use Illuminate\Foundation\Application;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'editor' => EditorMiddleware::class,
             'public.only' => PublicOnly::class,
             'require.email.verification' => RequireEmailVerification::class,
+            'admin_or_editor' => AdminOrEditor::class,
         ]);
 
         $middleware->web(append: [

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use Inertia\Inertia; 
 use Illuminate\Http\Request;
 use App\Http\Controllers\PublicNewsController;
 use App\Http\Controllers\PublicStoriesController;
@@ -60,4 +60,16 @@ Route::middleware(['public.only'])->group(function () {
 
     // Banks API for donation section
     Route::get('/api/banks', [BankController::class, 'index'])->name('api.banks.index');
+});
+
+// Guest user self-profile route (only for logged-in users with guest role)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/guests/profile', function (Request $request) {
+        $user = $request->user();
+        if (!$user || !(method_exists($user, 'isGuest') && $user->isGuest())) {
+            abort(403);
+        }
+
+        return Inertia::render('guests/profile');
+    })->name('guest.profile');
 });
