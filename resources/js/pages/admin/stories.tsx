@@ -613,6 +613,211 @@ export default function AdminStories({ posts, totalPosts }: AdminStoriesProps) {
                                     <option value="disabled">disabled</option>
                                     </select>
                             </div>
+                            {/* Attachments (optional replace) */}
+                            <div className="space-y-8">
+                                <div className="text-xs text-muted-foreground">Add images or videos to replace existing attachments. Leave empty to keep current attachments.</div>
+                                {/* Images */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2">
+                                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                                        <Label className="m-0">Images</Label>
+                                        <span className="text-xs text-muted-foreground">Upload one or more images</span>
+                                    </div>
+                                    <div
+                                        className="rounded-lg border border-dashed p-4 text-center hover:bg-muted/30 transition cursor-pointer"
+                                        onClick={() => {
+                                            const el = document.getElementById('story-images-input-edit') as HTMLInputElement | null;
+                                            el?.click();
+                                        }}
+                                    >
+                                        <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                                            <Upload className="h-4 w-4" />
+                                            <span className="text-sm">Click to choose files</span>
+                                        </div>
+                                        <input
+                                            id="story-images-input-edit"
+                                            type="file"
+                                            className="hidden"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={(e) => {
+                                                const files = Array.from(e.target.files || []);
+                                                if (files.length === 0) return;
+                                                setImages(prev => [...prev, ...files]);
+                                                const newPreviews = files.map(f => URL.createObjectURL(f));
+                                                setImagePreviews(prev => [...prev, ...newPreviews]);
+                                            }}
+                                        />
+                                    </div>
+                                    {existingImagePreviews.length > 0 && (
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                            {existingImagePreviews.map((src, idx) => (
+                                                <div key={`edit-${idx}`} className="relative group border rounded-lg overflow-hidden">
+                                                    <img src={src} alt={`preview-${idx}`} className="w-full h-32 object-cover" />
+                                                    <div className="absolute left-2 top-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-black/60 text-white">{idx + 1}</div>
+                                                    <div className="absolute inset-x-0 bottom-0 p-1.5 flex items-center justify-between bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition">
+                                                        <div className="flex gap-1">
+                                                            <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                                if (idx <= 0) return;
+                                                                setExistingImagePreviews(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx - 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                                setExistingImageIds(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx - 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                            }}><ArrowUp className="h-3.5 w-3.5" /></Button>
+                                                            <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                                if (idx >= existingImagePreviews.length - 1) return;
+                                                                setExistingImagePreviews(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx + 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                                setExistingImageIds(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx + 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                            }}><ArrowDown className="h-3.5 w-3.5" /></Button>
+                                                        </div>
+                                                        <Button type="button" size="icon" variant="destructive" className="h-7 w-7" onClick={() => {
+                                                            setExistingImagePreviews(prev => prev.filter((_, i) => i !== idx));
+                                                            setExistingImageIds(prev => prev.filter((_, i) => i !== idx));
+                                                        }}><Trash2 className="h-3.5 w-3.5" /></Button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {imagePreviews.length > 0 && (
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                            {imagePreviews.map((src, idx) => (
+                                                <div key={`new-${idx}`} className="relative group border rounded-lg overflow-hidden">
+                                                    <img src={src} alt={`new-preview-${idx}`} className="w-full h-32 object-cover" />
+                                                    <div className="absolute left-2 top-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-black/60 text-white">{idx + 1 + existingImagePreviews.length}</div>
+                                                    <div className="absolute inset-x-0 bottom-0 p-1.5 flex items-center justify-between bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition">
+                                                        <div className="flex gap-1">
+                                                            <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                                if (idx <= 0) return;
+                                                                setImages(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx - 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                                setImagePreviews(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx - 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                            }}><ArrowUp className="h-3.5 w-3.5" /></Button>
+                                                            <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                                if (idx >= images.length - 1) return;
+                                                                setImages(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx + 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                                setImagePreviews(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx + 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                            }}><ArrowDown className="h-3.5 w-3.5" /></Button>
+                                                        </div>
+                                                        <Button type="button" size="icon" variant="destructive" className="h-7 w-7" onClick={() => {
+                                                            setImages(prev => prev.filter((_, i) => i !== idx));
+                                                            setImagePreviews(prev => prev.filter((_, i) => i !== idx));
+                                                        }}><Trash2 className="h-3.5 w-3.5" /></Button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {errors.images && (
+                                        <p className="text-xs text-red-600">{String(errors.images)}</p>
+                                    )}
+                                </div>
+
+                                {/* Videos */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2">
+                                        <Video className="h-4 w-4 text-muted-foreground" />
+                                        <Label className="m-0">YouTube videos</Label>
+                                        <span className="text-xs text-muted-foreground">Paste one or more URLs</span>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            placeholder="https://youtube.com/watch?v=..."
+                                            onKeyDown={(e) => {
+                                                const target = e.target as HTMLInputElement;
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    const val = target.value.trim();
+                                                    if (val) {
+                                                        setVideos(prev => [...prev, val]);
+                                                        target.value = '';
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                        <Button type="button" variant="secondary" onClick={(e) => {
+                                            const input = (e.currentTarget.previousSibling as HTMLInputElement);
+                                            if (input && 'value' in input) {
+                                                const val = (input as HTMLInputElement).value.trim();
+                                                if (val) {
+                                                    setVideos(prev => [...prev, val]);
+                                                    (input as HTMLInputElement).value = '';
+                                                }
+                                            }
+                                        }}>
+                                            <PlusCircle className="h-4 w-4 mr-1" /> Add
+                                        </Button>
+                                    </div>
+                                    {videos.length > 0 && (
+                                        <div className="space-y-2 mt-1">
+                                            {videos.map((url, idx) => (
+                                                <div key={`edit-${idx}`} className="flex items-center gap-2 border rounded-md p-2">
+                                                    <div className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted">{idx + 1}</div>
+                                                    <div className="flex-1 truncate text-sm" title={url}>{url}</div>
+                                                    <div className="flex gap-1">
+                                                        <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                            if (idx <= 0) return;
+                                                            setVideos(prev => {
+                                                                const copy = [...prev];
+                                                                const [it] = copy.splice(idx, 1);
+                                                                copy.splice(idx - 1, 0, it);
+                                                                return copy;
+                                                            });
+                                                        }}><ArrowUp className="h-3.5 w-3.5" /></Button>
+                                                        <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                            if (idx >= videos.length - 1) return;
+                                                            setVideos(prev => {
+                                                                const copy = [...prev];
+                                                                const [it] = copy.splice(idx, 1);
+                                                                copy.splice(idx + 1, 0, it);
+                                                                return copy;
+                                                            });
+                                                        }}><ArrowDown className="h-3.5 w-3.5" /></Button>
+                                                        <Button type="button" size="icon" variant="destructive" className="h-7 w-7" onClick={() => setVideos(prev => prev.filter((_, i) => i !== idx))}><Trash2 className="h-3.5 w-3.5" /></Button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                             <DialogFooter>
                                 <Button type="button" variant="ghost" onClick={() => setEditStoryId(null)}>Cancel</Button>
                                 <Button type="submit">Save changes</Button>
