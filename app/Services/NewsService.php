@@ -171,14 +171,20 @@ class NewsService
 
         // Images: reorder/remove existing and append new
         /** @var array<int, int>|null $existingImageIds */
-        $existingImageIds = $request->input('existing_image_ids');
+        $existingImageIds = $request->input('existing_image_ids', null);
+        $existingImagesProvided = (bool) $request->boolean('existing_images_provided', false);
         $existingImagesOrder = (array) $request->input('existing_images_order', []);
-        if (is_array($existingImageIds)) {
-            $keepIds = array_map('intval', $existingImageIds);
-            $news->imageAttachments()->whereNotIn('id', $keepIds)->delete();
-            foreach ($keepIds as $idx => $id) {
-                $order = isset($existingImagesOrder[$idx]) ? (int) $existingImagesOrder[$idx] : $idx;
-                $news->imageAttachments()->where('id', $id)->update(['display_order' => $order]);
+        if ($existingImagesProvided) {
+            if (is_array($existingImageIds) && count($existingImageIds) > 0) {
+                $keepIds = array_map('intval', $existingImageIds);
+                $news->imageAttachments()->whereNotIn('id', $keepIds)->delete();
+                foreach ($keepIds as $idx => $id) {
+                    $order = isset($existingImagesOrder[$idx]) ? (int) $existingImagesOrder[$idx] : $idx;
+                    $news->imageAttachments()->where('id', $id)->update(['display_order' => $order]);
+                }
+            } else {
+                // No existing images to keep; delete all
+                $news->imageAttachments()->delete();
             }
         }
 
@@ -211,9 +217,10 @@ class NewsService
             }
         }
 
-        // Videos: if provided, replace with the provided list and order. If not provided, keep as-is
+        // Videos: if replacement requested, replace with provided list (can be empty to delete all)
+        $replaceVideos = (bool) $request->boolean('replace_videos', $request->has('videos'));
         $videos = (array) $request->input('videos', []);
-        if (count($videos) > 0) {
+        if ($replaceVideos) {
             $news->videoAttachments()->delete();
             $videosOrder = (array) $request->input('videos_order', []);
             foreach ($videos as $index => $url) {

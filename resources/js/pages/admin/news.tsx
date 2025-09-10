@@ -525,17 +525,17 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                 form.append('_method', 'put');
                                 form.append('news_title', data.news_title);
                                 form.append('news_description', data.news_description);
-                                // Existing images: send IDs and their new order (based on current existing preview order)
-                                if (existingImageIds.length > 0) {
-                                    existingImageIds.forEach((id) => form.append('existing_image_ids[]', String(id)));
-                                    existingImageIds.forEach((_, idx) => form.append('existing_images_order[]', String(idx)));
-                                }
+                                // Existing images: explicitly indicate provided list (can be empty to delete all)
+                                form.append('existing_images_provided', '1');
+                                existingImageIds.forEach((id) => form.append('existing_image_ids[]', String(id)));
+                                existingImageIds.forEach((_, idx) => form.append('existing_images_order[]', String(idx)));
                                 // New images to append
                                 images.forEach((file, idx) => {
                                     form.append('images[]', file);
                                     form.append('images_order[]', String(idx));
                                 });
-                                // Videos: if provided, backend will replace with these
+                                // Videos: always indicate replacement intent (empty list deletes all)
+                                form.append('replace_videos', '1');
                                 videos.forEach((url, idx) => {
                                     form.append('videos[]', url);
                                     form.append('videos_order[]', String(idx));
