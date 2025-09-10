@@ -553,6 +553,60 @@ export default function AdminStories({ posts, totalPosts }: AdminStoriesProps) {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+                {/* Archive Story AlertDialog */}
+                <AlertDialog open={archiveStoryId !== null} onOpenChange={(open) => { if (!open) setArchiveStoryId(null); }}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Archive this story?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This story will be hidden from the public page but will remain visible in the admin dashboard with an archived label.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setArchiveStoryId(null)}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={() => {
+                                    if (archiveStoryId === null) return;
+                                    router.post(`/admin/stories/${archiveStoryId}/archive`, {}, {
+                                        onSuccess: () => {
+                                            setArchiveStoryId(null);
+                                            router.reload({ only: ['posts', 'totalPosts'] });
+                                        },
+                                    });
+                                }}
+                            >
+                                Archive
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+                {/* Unarchive Story AlertDialog */}
+                <AlertDialog open={unarchiveStoryId !== null} onOpenChange={(open) => { if (!open) setUnarchiveStoryId(null); }}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Unarchive this story?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This story will be made visible on the public page again.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setUnarchiveStoryId(null)}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={() => {
+                                    if (unarchiveStoryId === null) return;
+                                    router.post(`/admin/stories/${unarchiveStoryId}/unarchive`, {}, {
+                                        onSuccess: () => {
+                                            setUnarchiveStoryId(null);
+                                            router.reload({ only: ['posts', 'totalPosts'] });
+                                        },
+                                    });
+                                }}
+                            >
+                                Unarchive
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
                 {/* Edit Story Dialog */}
                 <Dialog open={editStoryId !== null} onOpenChange={(open) => { if (!open) setEditStoryId(null); }}>
                     <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto">
