@@ -1,4 +1,4 @@
-import { Link, usePage, router } from '@inertiajs/react'; 
+import { usePage } from '@inertiajs/react'; 
 import NewsLayout from '@/layouts/NewsLayout';
 import { Calendar, MessageSquare, Heart, Newspaper } from 'lucide-react';
 import AttachmentsCarousel from '@/components/news/AttachmentsCarousel';
