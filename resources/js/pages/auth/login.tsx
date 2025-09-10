@@ -25,22 +25,25 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     return (
         <FixedHeaderLayout title="Log in">
             <Head title="Log in" />
-            <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md w-full">
-                    <div 
-                        id="auth-form" 
-                        className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border-0 p-8"
-                    >
-                        <div className="space-y-6">
-                            <div className="text-center space-y-3">
+            <div className="min-h-screen flex items-center justify-center pb-12 px-4 sm:px-6 lg:px-0">
+                <div className="w-full max-w-none lg:max-w-7xl">
+                    <div className="flex flex-col lg:flex-row items-stretch lg:min-h-[500px]">
+                        {/* Auth Form */}
+                        <div className="w-full lg:w-3/5 lg:px-8 lg:pb-6">
+                            <div 
+                                id="auth-form" 
+                                className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border-0 p-6"
+                            >
+                        <div>
+                            <div className="text-center space-y-2">
                                 <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t("auth.welcome_back")}</h1>
                                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed">{t("auth.sign_in_description")}</p>
                             </div>
 
-                            <Form {...AuthenticatedSessionController.store.form()} resetOnSuccess={['password']} className="space-y-6">
+                            <Form {...AuthenticatedSessionController.store.form()} resetOnSuccess={['password']} className="space-y-4">
                                 {({ processing, errors }) => (
                                     <>
-                                        <div className="space-y-5">
+                                        <div className="space-y-4">
                                             <div className="space-y-2">
                                                 <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                                                     {t("auth.email_address")}
@@ -56,7 +59,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                                         tabIndex={1}
                                                         autoComplete="email"
                                                         placeholder={t("auth.enter_email")}
-                                                        className="pl-10 h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 dark:border-slate-600 dark:focus:border-blue-400"
+                                                        className="pl-10 h-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 dark:border-slate-600 dark:focus:border-blue-400"
                                                     />
                                                 </div>
                                                 <InputError message={errors.email} />
@@ -87,7 +90,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                                         tabIndex={2}
                                                         autoComplete="current-password"
                                                         placeholder={t("auth.enter_password")}
-                                                        className="pl-10 pr-10 h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 dark:border-slate-600 dark:focus:border-blue-400"
+                                                        className="pl-10 pr-10 h-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 dark:border-slate-600 dark:focus:border-blue-400"
                                                     />
                                                     <button
                                                         type="button"
@@ -117,7 +120,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                                             <Button 
                                                 type="submit" 
-                                                className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group" 
+                                                className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group" 
                                                 tabIndex={4} 
                                                 disabled={processing}
                                             >
@@ -164,6 +167,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     {status}
                                 </div>
                             )}
+                        </div>
+                            </div>
+                        </div>
+
+                        <div className="hidden lg:flex lg:w-2/5 lg:h-full lg:items-center lg:justify-center">
+                            <img src="https://res.cloudinary.com/dpheomaz9/image/upload/v1756810180/ny_uq5fio.jpg" alt="Login" className="w-full h-full object-cover" />
                         </div>
                     </div>
                 </div>
