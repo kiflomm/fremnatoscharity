@@ -14,7 +14,6 @@ export default function NavigationSection() {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const { t } = useTranslation();
-    const isHomeRoute = page.url === "/";
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     // Determine role for conditional profile route
     const userRole = auth?.user?.role?.name ?? null;
@@ -65,16 +64,14 @@ export default function NavigationSection() {
                                         >
                                             {/* Navigation Links */}
                                             <nav className="flex flex-col space-y-1.5">
-                                                {!isHomeRoute && (
-                                                    <Link 
-                                                        href="/" 
-                                                        className="flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
-                                                        onClick={() => setIsMobileMenuOpen(false)}
-                                                    >
-                                                        <Home className="h-4 w-4" />
-                                                        {t("cta.home")}
-                                                    </Link>
-                                                )}
+                                                <Link 
+                                                    href="/" 
+                                                    className="flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                >
+                                                    <Home className="h-4 w-4" />
+                                                    {t("cta.home")}
+                                                </Link>
                                                 <Link 
                                                     href="/news" 
                                                     className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
@@ -172,15 +169,11 @@ export default function NavigationSection() {
                                     {/* Desktop Navigation - Horizontal layout */}
                                     <div className="hidden sm:flex items-center justify-between py-0.5">
                                         <nav className="flex items-center gap-1 lg:gap-2 text-sm">
-                                            {!isHomeRoute && (
-                                                <>
-                                                    <Link href="/" className="flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
-                                                        <Home className="h-3.5 w-3.5" />
-                                                        {t("cta.home")}
-                                                    </Link>
-                                                    <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
-                                                </>
-                                            )}
+                                            <Link href="/" className="flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
+                                                <Home className="h-3.5 w-3.5" />
+                                                {t("cta.home")}
+                                            </Link>
+                                            <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/news" className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Newspaper className="h-3.5 w-3.5" />
                                                 {t("cta.news")}
