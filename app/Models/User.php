@@ -119,4 +119,30 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasVerifiedEmail();
     }
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Automatically verify admin and editor users when their role is assigned
+        static::saving(function ($user) {
+            if ($user->isDirty('role_id') && !$user->isDirty('email_verified_at')) {
+                $role = Role::find($user->role_id);
+                if ($role && in_array($role->name, ['admin', 'editor'])) {
+                    $user->email_verified_at = now();
+                }
+            }
+        });
+
+        // Validate that admin and editor users are always verified
+        static::saving(function ($user) {
+            $role = Role::find($user->role_id);
+            if ($role && in_array($role->name, ['admin', 'editor']) && !$user->email_verified_at) {
+                throw new \Exception('Admin and editor users must have verified email addresses.');
+            }
+        });
+    }
 }

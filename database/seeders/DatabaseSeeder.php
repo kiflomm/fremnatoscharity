@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin User',
                 'password' => Hash::make('password'),
                 'role_id' => 1, // admin role
+                'email_verified_at' => now(), // Admin users are always verified
             ]
         );
 
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Editor User',
                 'password' => Hash::make('password'),
                 'role_id' => 2, // editor role
+                'email_verified_at' => now(), // Editor users are always verified
             ]
         );
     }

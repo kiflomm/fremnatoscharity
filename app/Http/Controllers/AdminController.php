@@ -79,6 +79,7 @@ class AdminController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role_id' => $editorRoleId,
+            'email_verified_at' => now(), // Editor users are always verified
         ]);
 
         return redirect()->route('admin.users')->with('success', 'Editor created');
