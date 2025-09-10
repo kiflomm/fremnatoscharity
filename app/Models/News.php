@@ -14,6 +14,7 @@ class News extends Model
         'attachment_url',
         'news_description',
         'created_by',
+        'archived',
     ];
 
     /**
@@ -38,6 +39,46 @@ class News extends Model
     public function likes(): HasMany
     {
         return $this->hasMany(NewsLike::class);
+    }
+
+    /**
+     * Archive this news item.
+     */
+    public function archive(): bool
+    {
+        return $this->update(['archived' => true]);
+    }
+
+    /**
+     * Unarchive this news item.
+     */
+    public function unarchive(): bool
+    {
+        return $this->update(['archived' => false]);
+    }
+
+    /**
+     * Check if this news item is archived.
+     */
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    /**
+     * Scope to get only non-archived news.
+     */
+    public function scopeNotArchived($query)
+    {
+        return $query->where('archived', false);
+    }
+
+    /**
+     * Scope to get only archived news.
+     */
+    public function scopeArchived($query)
+    {
+        return $query->where('archived', true);
     }
 }
 

@@ -15,6 +15,7 @@ class PublicNewsController extends Controller
     public function index(Request $request): Response
     {
         $query = News::query()
+            ->notArchived()
             ->withCount(['comments', 'likes'])
             ->with(['comments.user', 'likes'])
             ->latest('created_at');

@@ -20,7 +20,8 @@ class NewsService
                     'title' => $post->news_title,
                     'content' => $post->news_description,
                     'excerpt' => str(\strip_tags($post->news_description))->limit(140)->toString(),
-                    'status' => 'published',
+                    'status' => $post->archived ? 'archived' : 'published',
+                    'archived' => $post->archived,
                     'author' => [
                         'name' => $post->author?->name ?? 'Unknown',
                         'email' => $post->author?->email ?? '',
@@ -107,6 +108,16 @@ class NewsService
     public function deleteNews(News $news): bool
     {
         return $news->delete();
+    }
+
+    public function archiveNews(News $news): bool
+    {
+        return $news->archive();
+    }
+
+    public function unarchiveNews(News $news): bool
+    {
+        return $news->unarchive();
     }
 
     public function getNewsWithDetails(News $news): array

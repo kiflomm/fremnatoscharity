@@ -40,6 +40,8 @@ interface NewsPost {
     comments_count: number;
     likes_count?: number;
     featured_image?: string;
+    archived: boolean;
+    status: string;
 }
 
 interface AdminNewsProps {
@@ -51,6 +53,9 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
     const [openCreate, setOpenCreate] = useState(false);
     const [editNewsId, setEditNewsId] = useState<number | null>(null);
     const [deleteNewsId, setDeleteNewsId] = useState<number | null>(null);
+    const [archiveNewsId, setArchiveNewsId] = useState<number | null>(null);
+    const [unarchiveNewsId, setUnarchiveNewsId] = useState<number | null>(null);
+    const [query, setQuery] = useState('');
     const { data, setData, post, processing, reset, errors, clearErrors } = useForm({
         news_title: '',
         news_description: '',
@@ -64,23 +69,21 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
         return needsUrl ? baseValid && data.attachment_url.trim().length > 0 : baseValid;
     }, [data]);
 
+    const filteredPosts = useMemo(() => {
+        if (!query.trim()) return posts;
+        const q = query.toLowerCase();
+        return posts.filter(post => 
+            post.title.toLowerCase().includes(q) || 
+            post.content.toLowerCase().includes(q) || 
+            post.author.name.toLowerCase().includes(q)
+        );
+    }, [posts, query]);
+
     const closeCreate = () => {
         setOpenCreate(false);
         clearErrors();
         reset('news_title', 'news_description', 'attachment_type', 'attachment_url');
     };
-
-    const [query, setQuery] = useState('');
-    const filteredPosts = useMemo(() => {
-        const q = query.trim().toLowerCase();
-        if (!q) return posts;
-        return posts.filter((p) => {
-            const inTitle = p.title?.toLowerCase().includes(q);
-            const inContent = p.content?.toLowerCase().includes(q) || p.excerpt?.toLowerCase().includes(q);
-            const inAuthor = `${p.author?.name ?? ''} ${p.author?.email ?? ''}`.toLowerCase().includes(q);
-            return inTitle || inContent || inAuthor;
-        });
-    }, [posts, query]);
     
 
     const truncateText = (text: string, maxLength: number) => {
@@ -156,6 +159,11 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <h3 className="font-medium text-lg">{post.title}</h3>
+                                                {post.archived && (
+                                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                                        Archived
+                                                    </span>
+                                                )}
                                             </div>
                                             <p className="text-sm text-muted-foreground mb-2">
                                                 {truncateText(post.excerpt || post.content, 150)}
@@ -202,6 +210,11 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                         >
                                             Edit
                                         </Button>
+                                        {post.archived ? (
+                                            <Button variant="outline" size="sm" onClick={() => setUnarchiveNewsId(post.id)}>Unarchive</Button>
+                                        ) : (
+                                            <Button variant="outline" size="sm" onClick={() => setArchiveNewsId(post.id)}>Archive</Button>
+                                        )}
                                         <Button variant="destructive" size="sm" onClick={() => setDeleteNewsId(post.id)}>Delete</Button>
                                     </div>
                                     {/* Desktop actions */}
@@ -228,6 +241,11 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                                 >
                                                     Edit News
                                                 </DropdownMenuItem>
+                                                {post.archived ? (
+                                                    <DropdownMenuItem onClick={() => setUnarchiveNewsId(post.id)}>Unarchive News</DropdownMenuItem>
+                                                ) : (
+                                                    <DropdownMenuItem onClick={() => setArchiveNewsId(post.id)}>Archive News</DropdownMenuItem>
+                                                )}
                                                 <DropdownMenuItem className="text-red-600" onClick={() => setDeleteNewsId(post.id)}>Delete News</DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
@@ -432,6 +450,62 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                 }}
                             >
                                 Delete
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                {/* Archive News AlertDialog */}
+                <AlertDialog open={archiveNewsId !== null} onOpenChange={(open) => { if (!open) setArchiveNewsId(null); }}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Archive this news?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This news will be hidden from the public news page but will remain visible in the admin dashboard with an archived label.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setArchiveNewsId(null)}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={() => {
+                                    if (archiveNewsId === null) return;
+                                    router.post(`/admin/news/${archiveNewsId}/archive`, {}, {
+                                        onSuccess: () => {
+                                            setArchiveNewsId(null);
+                                            router.reload({ only: ['posts', 'totalPosts'] });
+                                        },
+                                    });
+                                }}
+                            >
+                                Archive
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                {/* Unarchive News AlertDialog */}
+                <AlertDialog open={unarchiveNewsId !== null} onOpenChange={(open) => { if (!open) setUnarchiveNewsId(null); }}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Unarchive this news?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This news will be made visible on the public news page again.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setUnarchiveNewsId(null)}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={() => {
+                                    if (unarchiveNewsId === null) return;
+                                    router.post(`/admin/news/${unarchiveNewsId}/unarchive`, {}, {
+                                        onSuccess: () => {
+                                            setUnarchiveNewsId(null);
+                                            router.reload({ only: ['posts', 'totalPosts'] });
+                                        },
+                                    });
+                                }}
+                            >
+                                Unarchive
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>

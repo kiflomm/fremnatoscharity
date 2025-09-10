@@ -67,4 +67,18 @@ class AdminNewsController extends BaseController
 
         return $this->successResponse('Comment deleted successfully');
     }
+
+    public function archive(News $news)
+    {
+        $this->newsService->archiveNews($news);
+
+        return $this->successResponse('News archived successfully');
+    }
+
+    public function unarchive(News $news)
+    {
+        $this->newsService->unarchiveNews($news);
+
+        return $this->successResponse('News unarchived successfully');
+    }
 }

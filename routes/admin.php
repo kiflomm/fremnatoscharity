@@ -19,4 +19,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     // News resource
     Route::resource('news', AdminNewsController::class);
     Route::delete('/news/{news}/comments/{comment}', [AdminNewsController::class, 'destroyComment'])->name('news.comments.destroy');
+    Route::post('/news/{news}/archive', [AdminNewsController::class, 'archive'])->name('news.archive');
+    Route::post('/news/{news}/unarchive', [AdminNewsController::class, 'unarchive'])->name('news.unarchive');
 });
