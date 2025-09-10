@@ -14,7 +14,7 @@ class NewsService
 {
     public function getAllNews(): Collection
     {
-        return News::with(['author'])
+        return News::with(['author', 'imageAttachments', 'videoAttachments'])
             ->withCount(['comments', 'likes'])
             ->latest('created_at')
             ->get()
@@ -42,6 +42,29 @@ class NewsService
                     'comments_count' => $post->comments_count,
                     'likes_count' => $post->likes_count,
                     'featured_image' => $post->attachment_url,
+                    'attachments' => [
+                        'images' => $post->imageAttachments
+                            ->sortBy('display_order')
+                            ->values()
+                            ->map(function (\App\Models\NewsImageAttachment $img) {
+                                return [
+                                    'id' => $img->id,
+                                    'url' => $img->url,
+                                    'order' => $img->display_order,
+                                ];
+                            }),
+                        'videos' => $post->videoAttachments
+                            ->sortBy('display_order')
+                            ->values()
+                            ->map(function (\App\Models\NewsVideoAttachment $vid) {
+                                return [
+                                    'id' => $vid->id,
+                                    'embedUrl' => $vid->embed_url,
+                                    'provider' => $vid->provider,
+                                    'order' => $vid->display_order,
+                                ];
+                            }),
+                    ],
                 ];
             });
     }
@@ -92,7 +115,9 @@ class NewsService
                 $order = isset($imagesOrder[$index]) ? (int) $imagesOrder[$index] : $index;
                 $disk = 'public';
                 $path = $file->store('news/images', $disk);
-                $url = Storage::disk($disk)->url($path);
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
+                $fs = Storage::disk($disk);
+                $url = $fs->url($path);
                 $imageInfo = @getimagesize($file->getRealPath());
                 $width = $imageInfo !== false ? ($imageInfo[0] ?? null) : null;
                 $height = $imageInfo !== false ? ($imageInfo[1] ?? null) : null;
@@ -127,7 +152,7 @@ class NewsService
                 'provider' => 'youtube',
                 'provider_video_id' => $videoId,
                 'original_url' => $url,
-                'embed_url' => 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1',
+                'embed_url' => 'https://www.youtube.com/embed/' . $videoId . '?rel=0&modestbranding=1',
                 'display_order' => $order,
             ]);
         }
@@ -144,26 +169,31 @@ class NewsService
             'news_description' => $data['news_description'],
         ]);
 
-        // Optional: allow replacing attachments on update if new ones are provided
-        $images = $request->file('images');
-        $videos = (array) $request->input('videos', []);
-        if (is_array($images) || count($videos) > 0) {
-            // Clear existing attachments if new ones provided
-            $news->imageAttachments()->delete();
-            $news->videoAttachments()->delete();
-
-            // Re-add using same logic as create
-            $this->createNews($request, $news->created_by)->fresh(); // temporary to reuse logic? No, better duplicate minimal logic below
+        // Images: reorder/remove existing and append new
+        /** @var array<int, int>|null $existingImageIds */
+        $existingImageIds = $request->input('existing_image_ids');
+        $existingImagesOrder = (array) $request->input('existing_images_order', []);
+        if (is_array($existingImageIds)) {
+            $keepIds = array_map('intval', $existingImageIds);
+            $news->imageAttachments()->whereNotIn('id', $keepIds)->delete();
+            foreach ($keepIds as $idx => $id) {
+                $order = isset($existingImagesOrder[$idx]) ? (int) $existingImagesOrder[$idx] : $idx;
+                $news->imageAttachments()->where('id', $id)->update(['display_order' => $order]);
+            }
         }
 
-        // Re-add images
-        $imagesOrder = (array) $request->input('images_order', []);
-        if (is_array($images)) {
-            foreach ($images as $index => $file) {
-                $order = isset($imagesOrder[$index]) ? (int) $imagesOrder[$index] : $index;
+        /** @var array<int, \Illuminate\Http\UploadedFile>|null $newImages */
+        $newImages = $request->file('images');
+        $newImagesOrder = (array) $request->input('images_order', []);
+        $orderOffset = is_array($existingImageIds) ? count($existingImageIds) : 0;
+        if (is_array($newImages)) {
+            foreach ($newImages as $index => $file) {
+                $order = isset($newImagesOrder[$index]) ? (int) $newImagesOrder[$index] + $orderOffset : ($index + $orderOffset);
                 $disk = 'public';
                 $path = $file->store('news/images', $disk);
-                $url = Storage::disk($disk)->url($path);
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
+                $fs = Storage::disk($disk);
+                $url = $fs->url($path);
                 $imageInfo = @getimagesize($file->getRealPath());
                 $width = $imageInfo !== false ? ($imageInfo[0] ?? null) : null;
                 $height = $imageInfo !== false ? ($imageInfo[1] ?? null) : null;
@@ -181,25 +211,29 @@ class NewsService
             }
         }
 
-        // Re-add videos
-        $videosOrder = (array) $request->input('videos_order', []);
-        foreach ($videos as $index => $url) {
-            if (!is_string($url) || $url === '') {
-                continue;
+        // Videos: if provided, replace with the provided list and order. If not provided, keep as-is
+        $videos = (array) $request->input('videos', []);
+        if (count($videos) > 0) {
+            $news->videoAttachments()->delete();
+            $videosOrder = (array) $request->input('videos_order', []);
+            foreach ($videos as $index => $url) {
+                if (!is_string($url) || $url === '') {
+                    continue;
+                }
+                $videoId = $this->extractYouTubeId($url);
+                if (!$videoId) {
+                    continue;
+                }
+                $order = isset($videosOrder[$index]) ? (int) $videosOrder[$index] : $index;
+                NewsVideoAttachment::create([
+                    'news_id' => $news->id,
+                    'provider' => 'youtube',
+                    'provider_video_id' => $videoId,
+                    'original_url' => $url,
+                    'embed_url' => 'https://www.youtube.com/embed/' . $videoId . '?rel=0&modestbranding=1',
+                    'display_order' => $order,
+                ]);
             }
-            $videoId = $this->extractYouTubeId($url);
-            if (!$videoId) {
-                continue;
-            }
-            $order = isset($videosOrder[$index]) ? (int) $videosOrder[$index] : $index;
-            NewsVideoAttachment::create([
-                'news_id' => $news->id,
-                'provider' => 'youtube',
-                'provider_video_id' => $videoId,
-                'original_url' => $url,
-                'embed_url' => 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1',
-                'display_order' => $order,
-            ]);
         }
 
         return $news->refresh();
@@ -232,6 +266,7 @@ class NewsService
             'attachments' => [
                 'images' => $news->imageAttachments->map(function (NewsImageAttachment $img) {
                     return [
+                        'id' => $img->id,
                         'url' => $img->url,
                         'width' => $img->width,
                         'height' => $img->height,
@@ -240,6 +275,7 @@ class NewsService
                 }),
                 'videos' => $news->videoAttachments->map(function (NewsVideoAttachment $vid) {
                     return [
+                        'id' => $vid->id,
                         'embedUrl' => $vid->embed_url,
                         'provider' => $vid->provider,
                         'order' => $vid->display_order,

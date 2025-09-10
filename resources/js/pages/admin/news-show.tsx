@@ -1,6 +1,7 @@
 import { router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Calendar, Heart, MessageSquare, Trash2, User } from 'lucide-react';
+import AttachmentsCarousel from '@/components/news/AttachmentsCarousel';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,8 +25,10 @@ type News = {
     id: number;
     title: string;
     description: string;
-    attachmentType: 'image' | 'video' | 'none';
-    attachmentUrl?: string | null;
+    attachments: {
+        images: Array<{ url: string; width?: number | null; height?: number | null; order: number }>;
+        videos: Array<{ embedUrl: string; provider: string; order: number }>;
+    };
     likesCount: number;
     createdAt?: string | null;
     comments: Comment[];
@@ -41,24 +44,11 @@ export default function AdminNewsShow() {
         <AppLayout breadcrumbs={[{ title: 'Dashboard', href: '/admin/dashboard' }, { title: 'News', href: '/admin/news' }, { title: news.title, href: `/admin/news/${news.id}` }]}>
             <div className="flex h-full flex-1 flex-col gap-6 p-4 sm:p-6 max-w-5xl">
                 <article className="rounded-2xl border bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/50 shadow-sm overflow-hidden">
-                    {(news.attachmentType === 'image' && news.attachmentUrl) ? (
-                        <div className="aspect-video bg-muted overflow-hidden">
-                            <img src={news.attachmentUrl} alt={news.title} className="w-full h-full object-cover" />
-                        </div>
-                    ) : null}
-                    {(news.attachmentType === 'video' && news.attachmentUrl) ? (
-                        <div className="aspect-video bg-black">
-                            <iframe
-                                src={news.attachmentUrl}
-                                className="w-full h-full"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowFullScreen={true}
-                                referrerPolicy="strict-origin-when-cross-origin"
-                                loading="lazy"
-                                title="YouTube video player"
-                            />
-                        </div>
-                    ) : null}
+                    <AttachmentsCarousel
+                        title={news.title}
+                        images={news.attachments.images}
+                        videos={news.attachments.videos}
+                    />
 
                     <div className="p-6 sm:p-8">
                         <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">{news.title}</h1>
