@@ -42,15 +42,27 @@ export default function StoriesByCategory() {
   return (
     <NewsLayout 
       title={selected ? selected.title : props.category}
-      newsItems={items.map(i => ({
-        id: i.id,
-        title: i.title,
-        description: i.description,
-        attachments: i.attachments,
-        commentsCount: i.commentsCount,
-        likesCount: i.likesCount,
-        createdAt: i.createdAt,
-      }))}
+      newsItems={items.map(i => {
+        const images = i.attachments?.images ?? [];
+        const videos = i.attachments?.videos ?? [];
+        const ordered = [
+          ...images.map(a => ({ kind: 'image' as const, order: a.order, url: a.url })),
+          ...videos.map(a => ({ kind: 'video' as const, order: a.order, url: a.embedUrl })),
+        ].sort((a, b) => a.order - b.order);
+        const first = ordered[0];
+        const attachmentType = first ? (first.kind === 'image' ? 'image' : 'video') : 'none';
+        const attachmentUrl = first && first.kind === 'image' ? first.url : null;
+        return {
+          id: i.id,
+          title: i.title,
+          description: i.description,
+          attachmentType,
+          attachmentUrl,
+          commentsCount: i.commentsCount,
+          likesCount: i.likesCount,
+          createdAt: i.createdAt,
+        };
+      })}
       selectedNewsId={selectedId}
       onNewsSelect={(id) => { setSelectedId(id); setViewMode('detail'); }}
       showFilters={false}
