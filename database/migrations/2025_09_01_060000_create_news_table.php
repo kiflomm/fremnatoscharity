@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('attachment_url')->nullable();
             $table->longText('news_description');
             $table->foreignId('created_by')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->boolean('archived')->default(false);
             $table->timestamps();
         });
     }

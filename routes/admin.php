@@ -17,6 +17,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     
     // Stories resource
     Route::resource('stories', AdminStoryController::class)->except(['show']);
+    Route::get('/stories/{story}', [AdminStoryController::class, 'show'])->name('stories.show');
+    Route::post('/stories/{story}/archive', [AdminStoryController::class, 'archive'])->name('stories.archive');
+    Route::post('/stories/{story}/unarchive', [AdminStoryController::class, 'unarchive'])->name('stories.unarchive');
     
     // News resource
     Route::resource('news', AdminNewsController::class);

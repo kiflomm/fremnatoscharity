@@ -10,12 +10,9 @@ class Story extends Model
 {
     protected $fillable = [
         'story_title',
-        'attachment_type',
-        'attachment_url',
         'story_description',
-        'beneficiary_name',
-        'beneficiary_age_group',
-        'beneficiary_gender',
+        'category',
+        'archived',
         'created_by',
     ];
 
@@ -41,6 +38,22 @@ class Story extends Model
     public function likes(): HasMany
     {
         return $this->hasMany(StoryLike::class);
+    }
+
+    /**
+     * Image attachments for this story.
+     */
+    public function imageAttachments(): HasMany
+    {
+        return $this->hasMany(\App\Models\StoryImageAttachment::class);
+    }
+
+    /**
+     * Video attachments for this story.
+     */
+    public function videoAttachments(): HasMany
+    {
+        return $this->hasMany(\App\Models\StoryVideoAttachment::class);
     }
 }
 

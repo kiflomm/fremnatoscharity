@@ -17,10 +17,9 @@ return new class extends Migration
             $table->enum('attachment_type', ['image', 'video', 'none'])->default('none');
             $table->string('attachment_url')->nullable();
             $table->longText('story_description');
-            $table->string('beneficiary_name')->nullable();
-            $table->enum('beneficiary_age_group', ['child', 'youth', 'elder']);
-            $table->enum('beneficiary_gender', ['male', 'female']);
+            $table->enum('category', ['elders', 'childrens', 'disabled'])->index();
             $table->foreignId('created_by')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->boolean('archived')->default(false);
             $table->timestamps();
         });
     }

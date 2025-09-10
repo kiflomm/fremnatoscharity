@@ -16,11 +16,13 @@ class StoreStoryRequest extends FormRequest
         return [
             'story_title' => ['required', 'string', 'max:255'],
             'story_description' => ['required', 'string'],
-            'attachment_type' => ['required', 'in:image,video,none'],
-            'attachment_url' => ['nullable', 'url', 'max:2048'],
-            'beneficiary_name' => ['nullable', 'string', 'max:255'],
-            'beneficiary_age_group' => ['required', 'in:child,youth,elder'],
-            'beneficiary_gender' => ['required', 'in:male,female'],
+            'category' => ['required', 'in:elders,childrens,disabled'],
+            'images' => ['sometimes', 'array'],
+            'images.*' => ['file', 'image'],
+            'images_order' => ['sometimes', 'array'],
+            'videos' => ['sometimes', 'array'],
+            'videos.*' => ['string'],
+            'videos_order' => ['sometimes', 'array'],
         ];
     }
 
@@ -29,22 +31,9 @@ class StoreStoryRequest extends FormRequest
         return [
             'story_title.required' => 'The story title is required.',
             'story_description.required' => 'The story description is required.',
-            'attachment_type.required' => 'The attachment type is required.',
-            'attachment_type.in' => 'The attachment type must be image, video, or none.',
-            'attachment_url.url' => 'The attachment URL must be a valid URL.',
-            'beneficiary_age_group.required' => 'The beneficiary age group is required.',
-            'beneficiary_age_group.in' => 'The beneficiary age group must be child, youth, or elder.',
-            'beneficiary_gender.required' => 'The beneficiary gender is required.',
-            'beneficiary_gender.in' => 'The beneficiary gender must be male or female.',
+            'category.required' => 'The category is required.',
+            'category.in' => 'Category must be elders, childrens, or disabled.',
         ];
     }
-
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            if (in_array($this->input('attachment_type'), ['image', 'video']) && empty($this->input('attachment_url'))) {
-                $validator->errors()->add('attachment_url', 'Attachment URL is required for images or videos.');
-            }
-        });
-    }
+    
 }
