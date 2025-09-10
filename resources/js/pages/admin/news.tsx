@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { Newspaper, Search, MoreHorizontal, Plus, Calendar, User, MessageSquare, Heart } from 'lucide-react';
+import { Newspaper, Search, MoreHorizontal, Plus, Calendar, User, MessageSquare, Heart, Image as ImageIcon, Upload, Trash2, ArrowUp, ArrowDown, Video, PlusCircle } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -56,17 +56,25 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
     const [archiveNewsId, setArchiveNewsId] = useState<number | null>(null);
     const [unarchiveNewsId, setUnarchiveNewsId] = useState<number | null>(null);
     const [query, setQuery] = useState('');
-    const { data, setData, post, processing, reset, errors, clearErrors } = useForm({
+    const { data, setData, post, processing, reset, errors, clearErrors } = useForm<{
+        news_title: string;
+        news_description: string;
+        attachment_type: 'image' | 'video' | 'none';
+        attachment_url: string;
+        images?: string;
+    }>({
         news_title: '',
         news_description: '',
-        attachment_type: 'none' as 'image' | 'video' | 'none',
+        attachment_type: 'none',
         attachment_url: '',
     });
+    const [images, setImages] = useState<File[]>([]);
+    const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+    const [videos, setVideos] = useState<string[]>([]);
 
     const canSubmit = useMemo(() => {
-        const baseValid = data.news_title.trim().length > 0 && data.news_description.trim().length > 0;
-        const needsUrl = data.attachment_type === 'image' || data.attachment_type === 'video';
-        return needsUrl ? baseValid && data.attachment_url.trim().length > 0 : baseValid;
+        const baseValid = data.news_title?.trim()?.length > 0 && data.news_description?.trim()?.length > 0;
+        return Boolean(baseValid);
     }, [data]);
 
     const filteredPosts = useMemo(() => {
@@ -82,7 +90,10 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
     const closeCreate = () => {
         setOpenCreate(false);
         clearErrors();
-        reset('news_title', 'news_description', 'attachment_type', 'attachment_url');
+        reset('news_title', 'news_description');
+        setImages([]);
+        setImagePreviews([]);
+        setVideos([]);
     };
     
 
@@ -258,7 +269,7 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
 
                 {/* Create News Dialog */}
                 <Dialog open={openCreate} onOpenChange={(open) => { if (!open) closeCreate(); else setOpenCreate(true); }}>
-                    <DialogContent>
+                    <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>Add news</DialogTitle>
                         </DialogHeader>
@@ -267,7 +278,24 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 if (!canSubmit) return;
-                                post('/admin/news', {
+                                const form = new FormData();
+                                form.append('news_title', (data as any).news_title);
+                                form.append('news_description', (data as any).news_description);
+                                // append images and orders
+                                images.forEach((file, idx) => {
+                                    form.append('images[]', file);
+                                });
+                                images.forEach((_, idx) => {
+                                    form.append('images_order[]', String(idx));
+                                });
+                                // append videos and orders
+                                videos.forEach((url, idx) => {
+                                    form.append('videos[]', url);
+                                });
+                                videos.forEach((_, idx) => {
+                                    form.append('videos_order[]', String(idx));
+                                });
+                                router.post('/admin/news', form, {
                                     onSuccess: () => {
                                         closeCreate();
                                         router.reload({ only: ['posts', 'totalPosts'] });
@@ -302,39 +330,161 @@ export default function AdminNews({ posts, totalPosts }: AdminNewsProps) {
                                     <p className="text-xs text-red-600">{errors.news_description}</p>
                                 ) : null}
                             </div>
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="space-y-2">
-                                    <Label htmlFor="attachment-type">Attachment</Label>
-                                    <select
-                                        id="attachment-type"
-                                        className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                        value={data.attachment_type}
-                                        onChange={(e) => setData('attachment_type', e.target.value as 'image' | 'video' | 'none')}
-                                    >
-                                        <option value="none">None</option>
-                                        <option value="image">Image</option>
-                                        <option value="video">Video</option>
-                                    </select>
-                                    {errors.attachment_type ? (
-                                        <p className="text-xs text-red-600">{errors.attachment_type}</p>
-                                    ) : null}
-                                </div>
-                                {data.attachment_type !== 'none' ? (
-                                    <div className="space-y-2">
-                                        <Label htmlFor="attachment-url">Attachment URL (required)</Label>
-                                        <Input
-                                            id="attachment-url"
-                                            value={data.attachment_url}
-                                            onChange={(e) => setData('attachment_url', e.target.value)}
-                                            placeholder="https://..."
-                                            type="url"
-                                            required
-                                        />
-                                        {errors.attachment_url ? (
-                                            <p className="text-xs text-red-600">{errors.attachment_url}</p>
-                                        ) : null}
+                            {/* Attachments */}
+                            <div className="space-y-8">
+                                {/* Images */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2">
+                                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                                        <Label className="m-0">Images</Label>
+                                        <span className="text-xs text-muted-foreground">Upload one or more images</span>
                                     </div>
-                                ) : null}
+                                    <div
+                                        className="rounded-lg border border-dashed p-4 text-center hover:bg-muted/30 transition cursor-pointer"
+                                        onClick={() => {
+                                            const el = document.getElementById('news-images-input') as HTMLInputElement | null;
+                                            el?.click();
+                                        }}
+                                    >
+                                        <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                                            <Upload className="h-4 w-4" />
+                                            <span className="text-sm">Click to choose files</span>
+                                        </div>
+                                        <input
+                                            id="news-images-input"
+                                            type="file"
+                                            className="hidden"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={(e) => {
+                                                const files = Array.from(e.target.files || []);
+                                                if (files.length === 0) return;
+                                                setImages(prev => [...prev, ...files]);
+                                                const newPreviews = files.map(f => URL.createObjectURL(f));
+                                                setImagePreviews(prev => [...prev, ...newPreviews]);
+                                            }}
+                                        />
+                                    </div>
+                                    {imagePreviews.length > 0 && (
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                            {imagePreviews.map((src, idx) => (
+                                                <div key={idx} className="relative group border rounded-lg overflow-hidden">
+                                                    <img src={src} alt={`preview-${idx}`} className="w-full h-32 object-cover" />
+                                                    <div className="absolute left-2 top-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-black/60 text-white">{idx + 1}</div>
+                                                    <div className="absolute inset-x-0 bottom-0 p-1.5 flex items-center justify-between bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition">
+                                                        <div className="flex gap-1">
+                                                            <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                                if (idx <= 0) return;
+                                                                setImages(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx - 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                                setImagePreviews(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx - 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                            }}><ArrowUp className="h-3.5 w-3.5" /></Button>
+                                                            <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                                if (idx >= images.length - 1) return;
+                                                                setImages(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx + 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                                setImagePreviews(prev => {
+                                                                    const copy = [...prev];
+                                                                    const [it] = copy.splice(idx, 1);
+                                                                    copy.splice(idx + 1, 0, it);
+                                                                    return copy;
+                                                                });
+                                                            }}><ArrowDown className="h-3.5 w-3.5" /></Button>
+                                                        </div>
+                                                        <Button type="button" size="icon" variant="destructive" className="h-7 w-7" onClick={() => {
+                                                            setImages(prev => prev.filter((_, i) => i !== idx));
+                                                            setImagePreviews(prev => prev.filter((_, i) => i !== idx));
+                                                        }}><Trash2 className="h-3.5 w-3.5" /></Button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {errors.images && (
+                                        <p className="text-xs text-red-600">{String(errors.images)}</p>
+                                    )}
+                                </div>
+
+                                {/* Videos */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2">
+                                        <Video className="h-4 w-4 text-muted-foreground" />
+                                        <Label className="m-0">YouTube videos</Label>
+                                        <span className="text-xs text-muted-foreground">Paste one or more URLs</span>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            placeholder="https://youtube.com/watch?v=..."
+                                            onKeyDown={(e) => {
+                                                const target = e.target as HTMLInputElement;
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    const val = target.value.trim();
+                                                    if (val) {
+                                                        setVideos(prev => [...prev, val]);
+                                                        target.value = '';
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                        <Button type="button" variant="secondary" onClick={(e) => {
+                                            const input = (e.currentTarget.previousSibling as HTMLInputElement);
+                                            if (input && 'value' in input) {
+                                                const val = (input as HTMLInputElement).value.trim();
+                                                if (val) {
+                                                    setVideos(prev => [...prev, val]);
+                                                    (input as HTMLInputElement).value = '';
+                                                }
+                                            }
+                                        }}>
+                                            <PlusCircle className="h-4 w-4 mr-1" /> Add
+                                        </Button>
+                                    </div>
+                                    {videos.length > 0 && (
+                                        <div className="space-y-2 mt-1">
+                                            {videos.map((url, idx) => (
+                                                <div key={idx} className="flex items-center gap-2 border rounded-md p-2">
+                                                    <div className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted">{idx + 1}</div>
+                                                    <div className="flex-1 truncate text-sm" title={url}>{url}</div>
+                                                    <div className="flex gap-1">
+                                                        <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                            if (idx <= 0) return;
+                                                            setVideos(prev => {
+                                                                const copy = [...prev];
+                                                                const [it] = copy.splice(idx, 1);
+                                                                copy.splice(idx - 1, 0, it);
+                                                                return copy;
+                                                            });
+                                                        }}><ArrowUp className="h-3.5 w-3.5" /></Button>
+                                                        <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={() => {
+                                                            if (idx >= videos.length - 1) return;
+                                                            setVideos(prev => {
+                                                                const copy = [...prev];
+                                                                const [it] = copy.splice(idx, 1);
+                                                                copy.splice(idx + 1, 0, it);
+                                                                return copy;
+                                                            });
+                                                        }}><ArrowDown className="h-3.5 w-3.5" /></Button>
+                                                        <Button type="button" size="icon" variant="destructive" className="h-7 w-7" onClick={() => setVideos(prev => prev.filter((_, i) => i !== idx))}><Trash2 className="h-3.5 w-3.5" /></Button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <DialogFooter>
                                 <Button type="button" variant="ghost" onClick={closeCreate} disabled={processing}>Cancel</Button>

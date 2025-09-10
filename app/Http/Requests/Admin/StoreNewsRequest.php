@@ -16,7 +16,19 @@ class StoreNewsRequest extends FormRequest
         return [
             'news_title' => ['required', 'string', 'max:255'],
             'news_description' => ['required', 'string'],
-            'attachment_type' => ['required', 'in:image,video,none'],
+            // New multi-attachment inputs
+            'images' => ['sometimes', 'array'],
+            'images.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:10240'],
+            'images_order' => ['sometimes', 'array'],
+            'images_order.*' => ['integer', 'min:0'],
+
+            'videos' => ['sometimes', 'array'],
+            'videos.*' => ['string', 'url', 'max:2048'],
+            'videos_order' => ['sometimes', 'array'],
+            'videos_order.*' => ['integer', 'min:0'],
+
+            // Backward compatibility (single attachment fields); will be ignored if arrays provided
+            'attachment_type' => ['sometimes', 'in:image,video,none'],
             'attachment_url' => ['nullable', 'url', 'max:2048'],
         ];
     }
@@ -35,15 +47,30 @@ class StoreNewsRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if (in_array($this->input('attachment_type'), ['image', 'video']) && empty($this->input('attachment_url'))) {
-                $validator->errors()->add('attachment_url', 'Attachment URL is required for images or videos.');
+            $hasImages = is_array($this->file('images')) && count($this->file('images')) > 0;
+            $hasVideos = is_array($this->input('videos')) && count($this->input('videos')) > 0;
+
+            if (!$hasImages && !$hasVideos) {
+                // Allow news without attachments, so no error here.
             }
 
-            if ($this->input('attachment_type') === 'video' && !empty($this->input('attachment_url'))) {
-                $videoId = $this->extractYouTubeId($this->input('attachment_url'));
-                if (!$videoId) {
-                    $validator->errors()->add('attachment_url', 'Please provide a valid YouTube link (watch, share, or embed URL).');
+            // Validate videos are valid YouTube URLs
+            if ($hasVideos) {
+                foreach ((array) $this->input('videos', []) as $idx => $url) {
+                    if (!is_string($url) || $url === '' || !$this->extractYouTubeId($url)) {
+                        $validator->errors()->add("videos.$idx", 'Please provide a valid YouTube link.');
+                    }
                 }
+            }
+
+            // Validate orders length match
+            $imagesOrder = (array) $this->input('images_order', []);
+            $videosOrder = (array) $this->input('videos_order', []);
+            if ($hasImages && count($imagesOrder) !== count($this->file('images'))) {
+                $validator->errors()->add('images_order', 'images_order length must match images length.');
+            }
+            if ($hasVideos && count($videosOrder) !== count((array) $this->input('videos'))) {
+                $validator->errors()->add('videos_order', 'videos_order length must match videos length.');
             }
         });
     }

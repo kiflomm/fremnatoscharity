@@ -42,6 +42,22 @@ class News extends Model
     }
 
     /**
+     * Image attachments associated with this news item.
+     */
+    public function imageAttachments(): HasMany
+    {
+        return $this->hasMany(NewsImageAttachment::class)->orderBy('display_order');
+    }
+
+    /**
+     * Video attachments associated with this news item.
+     */
+    public function videoAttachments(): HasMany
+    {
+        return $this->hasMany(NewsVideoAttachment::class)->orderBy('display_order');
+    }
+
+    /**
      * Archive this news item.
      */
     public function archive(): bool

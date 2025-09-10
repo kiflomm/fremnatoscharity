@@ -6,6 +6,7 @@ import { login } from '@/routes';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useTranslations } from '@/hooks/useTranslations';
+import AttachmentsCarousel from '@/components/news/AttachmentsCarousel';
 
 type Comment = {
   id: number;
@@ -18,8 +19,10 @@ type NewsItem = {
   id: number;
   title: string;
   description: string;
-  attachmentType: 'image' | 'video' | 'none';
-  attachmentUrl?: string | null;
+  attachments?: {
+    images: { url: string; width?: number | null; height?: number | null; order: number }[];
+    videos: { embedUrl: string; provider: string; order: number }[];
+  };
   comments?: Comment[];
   commentsCount: number;
   likesCount: number;
@@ -133,28 +136,11 @@ export default function NewsIndex() {
 
           {/* Article */}
           <article className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden mx-4 sm:mx-6 lg:mx-8">
-            {/* Featured Media */}
-            {safeSelectedNews.attachmentType === 'image' && safeSelectedNews.attachmentUrl && (
-              <div className="aspect-video bg-gray-100 dark:bg-slate-700 overflow-hidden">
-                <img
-                  src={safeSelectedNews.attachmentUrl}
-                  alt={safeSelectedNews.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-            
-            {safeSelectedNews.attachmentType === 'video' && safeSelectedNews.attachmentUrl && (
-              <div className="aspect-video bg-gray-900">
-                <iframe
-                  src={safeSelectedNews.attachmentUrl}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen={true}
-                  title="YouTube video player"
-                />
-              </div>
-            )}
+            <AttachmentsCarousel
+              title={safeSelectedNews.title}
+              images={safeSelectedNews.attachments?.images}
+              videos={safeSelectedNews.attachments?.videos}
+            />
 
             {/* Article Content */}
             <div className="p-6 lg:p-8">
@@ -304,36 +290,37 @@ export default function NewsIndex() {
                 {items.map((news) => (
                   <article key={news.id} className="group bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-md transition-all">
                     <button onClick={() => handleNewsSelect(news.id)} className="block w-full text-left">
-                  {/* Featured Image */}
-                  {news.attachmentType === 'image' && news.attachmentUrl && (
-                    <div className="aspect-video bg-gray-100 dark:bg-slate-700 overflow-hidden">
-                      <img
-                        src={news.attachmentUrl}
-                        alt={news.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  )}
-                  
-                  {/* Video Thumbnail */}
-                  {news.attachmentType === 'video' && news.attachmentUrl && (
-                    <div className="aspect-video bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-2">
-                          <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                          </svg>
-                        </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Video Content</p>
+                  {/* First attachment preview */}
+                  {(() => {
+                    const imgs = news.attachments?.images ?? [];
+                    const vids = news.attachments?.videos ?? [];
+                    const items = [
+                      ...imgs.map(a => ({ type: 'image' as const, order: a.order, data: a })),
+                      ...vids.map(a => ({ type: 'video' as const, order: a.order, data: a })),
+                    ].sort((a, b) => a.order - b.order);
+                    if (items.length === 0) return null;
+                    const item = items[0];
+                    return item.type === 'image' ? (
+                      <div className="aspect-video bg-gray-100 dark:bg-slate-700 overflow-hidden">
+                        <img src={(item.data as any).url} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="aspect-video bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-2">
+                            <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Video Content</p>
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   {/* Content */}
                   <div className="p-6">
                     <div className="mb-2 flex items-center justify-between">
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 capitalize">
-                        {news.attachmentType}
+                        {(news.attachments?.images?.length ?? 0) + (news.attachments?.videos?.length ?? 0)} attachments
                       </span>
                     </div>
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2">

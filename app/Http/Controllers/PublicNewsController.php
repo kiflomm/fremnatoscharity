@@ -17,7 +17,7 @@ class PublicNewsController extends Controller
         $query = News::query()
             ->notArchived()
             ->withCount(['comments', 'likes'])
-            ->with(['comments.user', 'likes'])
+            ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
             ->latest('created_at');
 
         // Filters: q (search), type (attachment_type), from/to (created_at range)
@@ -30,8 +30,13 @@ class PublicNewsController extends Controller
         }
 
         $type = $request->query('type');
-        if (in_array($type, ['image', 'video', 'none'], true)) {
-            $query->where('attachment_type', $type);
+        // Deprecated single attachment_type filter; maintain behavior by mapping to existence of attachments
+        if ($type === 'image') {
+            $query->whereHas('imageAttachments');
+        } elseif ($type === 'video') {
+            $query->whereHas('videoAttachments');
+        } elseif ($type === 'none') {
+            $query->doesntHave('imageAttachments')->doesntHave('videoAttachments');
         }
 
         $from = $request->query('from');
@@ -50,22 +55,25 @@ class PublicNewsController extends Controller
             ->paginate(10)
             ->appends($request->query())
             ->through(function (News $n) use ($authUserId) {
-                $attachmentUrl = $n->attachment_url;
-                if ($n->attachment_type === 'video') {
-                    $videoId = $this->extractYouTubeId($attachmentUrl ?? '');
-                    if ($videoId) {
-                        $attachmentUrl = 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1';
-                    }
-                }
-                
                 $isLiked = $authUserId ? $n->likes->contains('user_id', $authUserId) : false;
                 
                 return [
                     'id' => $n->id,
                     'title' => $n->news_title,
                     'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
-                    'attachmentType' => $n->attachment_type,
-                    'attachmentUrl' => $attachmentUrl,
+                    'attachments' => [
+                        'images' => $n->imageAttachments->map(fn($img) => [
+                            'url' => $img->url,
+                            'width' => $img->width,
+                            'height' => $img->height,
+                            'order' => $img->display_order,
+                        ]),
+                        'videos' => $n->videoAttachments->map(fn($vid) => [
+                            'embedUrl' => $vid->embed_url,
+                            'provider' => $vid->provider,
+                            'order' => $vid->display_order,
+                        ]),
+                    ],
                     'comments' => $n->comments->map(function ($c) {
                         return [
                             'id' => $c->id,
@@ -107,8 +115,19 @@ class PublicNewsController extends Controller
                 'id' => $news->id,
                 'title' => $news->news_title,
                 'description' => $news->news_description,
-                'attachmentType' => $news->attachment_type,
-                'attachmentUrl' => ($news->attachment_type === 'video' && ($id = $this->extractYouTubeId($news->attachment_url ?? ''))) ? ('https://www.youtube-nocookie.com/embed/' . $id . '?rel=0&modestbranding=1') : $news->attachment_url,
+                'attachments' => [
+                    'images' => $news->imageAttachments()->orderBy('display_order')->get()->map(fn($img) => [
+                        'url' => $img->url,
+                        'width' => $img->width,
+                        'height' => $img->height,
+                        'order' => $img->display_order,
+                    ]),
+                    'videos' => $news->videoAttachments()->orderBy('display_order')->get()->map(fn($vid) => [
+                        'embedUrl' => $vid->embed_url,
+                        'provider' => $vid->provider,
+                        'order' => $vid->display_order,
+                    ]),
+                ],
                 'createdAt' => $news->created_at?->toIso8601String(),
                 'comments' => $news->comments->map(function (NewsComment $c) {
                     return [

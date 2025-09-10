@@ -38,14 +38,14 @@ class AdminNewsController extends BaseController
 
     public function store(StoreNewsRequest $request)
     {
-        $this->newsService->createNews($request->validated(), Auth::id());
+        $this->newsService->createNews($request, Auth::id());
 
         return $this->successResponse('News created successfully', null, 'admin.news.index');
     }
 
     public function update(UpdateNewsRequest $request, News $news)
     {
-        $this->newsService->updateNews($news, $request->validated());
+        $this->newsService->updateNews($news, $request);
 
         return $this->successResponse('News updated successfully');
     }
