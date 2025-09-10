@@ -41,6 +41,53 @@ class PublicStoriesController extends Controller
         ]);
     }
 
+    private function listByCategory(string $category, Request $request): Response
+    {
+        $stories = Story::query()
+            ->where('category', $category)
+            ->where('archived', false)
+            ->with(['imageAttachments', 'videoAttachments'])
+            ->withCount(['comments', 'likes'])
+            ->latest('created_at')
+            ->paginate(10)
+            ->through(function (Story $s) {
+                return [
+                    'id' => $s->id,
+                    'title' => $s->story_title,
+                    'description' => str(\strip_tags($s->story_description))->limit(160)->toString(),
+                    'attachments' => [
+                        'images' => $s->imageAttachments->sortBy('display_order')->values()->map(function (\App\Models\StoryImageAttachment $img) {
+                            return [
+                                'url' => $img->url,
+                                'width' => $img->width,
+                                'height' => $img->height,
+                                'order' => $img->display_order,
+                            ];
+                        }),
+                        'videos' => $s->videoAttachments->sortBy('display_order')->values()->map(function (\App\Models\StoryVideoAttachment $vid) {
+                            return [
+                                'embedUrl' => $vid->embed_url,
+                                'provider' => $vid->provider,
+                                'order' => $vid->display_order,
+                            ];
+                        }),
+                    ],
+                    'commentsCount' => $s->comments_count,
+                    'likesCount' => $s->likes_count,
+                    'createdAt' => $s->created_at?->toIso8601String(),
+                ];
+            });
+
+        return Inertia::render('stories/category', [
+            'category' => $category,
+            'stories' => $stories,
+        ]);
+    }
+
+    public function elders(Request $request): Response { return $this->listByCategory('elders', $request); }
+    public function childrens(Request $request): Response { return $this->listByCategory('childrens', $request); }
+    public function disabled(Request $request): Response { return $this->listByCategory('disabled', $request); }
+
     public function show(Request $request, Story $story): Response
     {
         $story->load(['comments.user', 'likes']);
