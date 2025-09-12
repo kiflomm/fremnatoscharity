@@ -2,6 +2,7 @@ import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import FixedHeaderLayout from '@/layouts/FixedHeaderLayout';
 import { AboutSection, ContactSection, DonationSection, HeroSection } from '@/components/welcome';
+import DonationFormSection from '@/components/welcome/DonationFormSection';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
@@ -50,6 +51,7 @@ export default function Welcome() {
                 <HeroSection />
             </div>
             <DonationSection />
+            <DonationFormSection />
             <AboutSection />
             <ContactSection />
         </FixedHeaderLayout>

@@ -3,7 +3,9 @@
 import { useTranslation } from "react-i18next"
 import { motion, type Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Heart, Users, Target, Globe, MapPin, Calendar, Award } from "lucide-react" 
+import { ArrowRight, Heart, Users, Target, Globe, MapPin, Calendar, Award } from "lucide-react"
+import { usePage } from '@inertiajs/react'
+import { type SharedData } from '@/types' 
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -43,6 +45,17 @@ const statsVariants: Variants = {
 
 export default function HeroSection() {
   const { t } = useTranslation()
+  const { auth, isAuthenticated } = usePage<SharedData>().props
+
+  const handleDonateClick = () => {
+    if (isAuthenticated) {
+      // User is logged in, scroll to donation form section
+      document.getElementById('donation-form')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // User is not logged in, scroll to donation section (bank accounts)
+      document.getElementById('donate')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   const highlights = [
     {
@@ -100,7 +113,7 @@ export default function HeroSection() {
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300"
-                onClick={() => document.getElementById('donate')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={handleDonateClick}
               >
                 {t("hero.cta.donate", { defaultValue: "Donate Now" })}
                 <ArrowRight className="ml-2 size-5" />

@@ -7,6 +7,7 @@ use App\Http\Controllers\PublicNewsController;
 use App\Http\Controllers\PublicStoriesController;
 use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\HelpController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -65,5 +66,8 @@ Route::middleware(['public.only'])->group(function () {
     // Banks API for donation section
     Route::get('/api/banks', [BankController::class, 'index'])->name('api.banks.index');
 });
+
+// Help/Donation form route (accessible to all users)
+Route::get('/help', [HelpController::class, 'index'])->name('help');
 
 // Guest-specific routes are declared in routes/guest.php

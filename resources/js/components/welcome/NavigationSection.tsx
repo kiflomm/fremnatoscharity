@@ -12,12 +12,22 @@ import { motion } from 'framer-motion';
 
 export default function NavigationSection() {
     const page = usePage<SharedData>();
-    const { auth } = page.props;
+    const { auth, isAuthenticated } = page.props;
     const { t } = useTranslation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     // Determine role for conditional profile route
     const userRole = auth?.user?.role?.name ?? null;
     const profileHref = userRole === 'guest' ? '/guests/profile' : '/settings/profile';
+
+    const handleDonateClick = () => {
+        if (isAuthenticated) {
+            // User is logged in, scroll to donation form section
+            document.getElementById('donation-form')?.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            // User is not logged in, scroll to donation section (bank accounts)
+            document.getElementById('donate')?.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     
     return (
@@ -104,14 +114,16 @@ export default function NavigationSection() {
                                                     <BookOpen className="h-4 w-4" />
                                                     Disabled
                                                 </Link>
-                                                <Link 
-                                                    href="/#donation" 
+                                                <button 
+                                                    onClick={() => {
+                                                        handleDonateClick();
+                                                        setIsMobileMenuOpen(false);
+                                                    }}
                                                     className="flex items-center gap-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
-                                                    onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <DollarSign className="h-4 w-4" />
                                                     {t("nav.donate")}
-                                                </Link>
+                                                </button>
                                                 <Link 
                                                     href="/#about" 
                                                     className="flex items-center gap-2 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
@@ -194,10 +206,13 @@ export default function NavigationSection() {
                                                 Disabled
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
-                                            <Link href="/#donation" className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
+                                            <button 
+                                                onClick={handleDonateClick}
+                                                className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1 py-0.5 rounded-md transition-all duration-200"
+                                            >
                                                 <DollarSign className="h-3.5 w-3.5" />
                                                 {t("nav.donate")}
-                                            </Link>
+                                            </button>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/#about" className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Info className="h-3.5 w-3.5" />
