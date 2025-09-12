@@ -30,6 +30,12 @@ export interface SharedData {
     locale: string;
     availableLocales: string[];
     languageNames: Record<string, string>;
+    isAuthenticated: boolean;
+    user?: {
+        id: number;
+        name: string;
+        email: string;
+    } | null;
     [key: string]: unknown;
 }
 
