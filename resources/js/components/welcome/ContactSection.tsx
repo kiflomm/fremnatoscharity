@@ -201,6 +201,25 @@ export default function ContactSection() {
                         </a>
 
                         <a 
+                          href="https://youtube.com/@fremnatoscharity7176?si=hyaJaZxkDn2SOt9n" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="group/link flex items-center gap-3 sm:gap-4 p-3 sm:p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-slate-200/60 hover:border-blue-200 transition-all duration-300 hover:shadow-md"
+                        >
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center shadow-sm group-hover/link:shadow-md transition-shadow duration-300 flex-shrink-0">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        </svg>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact_section.youtube_label")}</p>
+                            <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300 truncate">
+                              @fremnatoscharity
+                            </p>
+                          </div>
+                        </a>
+
+                        <a 
                           href="tel:+251993110999" 
                           className="group/link flex items-center gap-3 sm:gap-4 p-3 sm:p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-slate-200/60 hover:border-blue-200 transition-all duration-300 hover:shadow-md"
                         >
