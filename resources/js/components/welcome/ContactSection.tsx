@@ -65,14 +65,6 @@ export default function ContactSection() {
           {/* Contact Form */}
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-primary">
-                <img 
-                  src="/images/slideshow/logo2.jpg" 
-                  alt="Freminatos Charity Logo" 
-                  className="h-5 w-5 object-contain rounded"
-                />
-                {t("contact_section.get_involved")}
-              </CardTitle>
               <CardDescription>{t("contact_section.form_description")}</CardDescription>
             </CardHeader>
             <CardContent>

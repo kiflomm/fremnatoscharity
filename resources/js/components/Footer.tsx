@@ -6,7 +6,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Mail, Phone } from "lucide-react"
+import { Mail, Phone, Youtube } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export default function Footer() {
   const { t } = useTranslation()
@@ -17,41 +19,45 @@ export default function Footer() {
       name: "LinkedIn",
       href: "#",
       icon: (
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#0A66C2" d="M22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          <path fill="#FFFFFF" d="M5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm-1.782 13.019H3.555V9h3.564v11.452zM20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286z"/>
         </svg>
       ),
-      color: "hover:bg-blue-500/20 hover:text-blue-400"
+      color: ""
     },
     {
       name: "X",
       href: "#",
       icon: (
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
+          <rect width="24" height="24" rx="4" fill="#000000"/>
+          <path fill="#FFFFFF" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
         </svg>
       ),
-      color: "hover:bg-gray-500/20 hover:text-gray-400"
+      color: ""
     },
     {
       name: "Facebook",
-      href: "#",
+      href: "https://www.facebook.com/people/Fremnatos-Charity-Organization/100069413436324/",
       icon: (
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+        <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
+          <rect width="24" height="24" rx="4" fill="#1877F2"/>
+          <path fill="#FFFFFF" d="M15.83 8.0h1.916V5.045S16.989 4.8 15.6 4.8c-2.39 0-4.17 1.592-4.17 4.518V12H8.4v3h3.03v6.854A12.034 12.034 0 0 0 12 22.8c.35 0 .697-.015 1.04-.043V15h3.02l.548-3h-3.568V9.645c0-1.003.269-1.645 1.79-1.645z"/>
         </svg>
       ),
-      color: "hover:bg-blue-500/20 hover:text-blue-400"
+      color: ""
     },
     {
       name: "YouTube",
-      href: "#",
+      href: "https://youtube.com/@fremnatoscharity7176?si=hyaJaZxkDn2SOt9n",
       icon: (
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" />
+          <path fill="#FFFFFF" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
         </svg>
       ),
-      color: "hover:bg-red-500/20 hover:text-red-400"
+      color: ""
     }
   ]
 
@@ -63,16 +69,18 @@ export default function Footer() {
 
   const contactPersons = [
     {
-      name: "Aba Selama",
+      name: "Aba Samuel",
       phone: "+972543046018",
-      email: "aba.selama@freminatos.org",
-      image: "/images/contact/aba_selama.png"
+      email: "abasamuel@freminatos.org",
+      image: "/images/contact/aba_selama.png",
+      youtube: "https://www.youtube.com/@abasamuelweldeselama4908"
     },
     {
       name: "Aba Gebremedhn",
       phone: "+25192010219",
       email: "abagebremedhnzeselama@gmail.com",
-      image: "/images/contact/aba_gebremedhn.png"
+      image: "/images/contact/aba_gebremedhn.png",
+      youtube: "https://youtube.com/@abagebremedhnzeselama3603?si=yoB1cYgxrr9PEmwu"
     }
   ]
 
@@ -116,7 +124,7 @@ export default function Footer() {
                     key={social.name}
                     variant="ghost"
                     size="sm"
-                    className={`h-6 w-6 p-0 text-gray-400 ${social.color} transition-all duration-200`}
+                    className={`h-6 w-6 p-0 rounded hover:bg-white/10 transition-all duration-200`}
                     asChild
                   >
                     <a href={social.href} aria-label={social.name}>
@@ -186,6 +194,23 @@ export default function Footer() {
                               className="text-white hover:text-purple-300 transition-colors duration-300 font-medium text-sm truncate block"
                             >
                               {person.email}
+                            </a>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors duration-300">
+                          <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center group-hover:bg-red-500/30 transition-colors duration-300">
+                            <Youtube className="w-4 h-4 text-red-400" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs text-gray-400 mb-0.5">YouTube</p>
+                            <a 
+                              href={person.youtube}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-white hover:text-red-300 transition-colors duration-300 font-medium text-sm truncate block"
+                            >
+                              Visit Channel
                             </a>
                           </div>
                         </div>
