@@ -32,7 +32,7 @@ export default function ContactSection() {
   })
 
   // Google Maps URL to search for the organization's office
-  const googleMapsUrl = "https://www.google.com/maps/search/13%C2%B029'48.1%22N+39%C2%B028'31.1%22E/@13.4967031,39.4750848,62m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D"
+  const googleMapsUrl = "https://www.google.com/maps/search/13%C2%B029'55%22N+39%C2%B029'5%22E/@13.4986111,39.4847222,62m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D"
     
 
   const handleSubmit = (e: React.FormEvent) => {
