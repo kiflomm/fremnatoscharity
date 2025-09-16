@@ -86,7 +86,7 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <BookOpen className="h-4 w-4" />
-                                                    Elders
+                                                    {t("nav.elders")}
                                                 </Link>
                                                 <Link 
                                                     href="/stories/childrens" 
@@ -94,7 +94,7 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <BookOpen className="h-4 w-4" />
-                                                    Childrens
+                                                    {t("nav.children")}
                                                 </Link>
                                                 <Link 
                                                     href="/stories/disabled" 
@@ -102,7 +102,7 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <BookOpen className="h-4 w-4" />
-                                                    Disabled
+                                                    {t("nav.disabled")}
                                                 </Link>
                                                 <Link 
                                                     href="/#donation" 
@@ -181,17 +181,17 @@ export default function NavigationSection() {
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/stories/elders" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <BookOpen className="h-3.5 w-3.5" />
-                                                Elders
+                                                {t("nav.elders")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/stories/childrens" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <BookOpen className="h-3.5 w-3.5" />
-                                                Childrens
+                                                {t("nav.children")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/stories/disabled" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <BookOpen className="h-3.5 w-3.5" />
-                                                Disabled
+                                                {t("nav.disabled")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/#donation" className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1 py-0.5 rounded-md transition-all duration-200">

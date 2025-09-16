@@ -229,7 +229,10 @@
     "donate": "Donate",
     "stories": "Stories",
     "news": "News",
-    "contact": "Contact"
+    "contact": "Contact",
+    "elders": "Elders",
+    "children": "Children",
+    "disabled": "Disabled"
   },
   "organization": "Fremnatos",
   "organization_name": "Fremnatos Elders, Mentally Disabled and Children Charity Organization",

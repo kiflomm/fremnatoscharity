@@ -229,7 +229,10 @@
     "donate": "ለመለገስ",
     "stories": "ታሪኮች",
     "news": "ዜና",
-    "contact": "አግኙን"
+    "contact": "አግኙን",
+    "elders": "ሽማግሌዎች",
+    "children": "ልጆች",
+    "disabled": "አካል ጉዳተኞች"
   },
   "organization" : "ፍሬምናቶስ",
   "organization_name": "የፍሬምናቶስ ሽማግሌዎች፣ መንጃ ሕጻናት እና ልጆች በደንብ ድርጅት",
