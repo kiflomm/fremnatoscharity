@@ -16,6 +16,9 @@
   "forgot_password": "የይለፍ ቃል ረሳሁ",
   "reset_password": "የይለፍ ቃል ዳግም አስጀምር",
   "menu": "ምናሌ",
+  "navigation": {
+    "title": "ምናሌ"
+  },
   "search": "ፍለጋ",
   "language": "ቋንቋ",
   "settings": "ቅንብሮች",
@@ -278,8 +281,8 @@
     "language": "ቋንቋ:",
     "quick_links": "ፈጣን አገናኞች",
     "stay_connected": "ይገናኙ ቆይታ",
-    "privacy": "ግላዊነት",
-    "terms": "ውሎች",
+    "privacy": "የግላዊነት ፐሊሲ",
+    "terms": "የአገልግሎት ውሎች",
     "contact": "አግኙን",
     "newsletter": {
       "email_label": "ኢሜይል",
@@ -337,6 +340,9 @@
     }
   },
   "slideshow": {
+    "previous_slide": "ቀዳሚ ስላይድ",
+    "next_slide": "ቀጣይ ስላይድ",
+    "go_to_slide": "ወደ ስላይድ {{number}} ሂድ",
     "slide1": {
       "title": "ራዕይ",
       "alt": "የቻሪቲ ስራ - ሽማግሌዎችን መርዳት",
@@ -391,6 +397,7 @@
     "email_address_label": "የኢሜይል አድራሻ",
     "phone_number_label": "የስልክ ቁጥር",
     "visit_our_office": "ቢሮችን ይጎበኙ",
+    "youtube_label": "ዩቱብ",
     "message_sent_success": "መልዕክትዎ ተልኳል።",
     "message_sent_error": "መልዕክት መላክ አልተሳካም። እባክዎ ዳግም ይሞክሩ።"
   },

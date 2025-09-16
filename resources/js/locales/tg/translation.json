@@ -16,6 +16,9 @@
   "forgot_password": "መሕለፊ ቃል ረሲዐ",
   "reset_password": "መሕለፊ ቃል ዳግም ጀሚር",
   "menu": "ምናሌ",
+  "navigation": {
+    "title": "ምናሌ"
+  },
   "search": "ድለይ",
   "language": "ቋንቋ", 
   "profile": "መገለጽ",
@@ -279,8 +282,8 @@
     "language": "ቋንቋ:",
     "quick_links": "ቅርብ ማረፊያታት",
     "stay_connected": "ኣብ ርክብ ኩናት",
-    "privacy": "ውሽጣዊነት",
-    "terms": "ውልቂ",
+    "privacy": "ፖሊሲ ውሽጣዊነት",
+    "terms": "ውልቂ ኣገልግሎት",
     "contact": "ርክብ",
     "newsletter": {
       "email_label": "ኢመይል",
@@ -338,6 +341,9 @@
     }
   },
   "slideshow": {
+    "previous_slide": "ቀዳማይ ስላይድ",
+    "next_slide": "ቀፃሊ ስላይድ",
+    "go_to_slide": "ናብ ስላይድ {{number}} ኺድ",
     "slide1": {
       "title": "ብዛዕባና",
       "alt": "ሻሪቲ ስራሕ - ኣረጋውያን ምርዳእ",
@@ -392,6 +398,7 @@
     "email_address_label": "ኣድራሻ ኢመይል",
     "phone_number_label": "ቁጽሪ ተሌፎን",
     "visit_our_office": "ቢሮና ተጎብእ",
+    "youtube_label": "ዩቱብ",
     "message_sent_success": "መልእኽቲኹም ተላኢኹ እዩ።",
     "message_sent_error": "መልእኽቲ ምላእ ኣይተሳኸነን። ደጊምኩም ፈትኑ።"
   },

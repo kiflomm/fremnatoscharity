@@ -16,6 +16,9 @@
   "forgot_password": "Forgot Password",
   "reset_password": "Reset Password",
   "menu": "Menu",
+  "navigation": {
+    "title": "Menu"
+  },
   "search": "Search",
   "language": "Language", 
   "profile": "Profile",
@@ -310,8 +313,8 @@
     "language": "Language:",
     "quick_links": "Quick Links",
     "stay_connected": "Stay connected",
-    "privacy": "Privacy",
-    "terms": "Terms",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
     "contact": "Contact",
     "newsletter": {
       "email_label": "Email",
@@ -349,6 +352,9 @@
     "focusAreas": "Focus Areas"
   },
   "slideshow": {
+    "previous_slide": "Previous slide",
+    "next_slide": "Next slide",
+    "go_to_slide": "Go to slide {{number}}",
     "slide1": {
       "title": "Vision",
       "alt": "Charity work - Helping elders",
@@ -384,8 +390,6 @@
   "common": {
     "sending": "Sending..."
   },
-  "switch_to_light_mode": "Switch to light mode",
-  "switch_to_dark_mode": "Switch to dark mode",
   "contact_section": {
     "title": "We'd Love to Hear From You!",
     "get_involved": "Get Involved",
@@ -405,6 +409,7 @@
     "email_address_label": "Email Address",
     "phone_number_label": "Phone Number",
     "visit_our_office": "Visit Our Office",
+    "youtube_label": "YouTube",
     "message_sent_success": "Your message has been sent.",
     "message_sent_error": "Failed to send your message. Please try again."
   },
