@@ -4,21 +4,8 @@ import { Header, NavigationSection } from '@/components/welcome';
 import Footer from '@/components/Footer';
 import { ArrowLeft, Search, X, Calendar, MessageSquare, Heart, Newspaper, TrendingUp, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { type NewsItem, sortByPopularity, sortByRecency } from '@/lib/layout-utils';
 
-interface NewsItem {
-  id: number;
-  title: string;
-  description: string;
-  attachments?: {
-    images: { url: string; width?: number | null; height?: number | null; order: number }[];
-    videos: { embedUrl: string; provider: string; order: number }[];
-  };
-  comments?: any[];
-  commentsCount: number;
-  likesCount: number;
-  isLiked?: boolean;
-  createdAt?: string | null;
-}
 
 interface NewsLayoutProps {
   children: ReactNode;
@@ -33,34 +20,6 @@ interface NewsLayoutProps {
   onFilterChange?: (filters: { q?: string }) => void;
   showFilters?: boolean;
 }
-
-// Utility functions for sorting news items
-const sortByPopularity = (newsItems: NewsItem[]): NewsItem[] => {
-  return [...newsItems].sort((a, b) => {
-    // Sort by total engagement (likes + comments)
-    const aEngagement = a.likesCount + a.commentsCount;
-    const bEngagement = b.likesCount + b.commentsCount;
-
-    if (aEngagement !== bEngagement) {
-      return bEngagement - aEngagement;
-    }
-
-    // If engagement is equal, sort by likes
-    if (a.likesCount !== b.likesCount) {
-      return b.likesCount - a.likesCount;
-    }
-
-    // If likes are equal, sort by comments
-    return b.commentsCount - a.commentsCount;
-  });
-};
-
-const sortByRecency = (newsItems: NewsItem[]): NewsItem[] => {
-  return [...newsItems].sort((a, b) => {
-    if (!a.createdAt || !b.createdAt) return 0;
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
-};
 
 // News Item Card Component
 interface NewsItemCardProps {
@@ -280,10 +239,46 @@ export default function NewsLayout({
           {/* Left Column - Recent News */}
           <div className="w-80 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col">
             <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-4">
                 <Clock className="h-5 w-5 text-blue-500" />
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">Recent</h2>
               </div>
+
+              {/* Desktop Filters */}
+              {showFilters && (
+                <form onSubmit={handleFilterSubmit} className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <input
+                        type="text"
+                        value={localFilters.q || ''}
+                        onChange={(e) => setLocalFilters(prev => ({ ...prev, q: e.target.value }))}
+                        placeholder="Title or description..."
+                        className="w-full rounded-md border border-gray-300 dark:border-slate-600 pl-9 pr-3 py-2 text-sm bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={clearFilters}
+                      className="px-3 py-2 text-sm rounded-md border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center"
+                    >
+                      <Search className="h-4 w-4 mr-2" />
+                      Search
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
             <div className="flex-1 overflow-y-auto scroll-smooth">
               {newsItems.length === 0 ? (
