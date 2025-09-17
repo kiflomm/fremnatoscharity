@@ -1,5 +1,5 @@
-import { usePage, router } from '@inertiajs/react'; 
-import NewsLayout from '@/layouts/NewsLayout'; 
+import { usePage, router } from '@inertiajs/react';
+import NewsLayout from '@/layouts/NewsLayout';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useTranslations } from '@/hooks/useTranslations';
@@ -71,20 +71,20 @@ export default function NewsIndex() {
   };
 
   const handleCommentSubmitted = () => {
-          // Refresh the page to show the new comment
-          router.reload();
+    // Refresh the page to show the new comment
+    router.reload();
   };
 
   const handleFilterChange = (filters: { q?: string }) => {
     const params = new URLSearchParams();
     if (filters.q) params.set('q', filters.q);
-    
+
     const queryString = params.toString();
     router.visit(`/news${queryString ? `?${queryString}` : ''}`);
   };
 
   const selectedNews = selectedNewsId ? items.find(item => item.id === selectedNewsId) : null;
-  
+
   // Ensure selectedNews has all required properties with defaults
   const safeSelectedNews = selectedNews ? {
     ...selectedNews,
@@ -93,21 +93,21 @@ export default function NewsIndex() {
   } : null;
 
   return (
-    <NewsLayout 
+    <NewsLayout
       title={safeSelectedNews ? safeSelectedNews.title : "News"}
       newsItems={items}
       selectedNewsId={selectedNewsId}
       onNewsSelect={handleNewsSelect}
       filters={props.filters}
       onFilterChange={handleFilterChange}
-      showFilters={viewMode === 'list'}
+      showFilters={true}
       hideFooter={true}
     >
       {/* Detail View */}
       {viewMode === 'detail' && safeSelectedNews ? (
         <>
-          <NewsDetail 
-            news={safeSelectedNews} 
+          <NewsDetail
+            news={safeSelectedNews}
             onBackToList={handleBackToList}
             showBackButton={true}
           />
@@ -118,7 +118,6 @@ export default function NewsIndex() {
             onCommentSubmitted={handleCommentSubmitted}
           />
         </>
-      
       ) : (
         <>
           {/* Desktop Empty State */}
@@ -126,12 +125,12 @@ export default function NewsIndex() {
 
           {/* Mobile View - Show all news */}
           <div className="lg:hidden">
-            <NewsList 
+            <NewsList
               items={items}
               onNewsSelect={handleNewsSelect}
               paginationLinks={props.news?.links}
             />
-        </div>
+          </div>
         </>
       )}
     </NewsLayout>

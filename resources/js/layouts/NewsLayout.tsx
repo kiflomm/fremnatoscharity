@@ -40,16 +40,16 @@ const sortByPopularity = (newsItems: NewsItem[]): NewsItem[] => {
     // Sort by total engagement (likes + comments)
     const aEngagement = a.likesCount + a.commentsCount;
     const bEngagement = b.likesCount + b.commentsCount;
-    
+
     if (aEngagement !== bEngagement) {
       return bEngagement - aEngagement;
     }
-    
+
     // If engagement is equal, sort by likes
     if (a.likesCount !== b.likesCount) {
       return b.likesCount - a.likesCount;
     }
-    
+
     // If likes are equal, sort by comments
     return b.commentsCount - a.commentsCount;
   });
@@ -83,10 +83,10 @@ const NewsItemCard = ({ news, selectedNewsId, onNewsSelect }: NewsItemCardProps)
     <div className="flex gap-3">
       {/* Thumbnail */}
       <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-600">
-{(() => {
+        {(() => {
           const firstImage = news.attachments?.images?.[0];
           const hasVideo = news.attachments?.videos && news.attachments.videos.length > 0;
-          
+
           if (firstImage) {
             return (
               <img
@@ -121,7 +121,7 @@ const NewsItemCard = ({ news, selectedNewsId, onNewsSelect }: NewsItemCardProps)
         <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 mb-2">
           {news.description}
         </p>
-        
+
         {/* Meta */}
         <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
           <div className="flex items-center">
@@ -144,10 +144,10 @@ const NewsItemCard = ({ news, selectedNewsId, onNewsSelect }: NewsItemCardProps)
   </button>
 );
 
-export default function NewsLayout({ 
-  children, 
-  title, 
-  hideFooter = false, 
+export default function NewsLayout({
+  children,
+  title,
+  hideFooter = false,
   newsItems = [],
   selectedNewsId,
   onNewsSelect,
@@ -184,7 +184,7 @@ export default function NewsLayout({
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       <Head title={title} />
-      
+
       {/* Header and Navigation */}
       <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700">
         <Header />
