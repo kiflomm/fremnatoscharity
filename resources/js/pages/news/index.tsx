@@ -29,6 +29,14 @@ type PageProps = {
     data: NewsItem[];
     links: { url: string | null; label: string; active: boolean }[];
   };
+  recentNews: {
+    data: NewsItem[];
+    links: { url: string | null; label: string; active: boolean }[];
+  };
+  popularNews: {
+    data: NewsItem[];
+    links: { url: string | null; label: string; active: boolean }[];
+  };
   filters?: {
     q?: string | null;
   };
@@ -39,6 +47,8 @@ export default function NewsIndex() {
   const { i18n } = useTranslations();
   const { props } = usePage<PageProps>();
   const items = props.news?.data ?? [];
+  const recentNewsItems = props.recentNews?.data ?? [];
+  const popularNewsItems = props.popularNews?.data ?? [];
   const { auth } = props;
   const isLoggedIn = Boolean(auth?.user);
   const [selectedNewsId, setSelectedNewsId] = useState<number | undefined>(undefined);
@@ -46,14 +56,14 @@ export default function NewsIndex() {
 
   // Auto-select first news item (most recent) when available
   useEffect(() => {
-    if (items.length > 0 && !selectedNewsId) {
-      setSelectedNewsId(items[0].id);
+    if (recentNewsItems.length > 0 && !selectedNewsId) {
+      setSelectedNewsId(recentNewsItems[0].id);
       // On desktop, also switch to detail view
       if (window.innerWidth >= 1024) {
         setViewMode('detail');
       }
     }
-  }, [items, selectedNewsId]);
+  }, [recentNewsItems, selectedNewsId]);
 
   // Force English for public page regardless of stored preference
   useEffect(() => {
@@ -83,7 +93,12 @@ export default function NewsIndex() {
     router.visit(`/news${queryString ? `?${queryString}` : ''}`);
   };
 
-  const selectedNews = selectedNewsId ? items.find(item => item.id === selectedNewsId) : null;
+  // Find selected news from either recent or popular news lists
+  const selectedNews = selectedNewsId ? 
+    recentNewsItems.find(item => item.id === selectedNewsId) || 
+    popularNewsItems.find(item => item.id === selectedNewsId) ||
+    items.find(item => item.id === selectedNewsId) // fallback to main list for mobile
+    : null;
 
   // Ensure selectedNews has all required properties with defaults
   const safeSelectedNews = selectedNews ? {
@@ -95,7 +110,9 @@ export default function NewsIndex() {
   return (
     <NewsLayout
       title={safeSelectedNews ? safeSelectedNews.title : "News"}
-      newsItems={items}
+      newsItems={items} // Keep for mobile compatibility
+      recentNewsItems={recentNewsItems}
+      popularNewsItems={popularNewsItems}
       selectedNewsId={selectedNewsId}
       onNewsSelect={handleNewsSelect}
       filters={props.filters}
@@ -121,7 +138,7 @@ export default function NewsIndex() {
       ) : (
         <>
           {/* Desktop Empty State */}
-          {items.length === 0 && <EmptyNewsState />}
+          {recentNewsItems.length === 0 && <EmptyNewsState />}
 
           {/* Mobile View - Show all news */}
           <div className="lg:hidden">

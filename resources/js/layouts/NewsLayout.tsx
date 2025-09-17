@@ -4,14 +4,16 @@ import { Header, NavigationSection } from '@/components/welcome';
 import Footer from '@/components/Footer';
 import { ArrowLeft, Search, X, Calendar, MessageSquare, Heart, Newspaper, TrendingUp, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { type NewsItem, sortByPopularity, sortByRecency } from '@/lib/layout-utils';
+import { type NewsItem } from '@/lib/layout-utils';
 
 
 interface NewsLayoutProps {
   children: ReactNode;
   title?: string;
   hideFooter?: boolean;
-  newsItems?: NewsItem[];
+  newsItems?: NewsItem[]; // Keep for mobile compatibility
+  recentNewsItems?: NewsItem[];
+  popularNewsItems?: NewsItem[];
   selectedNewsId?: number;
   onNewsSelect?: (newsId: number) => void;
   filters?: {
@@ -107,7 +109,9 @@ export default function NewsLayout({
   children,
   title,
   hideFooter = false,
-  newsItems = [],
+  newsItems = [], // Keep for mobile compatibility
+  recentNewsItems = [],
+  popularNewsItems = [],
   selectedNewsId,
   onNewsSelect,
   filters,
@@ -211,14 +215,14 @@ export default function NewsLayout({
 
           {/* News List */}
           <div className="flex-1 overflow-y-auto scroll-smooth">
-            {newsItems.length === 0 ? (
+            {recentNewsItems.length === 0 ? (
               <div className="p-6 text-center">
                 <Newspaper className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                 <p className="text-gray-500 dark:text-gray-400">No news available</p>
               </div>
             ) : (
               <div className="p-2 space-y-2">
-                {newsItems.map((news) => (
+                {recentNewsItems.map((news) => (
                   <NewsItemCard
                     key={news.id}
                     news={news}
@@ -276,14 +280,14 @@ export default function NewsLayout({
                 </form> 
             </div>
             <div className="flex-1 overflow-y-auto scroll-smooth">
-              {newsItems.length === 0 ? (
+              {recentNewsItems.length === 0 ? (
                 <div className="p-6 text-center">
                   <Newspaper className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                   <p className="text-gray-500 dark:text-gray-400">No news available</p>
                 </div>
               ) : (
                 <div className="p-2 space-y-2">
-                  {sortByRecency(newsItems).map((news) => (
+                  {recentNewsItems.map((news) => (
                     <NewsItemCard
                       key={news.id}
                       news={news}
@@ -312,14 +316,14 @@ export default function NewsLayout({
               </div>
             </div>
             <div className="flex-1 overflow-y-auto scroll-smooth">
-              {newsItems.length === 0 ? (
+              {popularNewsItems.length === 0 ? (
                 <div className="p-6 text-center">
                   <Newspaper className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                   <p className="text-gray-500 dark:text-gray-400">No news available</p>
                 </div>
               ) : (
                 <div className="p-2 space-y-2">
-                  {sortByPopularity(newsItems).map((news) => (
+                  {popularNewsItems.map((news) => (
                     <NewsItemCard
                       key={news.id}
                       news={news}

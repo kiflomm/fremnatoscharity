@@ -13,30 +13,5 @@ export interface NewsItem {
   createdAt?: string | null;
 }
 
-// Utility functions for sorting news items
-export const sortByPopularity = (newsItems: NewsItem[]): NewsItem[] => {
-  return [...newsItems].sort((a, b) => {
-    // Sort by total engagement (likes + comments)
-    const aEngagement = a.likesCount + a.commentsCount;
-    const bEngagement = b.likesCount + b.commentsCount;
-
-    if (aEngagement !== bEngagement) {
-      return bEngagement - aEngagement;
-    }
-
-    // If engagement is equal, sort by likes
-    if (a.likesCount !== b.likesCount) {
-      return b.likesCount - a.likesCount;
-    }
-
-    // If likes are equal, sort by comments
-    return b.commentsCount - a.commentsCount;
-  });
-};
-
-export const sortByRecency = (newsItems: NewsItem[]): NewsItem[] => {
-  return [...newsItems].sort((a, b) => {
-    if (!a.createdAt || !b.createdAt) return 0;
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
-};
+// Note: Client-side sorting functions removed since news is now fetched separately 
+// from backend with proper database sorting for better performance.

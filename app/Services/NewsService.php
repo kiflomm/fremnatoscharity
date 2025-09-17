@@ -322,6 +322,100 @@ class NewsService
         ];
     }
 
+    /**
+     * Get most recent news for public display with pagination
+     */
+    public function getRecentNewsForPublic(int $perPage = 5, ?string $search = null)
+    {
+        $query = News::query()
+            ->notArchived()
+            ->withCount(['comments', 'likes'])
+            ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
+            ->latest('created_at');
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('news_title', 'like', "%{$search}%")
+                  ->orWhere('news_description', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Get most popular news for public display with pagination
+     */
+    public function getPopularNewsForPublic(int $perPage = 5, ?string $search = null)
+    {
+        $query = News::query()
+            ->notArchived()
+            ->withCount(['comments', 'likes'])
+            ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
+            ->orderByRaw('(likes_count + comments_count) DESC, likes_count DESC, created_at DESC');
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('news_title', 'like', "%{$search}%")
+                  ->orWhere('news_description', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Format news item for public display
+     */
+    public function formatNewsItemForPublic(News $news, ?int $authUserId = null): array
+    {
+        $isLiked = $authUserId ? $news->likes->contains('user_id', $authUserId) : false;
+        
+        return [
+            'id' => $news->id,
+            'title' => $news->news_title,
+            'description' => str(\strip_tags($news->news_description))->limit(160)->toString(),
+            'attachments' => [
+                'images' => $news->imageAttachments
+                    ->sortBy('display_order')
+                    ->map(function ($img) {
+                        return [
+                            'id' => $img->id,
+                            'url' => $img->url,
+                            'width' => $img->width,
+                            'height' => $img->height,
+                            'order' => $img->display_order,
+                        ];
+                    })->values()->toArray(),
+                'videos' => $news->videoAttachments
+                    ->sortBy('display_order')
+                    ->map(function ($vid) {
+                        return [
+                            'id' => $vid->id,
+                            'embedUrl' => $vid->embed_url,
+                            'provider' => $vid->provider,
+                            'order' => $vid->display_order,
+                        ];
+                    })->values()->toArray(),
+            ],
+            'comments' => $news->comments->map(function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'text' => $comment->comment_text,
+                    'author' => [
+                        'id' => $comment->user?->id,
+                        'name' => $comment->user?->name ?? 'Unknown',
+                    ],
+                    'createdAt' => $comment->created_at?->toIso8601String(),
+                ];
+            })->toArray(),
+            'commentsCount' => $news->comments_count,
+            'likesCount' => $news->likes_count,
+            'isLiked' => $isLiked,
+            'createdAt' => $news->created_at?->toIso8601String(),
+        ];
+    }
+
     private function extractYouTubeId(string $url): ?string
     {
         if ($url === '') {

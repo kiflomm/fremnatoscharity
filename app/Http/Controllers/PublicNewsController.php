@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use App\Models\NewsComment;
 use App\Models\NewsLike;
+use App\Services\NewsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,46 +13,37 @@ use Inertia\Response;
 
 class PublicNewsController extends Controller
 {
+    public function __construct(
+        private NewsService $newsService
+    ) {}
+
     public function index(Request $request): Response
     {
-        $query = News::query()
-            ->notArchived()
-            ->withCount(['comments', 'likes'])
-            ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
-            ->latest('created_at');
-
         // Filter: q (search)
         $search = trim((string) $request->query('q', ''));
-        if ($search !== '') {
-            $query->where(function ($q) use ($search) {
-                $q->where('news_title', 'like', "%{$search}%")
-                  ->orWhere('news_description', 'like', "%{$search}%");
-            });
-        }
+        $searchTerm = $search !== '' ? $search : null;
 
         $authUserId = $request->user()?->id;
         
-        $news = $query
-            ->paginate(10)
-            ->appends($request->query())
-            ->through(function (News $n) use ($authUserId) {
-                $isLiked = $authUserId ? $n->likes->contains('user_id', $authUserId) : false;
-                
-                return [
-                    'id' => $n->id,
-                    'title' => $n->news_title,
-                    'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
-                    'attachments' => $this->formatAttachments($n),
-                    'comments' => $this->formatComments($n->comments),
-                    'commentsCount' => $n->comments_count,
-                    'likesCount' => $n->likes_count,
-                    'isLiked' => $isLiked,
-                    'createdAt' => $n->created_at?->toIso8601String(),
-                ];
-            });
+        // Fetch recent news with pagination (5 per page)
+        $recentNews = $this->newsService->getRecentNewsForPublic(5, $searchTerm);
+        $recentNews->appends($request->query());
+        $recentNewsData = $recentNews->through(function (News $news) use ($authUserId) {
+            return $this->newsService->formatNewsItemForPublic($news, $authUserId);
+        });
 
+        // Fetch popular news with pagination (5 per page)
+        $popularNews = $this->newsService->getPopularNewsForPublic(5, $searchTerm);
+        $popularNews->appends($request->query());
+        $popularNewsData = $popularNews->through(function (News $news) use ($authUserId) {
+            return $this->newsService->formatNewsItemForPublic($news, $authUserId);
+        });
+
+        // For backward compatibility with mobile view, we'll use recent news as the main news data
         return Inertia::render('news/index', [
-            'news' => $news,
+            'news' => $recentNewsData, // Used by mobile view
+            'recentNews' => $recentNewsData,
+            'popularNews' => $popularNewsData,
             'filters' => [
                 'q' => $search,
             ],
