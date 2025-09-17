@@ -7,6 +7,7 @@ import NewsDetail from '@/components/news/NewsDetail';
 import CommentsSection from '@/components/news/CommentsSection';
 import NewsList from '@/components/news/NewsList';
 import EmptyNewsState from '@/components/news/EmptyNewsState';
+import type { NewsListData } from '@/lib/layout-utils';
 
 type NewsItem = {
   id: number;
@@ -25,20 +26,17 @@ type NewsItem = {
 
 type PageProps = {
   auth?: { user?: { id: number } | null };
-  news: {
-    data: NewsItem[];
-    links: { url: string | null; label: string; active: boolean }[];
-  };
-  recentNews: {
-    data: NewsItem[];
-    links: { url: string | null; label: string; active: boolean }[];
-  };
-  popularNews: {
-    data: NewsItem[];
-    links: { url: string | null; label: string; active: boolean }[];
+  recentNews?: NewsListData;
+  popularNews?: NewsListData;
+  selectedNews?: NewsItem & {
+    comments: any[];
+    isLiked: boolean;
   };
   filters?: {
     q?: string | null;
+    recent_page?: number;
+    popular_page?: number;
+    selected?: string;
   };
 };
 
@@ -46,24 +44,25 @@ export default function NewsIndex() {
   const { t } = useTranslation();
   const { i18n } = useTranslations();
   const { props } = usePage<PageProps>();
-  const items = props.news?.data ?? [];
-  const recentNewsItems = props.recentNews?.data ?? [];
-  const popularNewsItems = props.popularNews?.data ?? [];
-  const { auth } = props;
+  const { auth, recentNews, popularNews, selectedNews } = props;
   const isLoggedIn = Boolean(auth?.user);
-  const [selectedNewsId, setSelectedNewsId] = useState<number | undefined>(undefined);
+  
+  const [selectedNewsId, setSelectedNewsId] = useState<number | undefined>(
+    selectedNews?.id || (props.filters?.selected ? parseInt(props.filters.selected || '0') : undefined)
+  );
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
 
-  // Auto-select first news item (most recent) when available
+  // Auto-select first news item (most recent) when available and no item is selected
   useEffect(() => {
-    if (recentNewsItems.length > 0 && !selectedNewsId) {
-      setSelectedNewsId(recentNewsItems[0].id);
+    if (!selectedNewsId && recentNews?.data.length && recentNews.data.length > 0) {
+      const firstNewsId = recentNews.data[0].id;
+      setSelectedNewsId(firstNewsId);
       // On desktop, also switch to detail view
       if (window.innerWidth >= 1024) {
         setViewMode('detail');
       }
     }
-  }, [recentNewsItems, selectedNewsId]);
+  }, [recentNews?.data, selectedNewsId]);
 
   // Force English for public page regardless of stored preference
   useEffect(() => {
@@ -73,11 +72,28 @@ export default function NewsIndex() {
   const handleNewsSelect = (newsId: number) => {
     setSelectedNewsId(newsId);
     setViewMode('detail');
+    
+    // Update URL with selected news
+    const params = new URLSearchParams(window.location.search);
+    params.set('selected', newsId.toString());
+    router.visit(`/news?${params.toString()}`, {
+      preserveScroll: true,
+      preserveState: true,
+    });
   };
 
   const handleBackToList = () => {
     setViewMode('list');
     setSelectedNewsId(undefined);
+    
+    // Remove selected news from URL
+    const params = new URLSearchParams(window.location.search);
+    params.delete('selected');
+    const queryString = params.toString();
+    router.visit(`/news${queryString ? `?${queryString}` : ''}`, {
+      preserveScroll: true,
+      preserveState: true,
+    });
   };
 
   const handleCommentSubmitted = () => {
@@ -86,37 +102,61 @@ export default function NewsIndex() {
   };
 
   const handleFilterChange = (filters: { q?: string }) => {
-    const params = new URLSearchParams();
-    if (filters.q) params.set('q', filters.q);
+    const params = new URLSearchParams(window.location.search);
+    
+    // Clear page parameters when searching
+    params.delete('recent_page');
+    params.delete('popular_page');
+    
+    if (filters.q) {
+      params.set('q', filters.q);
+    } else {
+      params.delete('q');
+    }
 
     const queryString = params.toString();
     router.visit(`/news${queryString ? `?${queryString}` : ''}`);
   };
 
-  // Find selected news from either recent or popular news lists
-  const selectedNews = selectedNewsId ? 
-    recentNewsItems.find(item => item.id === selectedNewsId) || 
-    popularNewsItems.find(item => item.id === selectedNewsId) ||
-    items.find(item => item.id === selectedNewsId) // fallback to main list for mobile
-    : null;
+  const handlePageChange = (pageType: 'recent' | 'popular', page: number) => {
+    const params = new URLSearchParams(window.location.search);
+    
+    if (pageType === 'recent') {
+      params.set('recent_page', page.toString());
+    } else {
+      params.set('popular_page', page.toString());
+    }
+    
+    const queryString = params.toString();
+    router.visit(`/news?${queryString}`, {
+      preserveScroll: true,
+      preserveState: true,
+    });
+  };
+
+  // Use selectedNews from props if available, otherwise find from recent news
+  const currentSelectedNews = selectedNews || (selectedNewsId ? 
+    recentNews?.data.find(item => item.id === selectedNewsId) || 
+    popularNews?.data.find(item => item.id === selectedNewsId) 
+    : null);
 
   // Ensure selectedNews has all required properties with defaults
-  const safeSelectedNews = selectedNews ? {
-    ...selectedNews,
-    comments: selectedNews.comments || [],
-    isLiked: selectedNews.isLiked || false,
+  const safeSelectedNews = currentSelectedNews ? {
+    ...currentSelectedNews,
+    comments: selectedNews?.comments || [],
+    isLiked: selectedNews?.isLiked || false,
   } : null;
 
   return (
     <NewsLayout
       title={safeSelectedNews ? safeSelectedNews.title : "News"}
-      newsItems={items} // Keep for mobile compatibility
-      recentNewsItems={recentNewsItems}
-      popularNewsItems={popularNewsItems}
+      recentNews={recentNews}
+      popularNews={popularNews}
       selectedNewsId={selectedNewsId}
       onNewsSelect={handleNewsSelect}
       filters={props.filters}
       onFilterChange={handleFilterChange}
+      onPageChange={handlePageChange}
       showFilters={true}
       hideFooter={true}
     >
@@ -138,14 +178,14 @@ export default function NewsIndex() {
       ) : (
         <>
           {/* Desktop Empty State */}
-          {recentNewsItems.length === 0 && <EmptyNewsState />}
+          {(!recentNews?.data.length && !popularNews?.data.length) && <EmptyNewsState />}
 
-          {/* Mobile View - Show all news */}
+          {/* Mobile View - Show recent news */}
           <div className="lg:hidden">
             <NewsList
-              items={items}
+              items={recentNews?.data || []}
               onNewsSelect={handleNewsSelect}
-              paginationLinks={props.news?.links}
+              paginationLinks={[]} // We'll handle pagination through the layout now
             />
           </div>
         </>

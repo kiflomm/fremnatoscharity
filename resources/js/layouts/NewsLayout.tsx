@@ -1,27 +1,80 @@
 import { type ReactNode, useState, useEffect } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Header, NavigationSection } from '@/components/welcome';
 import Footer from '@/components/Footer';
-import { ArrowLeft, Search, X, Calendar, MessageSquare, Heart, Newspaper, TrendingUp, Clock } from 'lucide-react';
+import { ArrowLeft, Search, X, Calendar, MessageSquare, Heart, Newspaper, TrendingUp, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { type NewsItem } from '@/lib/layout-utils';
+import { type NewsItem, type NewsListData, generatePaginationUrl } from '@/lib/layout-utils';
 
 
 interface NewsLayoutProps {
   children: ReactNode;
   title?: string;
   hideFooter?: boolean;
-  newsItems?: NewsItem[]; // Keep for mobile compatibility
-  recentNewsItems?: NewsItem[];
-  popularNewsItems?: NewsItem[];
+  recentNews?: NewsListData;
+  popularNews?: NewsListData;
   selectedNewsId?: number;
   onNewsSelect?: (newsId: number) => void;
   filters?: {
     q?: string | null;
+    recent_page?: number;
+    popular_page?: number;
   };
   onFilterChange?: (filters: { q?: string }) => void;
+  onPageChange?: (pageType: 'recent' | 'popular', page: number) => void;
   showFilters?: boolean;
 }
+
+// Pagination Component
+interface PaginationProps {
+  pagination: NewsListData['pagination'];
+  pageType: 'recent' | 'popular';
+  onPageChange: (pageType: 'recent' | 'popular', page: number) => void;
+}
+
+const PaginationControls = ({ pagination, pageType, onPageChange }: PaginationProps) => {
+  if (!pagination.has_prev && !pagination.has_next) {
+    return null;
+  }
+
+  return (
+    <div className="flex items-center justify-between px-3 py-2 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+      <button
+        onClick={() => onPageChange(pageType, pagination.current_page - 1)}
+        disabled={!pagination.has_prev}
+        className={`
+          flex items-center px-2 py-1 text-xs rounded
+          ${pagination.has_prev 
+            ? 'text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20' 
+            : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+          }
+        `}
+      >
+        <ChevronLeft className="h-3 w-3 mr-1" />
+        Prev
+      </button>
+      
+      <span className="text-xs text-gray-600 dark:text-gray-400">
+        {pagination.current_page} of {pagination.last_page}
+      </span>
+      
+      <button
+        onClick={() => onPageChange(pageType, pagination.current_page + 1)}
+        disabled={!pagination.has_next}
+        className={`
+          flex items-center px-2 py-1 text-xs rounded
+          ${pagination.has_next 
+            ? 'text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20' 
+            : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+          }
+        `}
+      >
+        Next
+        <ChevronRight className="h-3 w-3 ml-1" />
+      </button>
+    </div>
+  );
+};
 
 // News Item Card Component
 interface NewsItemCardProps {
@@ -109,13 +162,13 @@ export default function NewsLayout({
   children,
   title,
   hideFooter = false,
-  newsItems = [], // Keep for mobile compatibility
-  recentNewsItems = [],
-  popularNewsItems = [],
+  recentNews = { data: [], pagination: { current_page: 1, last_page: 1, has_prev: false, has_next: false, total: 0 } },
+  popularNews = { data: [], pagination: { current_page: 1, last_page: 1, has_prev: false, has_next: false, total: 0 } },
   selectedNewsId,
   onNewsSelect,
   filters,
-  onFilterChange, 
+  onFilterChange,
+  onPageChange = () => {},
 }: NewsLayoutProps) {
   const { t } = useTranslation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -214,23 +267,30 @@ export default function NewsLayout({
           </div>
 
           {/* News List */}
-          <div className="flex-1 overflow-y-auto scroll-smooth">
-            {recentNewsItems.length === 0 ? (
+          <div className="flex-1 overflow-y-auto scroll-smooth flex flex-col">
+            {recentNews.data.length === 0 ? (
               <div className="p-6 text-center">
                 <Newspaper className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                 <p className="text-gray-500 dark:text-gray-400">No news available</p>
               </div>
             ) : (
-              <div className="p-2 space-y-2">
-                {recentNewsItems.map((news) => (
-                  <NewsItemCard
-                    key={news.id}
-                    news={news}
-                    selectedNewsId={selectedNewsId}
-                    onNewsSelect={onNewsSelect}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="p-2 space-y-2">
+                  {recentNews.data.map((news) => (
+                    <NewsItemCard
+                      key={news.id}
+                      news={news}
+                      selectedNewsId={selectedNewsId}
+                      onNewsSelect={onNewsSelect}
+                    />
+                  ))}
+                </div>
+                <PaginationControls 
+                  pagination={recentNews.pagination} 
+                  pageType="recent" 
+                  onPageChange={onPageChange} 
+                />
+              </>
             )}
           </div>
         </div>
@@ -279,23 +339,30 @@ export default function NewsLayout({
                   </div>
                 </form> 
             </div>
-            <div className="flex-1 overflow-y-auto scroll-smooth">
-              {recentNewsItems.length === 0 ? (
+            <div className="flex-1 overflow-y-auto scroll-smooth flex flex-col">
+              {recentNews.data.length === 0 ? (
                 <div className="p-6 text-center">
                   <Newspaper className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                   <p className="text-gray-500 dark:text-gray-400">No news available</p>
                 </div>
               ) : (
-                <div className="p-2 space-y-2">
-                  {recentNewsItems.map((news) => (
-                    <NewsItemCard
-                      key={news.id}
-                      news={news}
-                      selectedNewsId={selectedNewsId}
-                      onNewsSelect={onNewsSelect}
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="p-2 space-y-2">
+                    {recentNews.data.map((news) => (
+                      <NewsItemCard
+                        key={news.id}
+                        news={news}
+                        selectedNewsId={selectedNewsId}
+                        onNewsSelect={onNewsSelect}
+                      />
+                    ))}
+                  </div>
+                  <PaginationControls 
+                    pagination={recentNews.pagination} 
+                    pageType="recent" 
+                    onPageChange={onPageChange} 
+                  />
+                </>
               )}
             </div>
           </div>
@@ -315,23 +382,30 @@ export default function NewsLayout({
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">Most Popular</h2>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto scroll-smooth">
-              {popularNewsItems.length === 0 ? (
+            <div className="flex-1 overflow-y-auto scroll-smooth flex flex-col">
+              {popularNews.data.length === 0 ? (
                 <div className="p-6 text-center">
                   <Newspaper className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                   <p className="text-gray-500 dark:text-gray-400">No news available</p>
                 </div>
               ) : (
-                <div className="p-2 space-y-2">
-                  {popularNewsItems.map((news) => (
-                    <NewsItemCard
-                      key={news.id}
-                      news={news}
-                      selectedNewsId={selectedNewsId}
-                      onNewsSelect={onNewsSelect}
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="p-2 space-y-2">
+                    {popularNews.data.map((news) => (
+                      <NewsItemCard
+                        key={news.id}
+                        news={news}
+                        selectedNewsId={selectedNewsId}
+                        onNewsSelect={onNewsSelect}
+                      />
+                    ))}
+                  </div>
+                  <PaginationControls 
+                    pagination={popularNews.pagination} 
+                    pageType="popular" 
+                    onPageChange={onPageChange} 
+                  />
+                </>
               )}
             </div>
           </div>

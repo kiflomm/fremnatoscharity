@@ -13,39 +13,62 @@ use Inertia\Response;
 
 class PublicNewsController extends Controller
 {
-    public function __construct(
-        private NewsService $newsService
-    ) {}
+    private NewsService $newsService;
+
+    public function __construct(NewsService $newsService)
+    {
+        $this->newsService = $newsService;
+    }
 
     public function index(Request $request): Response
     {
-        // Filter: q (search)
+        // Get pagination parameters
+        $recentPage = (int) $request->query('recent_page', 1);
+        $popularPage = (int) $request->query('popular_page', 1);
         $search = trim((string) $request->query('q', ''));
-        $searchTerm = $search !== '' ? $search : null;
 
-        $authUserId = $request->user()?->id;
-        
-        // Fetch recent news with pagination (5 per page)
-        $recentNews = $this->newsService->getRecentNewsForPublic(5, $searchTerm);
-        $recentNews->appends($request->query());
-        $recentNewsData = $recentNews->through(function (News $news) use ($authUserId) {
-            return $this->newsService->formatNewsItemForPublic($news, $authUserId);
-        });
+        // Get separate data for recent and popular news
+        $recentNews = $this->newsService->getRecentNews($recentPage, 5, $search ?: null);
+        $popularNews = $this->newsService->getPopularNews($popularPage, 5, $search ?: null);
 
-        // Fetch popular news with pagination (5 per page)
-        $popularNews = $this->newsService->getPopularNewsForPublic(5, $searchTerm);
-        $popularNews->appends($request->query());
-        $popularNewsData = $popularNews->through(function (News $news) use ($authUserId) {
-            return $this->newsService->formatNewsItemForPublic($news, $authUserId);
-        });
+        // Get the main news data (first item from recent news for detail view)
+        $selectedNewsId = $request->query('selected');
+        $selectedNews = null;
 
-        // For backward compatibility with mobile view, we'll use recent news as the main news data
+        if ($selectedNewsId) {
+            $selectedNews = News::query()
+                ->notArchived()
+                ->withCount(['comments', 'likes'])
+                ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
+                ->find($selectedNewsId);
+
+            if ($selectedNews) {
+                $authUserId = $request->user()?->id;
+                $isLiked = $authUserId ? $selectedNews->likes->contains('user_id', $authUserId) : false;
+                
+                $selectedNews = [
+                    'id' => $selectedNews->id,
+                    'title' => $selectedNews->news_title,
+                    'description' => $selectedNews->news_description,
+                    'attachments' => $this->formatAttachments($selectedNews),
+                    'comments' => $this->formatComments($selectedNews->comments),
+                    'commentsCount' => $selectedNews->comments_count,
+                    'likesCount' => $selectedNews->likes_count,
+                    'isLiked' => $isLiked,
+                    'createdAt' => $selectedNews->created_at?->toIso8601String(),
+                ];
+            }
+        }
+
         return Inertia::render('news/index', [
-            'news' => $recentNewsData, // Used by mobile view
-            'recentNews' => $recentNewsData,
-            'popularNews' => $popularNewsData,
+            'recentNews' => $recentNews,
+            'popularNews' => $popularNews,
+            'selectedNews' => $selectedNews,
             'filters' => [
                 'q' => $search,
+                'recent_page' => $recentPage,
+                'popular_page' => $popularPage,
+                'selected' => $selectedNewsId,
             ],
         ]);
     }

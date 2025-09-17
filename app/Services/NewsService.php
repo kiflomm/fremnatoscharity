@@ -323,16 +323,17 @@ class NewsService
     }
 
     /**
-     * Get most recent news for public display with pagination
+     * Get recent news with pagination for layout sidebar
      */
-    public function getRecentNewsForPublic(int $perPage = 5, ?string $search = null)
+    public function getRecentNews(int $page = 1, int $perPage = 5, ?string $search = null): array
     {
         $query = News::query()
             ->notArchived()
             ->withCount(['comments', 'likes'])
-            ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
+            ->with(['imageAttachments', 'videoAttachments'])
             ->latest('created_at');
 
+        // Apply search filter if provided
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('news_title', 'like', "%{$search}%")
@@ -340,20 +341,63 @@ class NewsService
             });
         }
 
-        return $query->paginate($perPage);
+        $paginatedNews = $query->paginate($perPage, ['*'], 'recent_page', $page);
+
+        return [
+            'data' => $paginatedNews->map(function (News $n) {
+                return [
+                    'id' => $n->id,
+                    'title' => $n->news_title,
+                    'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
+                    'attachments' => [
+                        'images' => $n->imageAttachments
+                            ->sortBy('display_order')
+                            ->map(fn($img) => [
+                                'url' => $img->url,
+                                'width' => $img->width,
+                                'height' => $img->height,
+                                'order' => $img->display_order,
+                            ])
+                            ->values(),
+                        'videos' => $n->videoAttachments
+                            ->sortBy('display_order')
+                            ->map(fn($vid) => [
+                                'embedUrl' => $vid->embed_url,
+                                'provider' => $vid->provider,
+                                'order' => $vid->display_order,
+                            ])
+                            ->values(),
+                    ],
+                    'commentsCount' => $n->comments_count,
+                    'likesCount' => $n->likes_count,
+                    'createdAt' => $n->created_at?->toIso8601String(),
+                ];
+            }),
+            'pagination' => [
+                'current_page' => $paginatedNews->currentPage(),
+                'last_page' => $paginatedNews->lastPage(),
+                'has_prev' => $paginatedNews->currentPage() > 1,
+                'has_next' => $paginatedNews->hasMorePages(),
+                'total' => $paginatedNews->total(),
+            ],
+        ];
     }
 
     /**
-     * Get most popular news for public display with pagination
+     * Get popular news with pagination for layout sidebar (sorted by engagement)
      */
-    public function getPopularNewsForPublic(int $perPage = 5, ?string $search = null)
+    public function getPopularNews(int $page = 1, int $perPage = 5, ?string $search = null): array
     {
         $query = News::query()
             ->notArchived()
             ->withCount(['comments', 'likes'])
-            ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
-            ->orderByRaw('(likes_count + comments_count) DESC, likes_count DESC, created_at DESC');
+            ->with(['imageAttachments', 'videoAttachments'])
+            ->orderByRaw('(comments_count + likes_count) DESC')
+            ->orderByDesc('likes_count')
+            ->orderByDesc('comments_count')
+            ->orderByDesc('created_at');
 
+        // Apply search filter if provided
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('news_title', 'like', "%{$search}%")
@@ -361,58 +405,45 @@ class NewsService
             });
         }
 
-        return $query->paginate($perPage);
-    }
+        $paginatedNews = $query->paginate($perPage, ['*'], 'popular_page', $page);
 
-    /**
-     * Format news item for public display
-     */
-    public function formatNewsItemForPublic(News $news, ?int $authUserId = null): array
-    {
-        $isLiked = $authUserId ? $news->likes->contains('user_id', $authUserId) : false;
-        
         return [
-            'id' => $news->id,
-            'title' => $news->news_title,
-            'description' => str(\strip_tags($news->news_description))->limit(160)->toString(),
-            'attachments' => [
-                'images' => $news->imageAttachments
-                    ->sortBy('display_order')
-                    ->map(function ($img) {
-                        return [
-                            'id' => $img->id,
-                            'url' => $img->url,
-                            'width' => $img->width,
-                            'height' => $img->height,
-                            'order' => $img->display_order,
-                        ];
-                    })->values()->toArray(),
-                'videos' => $news->videoAttachments
-                    ->sortBy('display_order')
-                    ->map(function ($vid) {
-                        return [
-                            'id' => $vid->id,
-                            'embedUrl' => $vid->embed_url,
-                            'provider' => $vid->provider,
-                            'order' => $vid->display_order,
-                        ];
-                    })->values()->toArray(),
-            ],
-            'comments' => $news->comments->map(function ($comment) {
+            'data' => $paginatedNews->map(function (News $n) {
                 return [
-                    'id' => $comment->id,
-                    'text' => $comment->comment_text,
-                    'author' => [
-                        'id' => $comment->user?->id,
-                        'name' => $comment->user?->name ?? 'Unknown',
+                    'id' => $n->id,
+                    'title' => $n->news_title,
+                    'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
+                    'attachments' => [
+                        'images' => $n->imageAttachments
+                            ->sortBy('display_order')
+                            ->map(fn($img) => [
+                                'url' => $img->url,
+                                'width' => $img->width,
+                                'height' => $img->height,
+                                'order' => $img->display_order,
+                            ])
+                            ->values(),
+                        'videos' => $n->videoAttachments
+                            ->sortBy('display_order')
+                            ->map(fn($vid) => [
+                                'embedUrl' => $vid->embed_url,
+                                'provider' => $vid->provider,
+                                'order' => $vid->display_order,
+                            ])
+                            ->values(),
                     ],
-                    'createdAt' => $comment->created_at?->toIso8601String(),
+                    'commentsCount' => $n->comments_count,
+                    'likesCount' => $n->likes_count,
+                    'createdAt' => $n->created_at?->toIso8601String(),
                 ];
-            })->toArray(),
-            'commentsCount' => $news->comments_count,
-            'likesCount' => $news->likes_count,
-            'isLiked' => $isLiked,
-            'createdAt' => $news->created_at?->toIso8601String(),
+            }),
+            'pagination' => [
+                'current_page' => $paginatedNews->currentPage(),
+                'last_page' => $paginatedNews->lastPage(),
+                'has_prev' => $paginatedNews->currentPage() > 1,
+                'has_next' => $paginatedNews->hasMorePages(),
+                'total' => $paginatedNews->total(),
+            ],
         ];
     }
 

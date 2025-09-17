@@ -13,5 +13,37 @@ export interface NewsItem {
   createdAt?: string | null;
 }
 
-// Note: Client-side sorting functions removed since news is now fetched separately 
-// from backend with proper database sorting for better performance.
+export interface PaginationData {
+  current_page: number;
+  last_page: number;
+  has_prev: boolean;
+  has_next: boolean;
+  total: number;
+}
+
+export interface NewsListData {
+  data: NewsItem[];
+  pagination: PaginationData;
+}
+
+// Utility functions for pagination
+export const generatePaginationUrl = (baseUrl: string, filters: Record<string, any>, pageType: 'recent' | 'popular', page: number): string => {
+  const params = new URLSearchParams();
+  
+  // Add existing filters
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      params.set(key, String(value));
+    }
+  });
+  
+  // Set the specific page parameter
+  if (pageType === 'recent') {
+    params.set('recent_page', String(page));
+  } else {
+    params.set('popular_page', String(page));
+  }
+  
+  const queryString = params.toString();
+  return `${baseUrl}${queryString ? `?${queryString}` : ''}`;
+};
