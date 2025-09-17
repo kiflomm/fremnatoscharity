@@ -102,12 +102,12 @@ export default function NewsShow() {
           </div>
 
           {/* Attachments */}
-          {news.attachments && (news.attachments.images.length > 0 || news.attachments.videos.length > 0) && (
+          {news.attachments && (news.attachments.images?.length > 0 || news.attachments.videos?.length > 0) && (
             <div className="px-6 pt-6">
               <AttachmentsCarousel
                 title={news.title}
-                images={news.attachments.images}
-                videos={news.attachments.videos}
+                images={news.attachments?.images}
+                videos={news.attachments?.videos}
               />
             </div>
           )}

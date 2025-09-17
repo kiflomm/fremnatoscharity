@@ -2,7 +2,7 @@ import { type ReactNode, useState, useEffect } from 'react';
 import { Head } from '@inertiajs/react';
 import { Header, NavigationSection } from '@/components/welcome';
 import Footer from '@/components/Footer';
-import { ArrowLeft, Search, Filter as FilterIcon, X, Calendar, MessageSquare, Heart, Newspaper, TrendingUp, Clock } from 'lucide-react';
+import { ArrowLeft, Search, X, Calendar, MessageSquare, Heart, Newspaper, TrendingUp, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface NewsItem {
@@ -29,11 +29,8 @@ interface NewsLayoutProps {
   onNewsSelect?: (newsId: number) => void;
   filters?: {
     q?: string | null;
-    type?: 'image' | 'video' | 'none' | null;
-    from?: string | null;
-    to?: string | null;
   };
-  onFilterChange?: (filters: any) => void;
+  onFilterChange?: (filters: { q?: string }) => void;
   showFilters?: boolean;
 }
 
@@ -172,12 +169,12 @@ export default function NewsLayout({
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (onFilterChange) {
-      onFilterChange(localFilters);
+      onFilterChange({ q: localFilters.q || undefined });
     }
   };
 
   const clearFilters = () => {
-    const clearedFilters = { q: '', type: null, from: '', to: '' };
+    const clearedFilters = { q: undefined };
     setLocalFilters(clearedFilters);
     if (onFilterChange) {
       onFilterChange(clearedFilters);
@@ -236,38 +233,22 @@ export default function NewsLayout({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
-                    <select
-                      value={localFilters.type || ''}
-                      onChange={(e) => setLocalFilters(prev => ({ ...prev, type: e.target.value as any }))}
-                      className="w-full rounded-md border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">All</option>
-                      <option value="image">Image</option>
-                      <option value="video">Video</option>
-                      <option value="none">None</option>
-                    </select>
-                  </div>
-                  <div className="flex items-end">
-                    <button
-                      type="button"
-                      onClick={clearFilters}
-                      className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600"
-                    >
-                      Clear
-                    </button>
-                  </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="px-3 py-2 text-sm rounded-md border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center"
+                  >
+                    <Search className="h-4 w-4 mr-2" />
+                    Search
+                  </button>
                 </div>
-
-                <button
-                  type="submit"
-                  className="w-full px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center"
-                >
-                  <FilterIcon className="h-4 w-4 mr-2" />
-                  Apply Filters
-                </button>
               </form>
             )}
           </div>

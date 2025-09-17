@@ -20,33 +20,13 @@ class PublicNewsController extends Controller
             ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
             ->latest('created_at');
 
-        // Filters: q (search), type (attachment_type), from/to (created_at range)
+        // Filter: q (search)
         $search = trim((string) $request->query('q', ''));
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('news_title', 'like', "%{$search}%")
                   ->orWhere('news_description', 'like', "%{$search}%");
             });
-        }
-
-        $type = $request->query('type');
-        // Deprecated single attachment_type filter; maintain behavior by mapping to existence of attachments
-        if ($type === 'image') {
-            $query->whereHas('imageAttachments');
-        } elseif ($type === 'video') {
-            $query->whereHas('videoAttachments');
-        } elseif ($type === 'none') {
-            $query->doesntHave('imageAttachments')->doesntHave('videoAttachments');
-        }
-
-        $from = $request->query('from');
-        if (is_string($from) && $from !== '') {
-            $query->whereDate('created_at', '>=', $from);
-        }
-
-        $to = $request->query('to');
-        if (is_string($to) && $to !== '') {
-            $query->whereDate('created_at', '<=', $to);
         }
 
         $authUserId = $request->user()?->id;
@@ -74,9 +54,6 @@ class PublicNewsController extends Controller
             'news' => $news,
             'filters' => [
                 'q' => $search,
-                'type' => in_array($type, ['image', 'video', 'none'], true) ? $type : null,
-                'from' => is_string($from) ? $from : null,
-                'to' => is_string($to) ? $to : null,
             ],
         ]);
     }
