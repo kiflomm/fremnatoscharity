@@ -44,13 +44,14 @@ export default function AttachmentsCarousel({ title, images = [], videos = [] }:
     }
 
     return (
-        <div className="relative">
-            <div className="aspect-video bg-gray-100 dark:bg-slate-700 overflow-hidden">
+        <div className="relative max-w-full">
+            <div className="aspect-video bg-gray-100 dark:bg-slate-700 overflow-hidden max-w-full">
                 {current.type === 'image' ? (
                     <img
                         src={(current.data as ImageAtt).url}
                         alt={title}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-cover"
+                        style={{ maxWidth: '100%', height: 'auto' }}
                     />
                 ) : (
                     <iframe

@@ -111,8 +111,7 @@ export default function NewsLayout({
   selectedNewsId,
   onNewsSelect,
   filters,
-  onFilterChange,
-  showFilters = true
+  onFilterChange, 
 }: NewsLayoutProps) {
   const { t } = useTranslation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -175,8 +174,7 @@ export default function NewsLayout({
               </button>
             </div>
 
-            {/* Filters */}
-            {showFilters && (
+             
               <form onSubmit={handleFilterSubmit} className="space-y-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
@@ -208,8 +206,7 @@ export default function NewsLayout({
                     Search
                   </button>
                 </div>
-              </form>
-            )}
+              </form> 
           </div>
 
           {/* News List */}
@@ -244,8 +241,7 @@ export default function NewsLayout({
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">Recent</h2>
               </div>
 
-              {/* Desktop Filters */}
-              {showFilters && (
+              
                 <form onSubmit={handleFilterSubmit} className="space-y-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
@@ -277,8 +273,7 @@ export default function NewsLayout({
                       Search
                     </button>
                   </div>
-                </form>
-              )}
+                </form> 
             </div>
             <div className="flex-1 overflow-y-auto scroll-smooth">
               {newsItems.length === 0 ? (

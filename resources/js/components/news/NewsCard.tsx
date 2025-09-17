@@ -35,7 +35,8 @@ export default function NewsCard({ news, onSelect }: NewsCardProps) {
         <img 
           src={(item.data as any).url} 
           alt={news.title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          style={{ maxWidth: '100%', height: 'auto' }}
         />
       </div>
     ) : (
@@ -55,7 +56,7 @@ export default function NewsCard({ news, onSelect }: NewsCardProps) {
   const totalAttachments = (news.attachments?.images?.length ?? 0) + (news.attachments?.videos?.length ?? 0);
 
   return (
-    <article className="group bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-md transition-all">
+    <article className="group bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-md transition-all max-w-full">
       <button onClick={() => onSelect(news.id)} className="block w-full text-left">
         {/* First attachment preview */}
         {renderFirstAttachment()}

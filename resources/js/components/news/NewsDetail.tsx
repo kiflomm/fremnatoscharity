@@ -29,7 +29,7 @@ export default function NewsDetail({ news, onBackToList, showBackButton = false 
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-full">
       {/* Back Button - Mobile Only */}
       {showBackButton && onBackToList && (
         <div className="lg:hidden p-4">
@@ -44,7 +44,7 @@ export default function NewsDetail({ news, onBackToList, showBackButton = false 
       )}
 
       {/* Article */}
-      <article className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden mx-4 sm:mx-6 lg:mx-8">
+      <article className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden mx-4 sm:mx-6 lg:mx-8 max-w-full">
         <AttachmentsCarousel
           title={news.title}
           images={news.attachments?.images}
