@@ -9,10 +9,14 @@ interface NewsItem {
   id: number;
   title: string;
   description: string;
-  attachmentType: 'image' | 'video' | 'none';
-  attachmentUrl?: string | null;
+  attachments?: {
+    images: { url: string; width?: number | null; height?: number | null; order: number }[];
+    videos: { embedUrl: string; provider: string; order: number }[];
+  };
+  comments?: any[];
   commentsCount: number;
   likesCount: number;
+  isLiked?: boolean;
   createdAt?: string | null;
 }
 
@@ -82,23 +86,34 @@ const NewsItemCard = ({ news, selectedNewsId, onNewsSelect }: NewsItemCardProps)
     <div className="flex gap-3">
       {/* Thumbnail */}
       <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-600">
-        {news.attachmentType === 'image' && news.attachmentUrl ? (
-          <img
-            src={news.attachmentUrl}
-            alt={news.title}
-            className="w-full h-full object-cover"
-          />
-        ) : news.attachmentType === 'video' && news.attachmentUrl ? (
-          <div className="w-full h-full flex items-center justify-center bg-gray-900">
-            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <div className="w-0 h-0 border-l-[8px] border-l-gray-900 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent ml-0.5" />
-            </div>
-          </div>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Newspaper className="h-6 w-6 text-gray-400" />
-          </div>
-        )}
+{(() => {
+          const firstImage = news.attachments?.images?.[0];
+          const hasVideo = news.attachments?.videos && news.attachments.videos.length > 0;
+          
+          if (firstImage) {
+            return (
+              <img
+                src={firstImage.url}
+                alt={news.title}
+                className="w-full h-full object-cover"
+              />
+            );
+          } else if (hasVideo) {
+            return (
+              <div className="w-full h-full flex items-center justify-center bg-gray-900">
+                <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                  <div className="w-0 h-0 border-l-[8px] border-l-gray-900 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent ml-0.5" />
+                </div>
+              </div>
+            );
+          } else {
+            return (
+              <div className="w-full h-full flex items-center justify-center">
+                <Newspaper className="h-6 w-6 text-gray-400" />
+              </div>
+            );
+          }
+        })()}
       </div>
 
       {/* Content */}
@@ -180,7 +195,7 @@ export default function NewsLayout({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex h-[calc(100vh-140px)]">
+      <div className="flex min-h-[calc(100vh-140px)]">
         {/* Mobile Sidebar - News List */}
         <div className={`
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -280,45 +295,9 @@ export default function NewsLayout({
         </div>
 
         {/* Desktop Three-Column Layout */}
-        <div className="hidden lg:flex flex-1 overflow-hidden">
-          {/* Left Column - Popular News */}
+        <div className="hidden lg:flex flex-1">
+          {/* Left Column - Recent News */}
           <div className="w-80 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col">
-            <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-orange-500" />
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Most Popular</h2>
-              </div>
-            </div>
-            <div className="flex-1 overflow-y-auto scroll-smooth">
-              {newsItems.length === 0 ? (
-                <div className="p-6 text-center">
-                  <Newspaper className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-                  <p className="text-gray-500 dark:text-gray-400">No news available</p>
-                </div>
-              ) : (
-                <div className="p-2 space-y-2">
-                  {sortByPopularity(newsItems).map((news) => (
-                    <NewsItemCard
-                      key={news.id}
-                      news={news}
-                      selectedNewsId={selectedNewsId}
-                      onNewsSelect={onNewsSelect}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Middle Column - Selected News Content */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto scroll-smooth">
-              {children}
-            </div>
-          </div>
-
-          {/* Right Column - Recent News */}
-          <div className="w-80 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col">
             <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-blue-500" />
@@ -345,10 +324,46 @@ export default function NewsLayout({
               )}
             </div>
           </div>
+
+          {/* Middle Column - Selected News Content */}
+          <div className="flex-1 flex flex-col">
+            <div className="flex-1">
+              {children}
+            </div>
+          </div>
+
+          {/* Right Column - Popular News */}
+          <div className="w-80 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-orange-500" />
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Most Popular</h2>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto scroll-smooth">
+              {newsItems.length === 0 ? (
+                <div className="p-6 text-center">
+                  <Newspaper className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+                  <p className="text-gray-500 dark:text-gray-400">No news available</p>
+                </div>
+              ) : (
+                <div className="p-2 space-y-2">
+                  {sortByPopularity(newsItems).map((news) => (
+                    <NewsItemCard
+                      key={news.id}
+                      news={news}
+                      selectedNewsId={selectedNewsId}
+                      onNewsSelect={onNewsSelect}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Mobile Content Panel */}
-        <div className="lg:hidden flex-1 flex flex-col overflow-hidden">
+        <div className="lg:hidden flex-1 flex flex-col">
           {/* Mobile Header */}
           <div className="p-4 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
             <button
@@ -361,7 +376,7 @@ export default function NewsLayout({
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto scroll-smooth">
+          <div className="flex-1">
             {children}
           </div>
         </div>

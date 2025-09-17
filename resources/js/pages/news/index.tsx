@@ -55,10 +55,14 @@ export default function NewsIndex() {
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
   const { data, setData, post, processing, reset } = useForm({ comment: '' });
 
-  // Auto-select first news item on desktop
+  // Auto-select first news item (most recent) when available
   useEffect(() => {
-    if (items.length > 0 && !selectedNewsId && window.innerWidth >= 1024) {
+    if (items.length > 0 && !selectedNewsId) {
       setSelectedNewsId(items[0].id);
+      // On desktop, also switch to detail view
+      if (window.innerWidth >= 1024) {
+        setViewMode('detail');
+      }
     }
   }, [items, selectedNewsId]);
 
@@ -119,10 +123,11 @@ export default function NewsIndex() {
       filters={props.filters}
       onFilterChange={handleFilterChange}
       showFilters={viewMode === 'list'}
+      hideFooter={true}
     >
       {/* Detail View */}
       {viewMode === 'detail' && safeSelectedNews ? (
-        <div className="w-full h-full overflow-y-auto">
+        <div className="w-full">
           {/* Back Button - Mobile Only */}
           <div className="lg:hidden p-4">
             <button 
@@ -266,16 +271,18 @@ export default function NewsIndex() {
         </div>
       ) : (
         <>
-          {/* Welcome Message for Desktop */}
-          <div className="hidden lg:flex items-center justify-center h-full">
-            <div className="text-center max-w-md">
-              <Newspaper className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Select a News Article</h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Choose a news article from the sidebar to read the full content here.
-              </p>
+          {/* Welcome Message for Desktop - Only show when no news available */}
+          {items.length === 0 && (
+            <div className="hidden lg:flex items-center justify-center h-full">
+              <div className="text-center max-w-md">
+                <Newspaper className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No News Available</h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Check back later for the latest news and updates.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Mobile View - Show all news */}
           <div className="lg:hidden">

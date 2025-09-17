@@ -61,30 +61,8 @@ class PublicNewsController extends Controller
                     'id' => $n->id,
                     'title' => $n->news_title,
                     'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
-                    'attachments' => [
-                        'images' => $n->imageAttachments->map(fn($img) => [
-                            'url' => $img->url,
-                            'width' => $img->width,
-                            'height' => $img->height,
-                            'order' => $img->display_order,
-                        ]),
-                        'videos' => $n->videoAttachments->map(fn($vid) => [
-                            'embedUrl' => $vid->embed_url,
-                            'provider' => $vid->provider,
-                            'order' => $vid->display_order,
-                        ]),
-                    ],
-                    'comments' => $n->comments->map(function ($c) {
-                        return [
-                            'id' => $c->id,
-                            'text' => $c->comment_text,
-                            'author' => [
-                                'id' => $c->user->id,
-                                'name' => $c->user->name,
-                            ],
-                            'createdAt' => $c->created_at?->toIso8601String(),
-                        ];
-                    }),
+                    'attachments' => $this->formatAttachments($n),
+                    'comments' => $this->formatComments($n->comments),
                     'commentsCount' => $n->comments_count,
                     'likesCount' => $n->likes_count,
                     'isLiked' => $isLiked,
@@ -105,7 +83,7 @@ class PublicNewsController extends Controller
 
     public function show(Request $request, News $news): Response
     {
-        $news->load(['comments.user', 'likes']);
+        $news->load(['comments.user', 'likes', 'imageAttachments', 'videoAttachments']);
 
         $authUserId = $request->user()?->id;
         $isLiked = $authUserId ? $news->likes->contains('user_id', $authUserId) : false;
@@ -115,66 +93,13 @@ class PublicNewsController extends Controller
                 'id' => $news->id,
                 'title' => $news->news_title,
                 'description' => $news->news_description,
-                'attachments' => [
-                    'images' => $news->imageAttachments()->orderBy('display_order')->get()->map(fn($img) => [
-                        'url' => $img->url,
-                        'width' => $img->width,
-                        'height' => $img->height,
-                        'order' => $img->display_order,
-                    ]),
-                    'videos' => $news->videoAttachments()->orderBy('display_order')->get()->map(fn($vid) => [
-                        'embedUrl' => $vid->embed_url,
-                        'provider' => $vid->provider,
-                        'order' => $vid->display_order,
-                    ]),
-                ],
+                'attachments' => $this->formatAttachments($news),
                 'createdAt' => $news->created_at?->toIso8601String(),
-                'comments' => $news->comments->map(function (NewsComment $c) {
-                    return [
-                        'id' => $c->id,
-                        'text' => $c->comment_text,
-                        'author' => [
-                            'id' => $c->user->id,
-                            'name' => $c->user->name,
-                        ],
-                        'createdAt' => $c->created_at?->toIso8601String(),
-                    ];
-                }),
+                'comments' => $this->formatComments($news->comments),
                 'likesCount' => $news->likes->count(),
                 'isLiked' => $isLiked,
             ],
         ]);
-    }
-
-    /**
-     * Extract a YouTube video ID from various URL formats.
-     */
-    private function extractYouTubeId(string $url): ?string
-    {
-        if ($url === '') {
-            return null;
-        }
-
-        $patterns = [
-            '#youtu\.be/([A-Za-z0-9_-]{11})#',
-            '#youtube\.com\/(?:watch\?v=|embed/|v/|shorts/)([A-Za-z0-9_-]{11})#',
-        ];
-
-        foreach ($patterns as $pattern) {
-            if (preg_match($pattern, $url, $matches)) {
-                return $matches[1];
-            }
-        }
-
-        $parts = parse_url($url);
-        if (!empty($parts['query'])) {
-            parse_str($parts['query'], $q);
-            if (!empty($q['v']) && is_string($q['v']) && preg_match('/^[A-Za-z0-9_-]{11}$/', $q['v'])) {
-                return $q['v'];
-            }
-        }
-
-        return null;
     }
 
     public function comment(Request $request, News $news): RedirectResponse
@@ -209,6 +134,48 @@ class PublicNewsController extends Controller
 
         return back();
     }
+
+    /**
+     * Format attachments for consistent output across methods.
+     */
+    private function formatAttachments(News $news): array
+    {
+        return [
+            'images' => $news->imageAttachments
+                ->sortBy('display_order')
+                ->map(fn($img) => [
+                    'url' => $img->url,
+                    'width' => $img->width,
+                    'height' => $img->height,
+                    'order' => $img->display_order,
+                ])
+                ->values(),
+            'videos' => $news->videoAttachments
+                ->sortBy('display_order')
+                ->map(fn($vid) => [
+                    'embedUrl' => $vid->embed_url,
+                    'provider' => $vid->provider,
+                    'order' => $vid->display_order,
+                ])
+                ->values(),
+        ];
+    }
+
+    /**
+     * Format comments for consistent output across methods.
+     */
+    private function formatComments($comments): array
+    {
+        return $comments->map(function ($c) {
+            return [
+                'id' => $c->id,
+                'text' => $c->comment_text,
+                'author' => [
+                    'id' => $c->user->id,
+                    'name' => $c->user->name,
+                ],
+                'createdAt' => $c->created_at?->toIso8601String(),
+            ];
+        })->values()->toArray();
+    }
 }
-
-
