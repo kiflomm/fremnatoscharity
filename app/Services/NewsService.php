@@ -113,7 +113,7 @@ class NewsService
         if (is_array($images)) {
             foreach ($images as $index => $file) {
                 $order = isset($imagesOrder[$index]) ? (int) $imagesOrder[$index] : $index;
-                $disk = '';
+                $disk = 'public';
                 $path = $file->store('news/images', $disk);
                 /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
                 $fs = Storage::disk($disk);
