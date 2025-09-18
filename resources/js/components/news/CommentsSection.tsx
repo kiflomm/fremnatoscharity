@@ -53,23 +53,7 @@ export default function CommentsSection({ newsId, comments, isLoggedIn, onCommen
   return (
     <section className="mt-4 lg:mt-6 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
       <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-xl border border-white/20 dark:border-slate-700/50 overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 px-6 lg:px-12 py-8 border-b border-slate-200/50 dark:border-slate-600/50">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent flex items-center">
-              <div className="p-3 rounded-2xl bg-blue-500/10 dark:bg-blue-400/10 mr-4">
-                <MessageSquare className="h-6 w-6 lg:h-7 lg:w-7 text-blue-600 dark:text-blue-400" />
-              </div>
-              Discussion
-            </h2>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm">
-              <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">
-                {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
-              </span>
-            </div>
-          </div>
-        </div>
-
+        
         <div className="p-6 lg:p-12">
           {/* Comment Form */}
           {isLoggedIn ? (

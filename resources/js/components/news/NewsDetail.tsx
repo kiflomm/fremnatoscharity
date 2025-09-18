@@ -144,12 +144,6 @@ export default function NewsDetail({ news, onBackToList, showBackButton = false,
                     </div>
                   )}
                   
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
-                    <MessageSquare className="h-4 w-4" />
-                    <span className="text-sm font-medium">
-                      {news.comments.length} {news.comments.length === 1 ? 'comment' : 'comments'}
-                    </span>
-                  </div>
                 </div>
 
                 {/* Divider */}
@@ -176,7 +170,7 @@ export default function NewsDetail({ news, onBackToList, showBackButton = false,
                 }}
               />
 
-              {/* Read More/Show Less Buttons */}
+              {/* Facebook-style Read More/Show Less Links */}
               {(() => {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = news.description;
@@ -187,22 +181,20 @@ export default function NewsDetail({ news, onBackToList, showBackButton = false,
 
                 if (words.length > maxWords) {
                   return (
-                    <div className="mt-8 flex justify-center">
+                    <div className="mt-4">
                       {!showFullDescription ? (
                         <button
                           onClick={handleReadMoreClick}
-                          className="group inline-flex items-center px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white font-semibold text-base hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 transition-all duration-300 hover:scale-105 shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 border border-blue-400/20"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm transition-colors duration-200 hover:underline"
                         >
-                          <span className="mr-3 font-medium">Read More</span>
-                          <ChevronDown className="h-5 w-5 transition-transform duration-300 group-hover:translate-y-0.5" />
+                          See more
                         </button>
                       ) : (
                         <button
                           onClick={handleShowLessClick}
-                          className="group inline-flex items-center px-8 py-4 rounded-2xl bg-gradient-to-r from-slate-500 via-slate-600 to-slate-700 text-white font-semibold text-base hover:from-slate-600 hover:via-slate-700 hover:to-slate-800 transition-all duration-300 hover:scale-105 shadow-xl shadow-slate-500/30 hover:shadow-2xl hover:shadow-slate-500/40 border border-slate-400/20"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm transition-colors duration-200 hover:underline"
                         >
-                          <span className="mr-3 font-medium">Show Less</span>
-                          <ChevronUp className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-0.5" />
+                          See less
                         </button>
                       )}
                     </div>
@@ -212,49 +204,40 @@ export default function NewsDetail({ news, onBackToList, showBackButton = false,
               })()}
             </div>
 
-            {/* Enhanced Actions Section */}
-            <div className="px-6 lg:px-12 pb-8 lg:pb-12">
-              <div className="bg-gradient-to-r from-slate-50/80 via-white/90 to-slate-50/80 dark:from-slate-800/60 dark:via-slate-700/60 dark:to-slate-800/60 backdrop-blur-sm rounded-3xl p-8 border border-slate-200/60 dark:border-slate-600/60 shadow-xl">
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            {/* Compact Actions Section */}
+            <div className="px-6 lg:px-12 pb-6">
+              <div className="bg-gradient-to-r from-slate-50/60 via-white/70 to-slate-50/60 dark:from-slate-800/40 dark:via-slate-700/40 dark:to-slate-800/40 backdrop-blur-sm rounded-2xl p-4 border border-slate-200/40 dark:border-slate-600/40">
+                <div className="flex items-center justify-center gap-4">
                   {/* Like Button */}
                   <button
                     onClick={handleLike}
-                    className={`group relative inline-flex items-center px-8 py-4 rounded-2xl text-base font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 overflow-hidden ${
+                    className={`group inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 ${
                       news.isLiked
-                        ? 'bg-gradient-to-r from-red-500 via-red-600 to-pink-500 text-white shadow-2xl shadow-red-500/40 hover:shadow-red-500/60'
-                        : 'bg-gradient-to-r from-slate-100 via-slate-200 to-slate-300 dark:from-slate-700 dark:via-slate-600 dark:to-slate-500 text-slate-700 dark:text-slate-200 hover:from-slate-200 hover:via-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:via-slate-500 dark:hover:to-slate-400 shadow-lg hover:shadow-xl'
+                        ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
+                        : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400'
                     }`}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <Heart className={`h-6 w-6 mr-3 transition-all duration-300 group-hover:scale-125 ${news.isLiked ? 'fill-current animate-pulse' : 'group-hover:text-red-500'}`} />
-                    <div className="flex flex-col items-center">
-                      <span className="text-lg font-bold">{news.likesCount}</span>
-                      <span className="text-xs opacity-80">{news.likesCount === 1 ? 'Like' : 'Likes'}</span>
-                    </div>
+                    <Heart className={`h-4 w-4 mr-2 transition-all duration-200 ${news.isLiked ? 'fill-current' : 'group-hover:fill-current'}`} />
+                    <span className="font-semibold">{news.likesCount}</span>
                   </button>
 
                   {/* Comment Button */}
                   <button
                     onClick={handleCommentClick}
-                    className={`group relative inline-flex items-center px-8 py-4 rounded-2xl text-base font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 overflow-hidden ${
+                    className={`group inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 ${
                       showDiscussion
-                        ? 'bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white shadow-2xl shadow-emerald-500/40 hover:shadow-emerald-500/60'
-                        : 'bg-gradient-to-r from-slate-100 via-slate-200 to-slate-300 dark:from-slate-700 dark:via-slate-600 dark:to-slate-500 text-slate-700 dark:text-slate-200 hover:from-slate-200 hover:via-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:via-slate-500 dark:hover:to-slate-400 shadow-lg hover:shadow-xl'
+                        ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400'
+                        : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400'
                     }`}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <MessageSquare className="h-6 w-6 mr-3 transition-all duration-300 group-hover:scale-125 group-hover:text-emerald-500" />
-                    <div className="flex flex-col items-center">
-                      <span className="text-lg font-bold">{news.comments.length}</span>
-                      <span className="text-xs opacity-80">{showDiscussion ? 'Hide' : 'Comments'}</span>
-                    </div>
+                    <MessageSquare className="h-4 w-4 mr-2 transition-all duration-200" />
+                    <span className="font-semibold">{news.comments.length}</span>
                   </button>
 
                   {/* Share Button */}
-                  <button className="group relative inline-flex items-center px-8 py-4 rounded-2xl text-base font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 overflow-hidden bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white shadow-2xl shadow-blue-500/40 hover:shadow-blue-500/60">
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <Share2 className="h-6 w-6 mr-3 transition-all duration-300 group-hover:scale-125" />
-                    <span className="text-sm font-bold">Share</span>
+                  <button className="group inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400">
+                    <Share2 className="h-4 w-4 mr-2 transition-all duration-200" />
+                    <span className="font-semibold">Share</span>
                   </button>
                 </div>
               </div>
