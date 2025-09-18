@@ -40,7 +40,7 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => "../public_html/storage",
+            'root' => "../public_html/tutuf",
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
