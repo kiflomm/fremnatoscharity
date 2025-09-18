@@ -1,6 +1,6 @@
 import { router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
-import { MessageSquare, Heart, ArrowLeft, Clock, Share2, Bookmark, ChevronDown, ChevronUp, Copy, Check, Twitter, Facebook, Linkedin, Link } from 'lucide-react';
+import { MessageSquare, Heart, ArrowLeft, Clock, Share2, Copy, Check, Twitter, Facebook, Linkedin } from 'lucide-react';
 import { like, show } from '@/routes/public/news';
 import { login } from '@/routes';
 import AttachmentsCarousel from '@/components/news/AttachmentsCarousel';
