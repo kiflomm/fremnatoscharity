@@ -29,25 +29,42 @@ interface NewsListProps {
 
 export default function NewsList({ items, onNewsSelect, paginationLinks }: NewsListProps) {
   if (items.length === 0) {
-    return <EmptyNewsState isMobile={true} />;
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <EmptyNewsState isMobile={true} />
+      </div>
+    );
   }
 
   return (
-    <>
-      <div className="p-4 space-y-4">
-        {items.map((news) => (
-          <NewsCard 
-            key={news.id} 
-            news={news} 
-            onSelect={onNewsSelect} 
-          />
-        ))}
+    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      {/* News Grid */}
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="grid gap-6 sm:gap-8">
+          {items.map((news, index) => (
+            <div
+              key={news.id}
+              className="transform transition-all duration-300 hover:scale-[1.02] animate-in fade-in slide-in-from-bottom-4"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <NewsCard 
+                news={news} 
+                onSelect={onNewsSelect}
+                enhanced={true}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Pagination */}
+      {/* Enhanced Pagination */}
       {paginationLinks && (
-        <NewsPagination links={paginationLinks} />
+        <div className="px-4 sm:px-6 lg:px-8 pb-6">
+          <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-slate-700/50 p-4">
+            <NewsPagination links={paginationLinks} />
+          </div>
+        </div>
       )}
-    </>
+    </div>
   );
 }

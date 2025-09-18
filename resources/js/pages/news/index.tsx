@@ -167,12 +167,7 @@ export default function NewsIndex() {
             news={safeSelectedNews}
             onBackToList={handleBackToList}
             showBackButton={true}
-          />
-          <CommentsSection
-            newsId={safeSelectedNews.id}
-            comments={safeSelectedNews.comments}
-            isLoggedIn={isLoggedIn}
-            onCommentSubmitted={handleCommentSubmitted}
+            auth={auth}
           />
         </>
       ) : (
