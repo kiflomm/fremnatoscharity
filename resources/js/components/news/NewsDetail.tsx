@@ -1,7 +1,7 @@
 import { router } from '@inertiajs/react';
-import { useState } from 'react';
-import { MessageSquare, Heart, ArrowLeft, Clock, Share2, Bookmark, ChevronDown, ChevronUp } from 'lucide-react';
-import { like } from '@/routes/public/news';
+import { useState, useEffect, useRef } from 'react';
+import { MessageSquare, Heart, ArrowLeft, Clock, Share2, Bookmark, ChevronDown, ChevronUp, Copy, Check, Twitter, Facebook, Linkedin, Link } from 'lucide-react';
+import { like, show } from '@/routes/public/news';
 import { login } from '@/routes';
 import AttachmentsCarousel from '@/components/news/AttachmentsCarousel';
 import CommentsSection from '@/components/news/CommentsSection';
@@ -37,7 +37,27 @@ interface NewsDetailProps {
 export default function NewsDetail({ news, onBackToList, showBackButton = false, auth }: NewsDetailProps) {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [showDiscussion, setShowDiscussion] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const shareMenuRef = useRef<HTMLDivElement>(null);
   const isLoggedIn = Boolean(auth?.user);
+
+  // Close share menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (shareMenuRef.current && !shareMenuRef.current.contains(event.target as Node)) {
+        setShowShareMenu(false);
+      }
+    };
+
+    if (showShareMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showShareMenu]);
 
   const handleLike = () => {
     router.post(like({ news: news.id }).url);
@@ -55,6 +75,48 @@ export default function NewsDetail({ news, onBackToList, showBackButton = false,
   const handleShowLessClick = () => {
     setShowFullDescription(false);
     setShowDiscussion(false);
+  };
+
+  const getNewsUrl = () => {
+    return window.location.origin + show({ news: news.id }).url;
+  };
+
+  const handleShareClick = () => {
+    setShowShareMenu(!showShareMenu);
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(getNewsUrl());
+      setCopiedToClipboard(true);
+      setTimeout(() => setCopiedToClipboard(false), 2000);
+      setShowShareMenu(false);
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+    }
+  };
+
+  const handleSocialShare = (platform: 'twitter' | 'facebook' | 'linkedin') => {
+    const url = encodeURIComponent(getNewsUrl());
+    const title = encodeURIComponent(news.title);
+    const description = encodeURIComponent(news.description.replace(/<[^>]*>/g, '').substring(0, 200) + '...');
+    
+    let shareUrl = '';
+    
+    switch (platform) {
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${description}`;
+        break;
+    }
+    
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+    setShowShareMenu(false);
   };
 
   const formatDate = (dateString: string) => {
@@ -234,11 +296,67 @@ export default function NewsDetail({ news, onBackToList, showBackButton = false,
                     <span className="font-semibold">{news.comments.length}</span>
                   </button>
 
-                  {/* Share Button */}
-                  <button className="group inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400">
-                    <Share2 className="h-4 w-4 mr-2 transition-all duration-200" />
-                    <span className="font-semibold">Share</span>
-                  </button>
+                  {/* Share Button with Dropdown */}
+                  <div className="relative" ref={shareMenuRef}>
+                    <button
+                      onClick={handleShareClick}
+                      className="group inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400"
+                    >
+                      <Share2 className="h-4 w-4 mr-2 transition-all duration-200" />
+                      <span className="font-semibold">Share</span>
+                    </button>
+
+                    {/* Share Dropdown Menu */}
+                    {showShareMenu && (
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50">
+                        {/* Copy Link */}
+                        <button
+                          onClick={handleCopyLink}
+                          className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200 flex items-center"
+                        >
+                          {copiedToClipboard ? (
+                            <>
+                              <Check className="h-4 w-4 mr-3 text-green-600" />
+                              <span className="text-green-600 font-medium">Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-4 w-4 mr-3" />
+                              <span>Copy Link</span>
+                            </>
+                          )}
+                        </button>
+
+                        {/* Divider */}
+                        <div className="h-px bg-slate-200 dark:bg-slate-700 my-1" />
+
+                        {/* Social Media Options */}
+                        <button
+                          onClick={() => handleSocialShare('twitter')}
+                          className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200 flex items-center"
+                        >
+                          <Twitter className="h-4 w-4 mr-3 text-blue-500" />
+                          <span>Share on Twitter</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleSocialShare('facebook')}
+                          className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200 flex items-center"
+                        >
+                          <Facebook className="h-4 w-4 mr-3 text-blue-600" />
+                          <span>Share on Facebook</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleSocialShare('linkedin')}
+                          className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200 flex items-center"
+                        >
+                          <Linkedin className="h-4 w-4 mr-3 text-blue-700" />
+                          <span>Share on LinkedIn</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
