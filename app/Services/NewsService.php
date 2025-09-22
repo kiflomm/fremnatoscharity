@@ -115,6 +115,10 @@ class NewsService
                 $order = isset($imagesOrder[$index]) ? (int) $imagesOrder[$index] : $index;
                 $disk = 'public';
                 $path = $file->store('news/images', $disk);
+                
+                // Copy file to public_html/storage for GoDaddy compatibility
+                $this->copyFileToPublic($file, 'news/images/' . basename($path));
+                
                 /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
                 $fs = Storage::disk($disk);
                 $url = $fs->url($path);
@@ -197,6 +201,10 @@ class NewsService
                 $order = isset($newImagesOrder[$index]) ? (int) $newImagesOrder[$index] + $orderOffset : ($index + $orderOffset);
                 $disk = 'public';
                 $path = $file->store('news/images', $disk);
+                
+                // Copy file to public_html/storage for GoDaddy compatibility
+                $this->copyFileToPublic($file, 'news/images/' . basename($path));
+                
                 /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
                 $fs = Storage::disk($disk);
                 $url = $fs->url($path);
@@ -473,5 +481,30 @@ class NewsService
         }
 
         return null;
+    }
+
+    /**
+     * Copy uploaded file to public_html/storage for GoDaddy compatibility
+     */
+    private function copyFileToPublic($file, $path): string
+    {
+        // For GoDaddy deployment, ensure we're pointing to public_html directory
+        // public_path() should point to public_html, but let's be explicit
+        $publicPath = public_path('storage/' . $path);
+        
+        // Alternative: Use absolute path to public_html (uncomment if needed)
+        // $publicPath = '/home/sog2hcsbpmox/public_html/storage/' . $path;
+        
+        $publicDir = dirname($publicPath);
+        
+        // Create directory if it doesn't exist
+        if (!is_dir($publicDir)) {
+            mkdir($publicDir, 0755, true);
+        }
+        
+        // Copy file to public storage
+        copy($file->getRealPath(), $publicPath);
+        
+        return $publicPath;
     }
 }

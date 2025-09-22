@@ -3,7 +3,7 @@
  * Test script to check if uploaded images are accessible
  */
 
-$imageUrl = 'https://fremnatoscharity.org/storage/news/images/N92rcO9fuG6PKRirF2UnrDaBFl3bDdf0NKGt4gTe.png';
+$imageUrl = 'https://fremnatoscharity.org/storage/news/images/rtUJDN2kPDL9htEUaswuez2GYefdeNppdRM7jsOz.png';
 
 echo "Testing image access: " . $imageUrl . "\n\n";
 

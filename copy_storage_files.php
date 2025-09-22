@@ -1,6 +1,6 @@
 <?php
 /**
- * Alternative: Copy storage files directly to public_html
+ * Copy storage files directly to public_html
  * This method copies uploaded files to public_html/storage/ for direct access
  */
 
@@ -26,14 +26,20 @@ $directories = [
 
 foreach ($directories as $dir) {
     if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
-        echo "Created: " . $dir . "\n";
+        if (mkdir($dir, 0755, true)) {
+            echo "✓ Created: " . $dir . "\n";
+        } else {
+            echo "✗ Failed to create: " . $dir . "\n";
+        }
+    } else {
+        echo "✓ Directory exists: " . $dir . "\n";
     }
 }
 
 // Copy existing files
 function copyDirectory($src, $dst) {
     $dir = opendir($src);
+    $copiedCount = 0;
     while (($file = readdir($dir)) !== false) {
         if ($file != '.' && $file != '..') {
             $srcFile = $src . '/' . $file;
@@ -43,20 +49,34 @@ function copyDirectory($src, $dst) {
                 if (!is_dir($dstFile)) {
                     mkdir($dstFile, 0755, true);
                 }
-                copyDirectory($srcFile, $dstFile);
+                $copiedCount += copyDirectory($srcFile, $dstFile);
             } else {
-                copy($srcFile, $dstFile);
-                echo "Copied: " . $file . "\n";
+                if (copy($srcFile, $dstFile)) {
+                    echo "✓ Copied: " . $file . "\n";
+                    $copiedCount++;
+                } else {
+                    echo "✗ Failed to copy: " . $file . "\n";
+                }
             }
         }
     }
     closedir($dir);
+    return $copiedCount;
 }
 
-copyDirectory($sourceDir, $targetDir);
+$copiedFiles = copyDirectory($sourceDir, $targetDir);
 
-echo "\nFiles copied successfully!\n";
+echo "\n✓ Copied $copiedFiles files successfully!\n";
 echo "Images should now be accessible at:\n";
 echo "- https://fremnatoscharity.org/storage/news/images/\n";
-echo "- https://fremnatoscharity.org/storage/stories/images/\n";
+echo "- https://fremnatoscharity.org/storage/stories/images/\n\n";
+
+// Test one of the files
+$testFile = $targetDir . '/news/images/rtUJDN2kPDL9htEUaswuez2GYefdeNppdRM7jsOz.png';
+if (file_exists($testFile)) {
+    echo "✓ Test file exists: " . $testFile . "\n";
+    echo "✓ You can now access: https://fremnatoscharity.org/storage/news/images/rtUJDN2kPDL9htEUaswuez2GYefdeNppdRM7jsOz.png\n";
+} else {
+    echo "✗ Test file not found: " . $testFile . "\n";
+}
 ?>
