@@ -485,26 +485,29 @@ class NewsService
 
     /**
      * Copy uploaded file to public_html/storage for GoDaddy compatibility
+     * Only runs in production environment
      */
     private function copyFileToPublic($file, $path): string
     {
-        // For GoDaddy deployment, ensure we're pointing to public_html directory
-        // public_path() should point to public_html, but let's be explicit
-        $publicPath = public_path('storage/' . $path);
-        
-        // Alternative: Use absolute path to public_html (uncomment if needed)
-        // $publicPath = '/home/sog2hcsbpmox/public_html/storage/' . $path;
-        
-        $publicDir = dirname($publicPath);
-        
-        // Create directory if it doesn't exist
-        if (!is_dir($publicDir)) {
-            mkdir($publicDir, 0755, true);
+        // Only run in production (GoDaddy hosting)
+        if (app()->environment('production')) {
+            // Use absolute path to public_html since public_path() points to fremnatos/public
+            $publicPath = '/home/sog2hcsbpmox/public_html/storage/' . $path;
+            
+            $publicDir = dirname($publicPath);
+            
+            // Create directory if it doesn't exist
+            if (!is_dir($publicDir)) {
+                mkdir($publicDir, 0755, true);
+            }
+            
+            // Copy file to public storage
+            copy($file->getRealPath(), $publicPath);
+            
+            return $publicPath;
         }
         
-        // Copy file to public storage
-        copy($file->getRealPath(), $publicPath);
-        
-        return $publicPath;
+        // In development, just return the Laravel public path
+        return public_path('storage/' . $path);
     }
 }
