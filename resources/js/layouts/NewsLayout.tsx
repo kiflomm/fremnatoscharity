@@ -221,7 +221,7 @@ export default function NewsLayout({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <Newspaper className="h-6 w-6 text-blue-600 mr-2" />
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t("latest_news")}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t("common.navigation.news")}</h2>
               </div>
               <button
                 onClick={() => setIsSidebarOpen(false)}

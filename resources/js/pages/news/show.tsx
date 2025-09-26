@@ -77,7 +77,7 @@ export default function NewsShow() {
         {/* Back Button */}
         <Link href="/news" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 mb-6">
           <ArrowLeft size={20} />
-          {t('common.back_to_news')}
+          {t('common.comments.back_to_news')}
         </Link>
 
         {/* News Article */}
@@ -92,11 +92,11 @@ export default function NewsShow() {
               </div>
               <div className="flex items-center gap-2">
                 <MessageSquare size={16} />
-                {news.comments.length} {t('common.comments')}
+                {news.comments.length} {t('common.comments.comments')}
               </div>
               <div className="flex items-center gap-2">
                 <Heart size={16} />
-                {news.likesCount} {t('common.likes')}
+                {news.likesCount} {t('common.likes.likes')}
               </div>
             </div>
           </div>
@@ -135,7 +135,7 @@ export default function NewsShow() {
 
         {/* Comments Section */}
         <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-semibold mb-6">{t('common.comments')} ({news.comments.length})</h2>
+          <h2 className="text-xl font-semibold mb-6">{t('common.comments.comments')} ({news.comments.length})</h2>
           
           {/* Comment Form */}
           {auth?.user ? (
@@ -150,7 +150,7 @@ export default function NewsShow() {
                   <textarea
                     value={commentData.comment}
                     onChange={e => setCommentData('comment', e.target.value)}
-                    placeholder={t('common.write_comment')}
+                    placeholder={t('common.comments.write_comment')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     rows={3}
                     disabled={commentProcessing}
@@ -161,16 +161,16 @@ export default function NewsShow() {
                     className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send size={16} />
-                    {t('common.post_comment')}
+                    {t('common.comments.post_comment')}
                   </button>
                 </div>
               </div>
             </form>
           ) : (
             <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-gray-600 mb-2">{t('common.login_to_comment')}</p>
+              <p className="text-gray-600 mb-2">{t('common.comments.login_to_comment')}</p>
               <Link href={login().url} className="text-blue-600 hover:underline">
-                {t('common.login')}
+                {t('common.navigation.login')}
               </Link>
             </div>
           )}
@@ -178,7 +178,7 @@ export default function NewsShow() {
           {/* Comments List */}
           <div className="space-y-4">
             {news.comments.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">{t('common.no_comments')}</p>
+              <p className="text-gray-500 text-center py-8">{t('common.comments.no_comments')}</p>
             ) : (
               news.comments.map(comment => (
                 <div key={comment.id} className="flex gap-3">

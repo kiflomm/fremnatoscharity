@@ -52,7 +52,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   };
 
   const getThemeLabel = () => {
-    return theme === 'dark' ? t('switch_to_light_mode') : t('switch_to_dark_mode');
+    return theme === 'dark' ? t('theme.switch_to_light_mode') : t('theme.switch_to_dark_mode');
   };
 
   if (variant === 'button') {

@@ -42,10 +42,10 @@ export default function ContactSection() {
       preserveScroll: true,
       onSuccess: () => {
         reset('name', 'email', 'message')
-        toast.success(t('contact_section.message_sent_success') || 'Your message has been sent.')
+        toast.success(t('contact.message_sent_success') || 'Your message has been sent.')
       },
       onError: () => {
-        toast.error(t('contact_section.message_sent_error') || 'Failed to send your message.')
+        toast.error(t('contact.message_sent_error') || 'Failed to send your message.')
       },
     })
   }
@@ -58,25 +58,25 @@ export default function ContactSection() {
     <section id="contact" className="py-16 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-foreground mb-4 text-balance">{t("contact_section.title")}</h2>
+          <h2 className="text-4xl font-bold text-foreground mb-4 text-balance">{t("contact.title")}</h2>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Contact Form */}
           <Card className="shadow-lg">
             <CardHeader>
-              <CardDescription>{t("contact_section.form_description")}</CardDescription>
+              <CardDescription>{t("contact.form_description")}</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name">{t("contact_section.full_name")}</Label>
+                  <Label htmlFor="name">{t("contact.full_name")}</Label>
                   <Input
                     id="name"
                     name="name"
                     value={data.name}
                     onChange={handleChange}
-                    placeholder={t("contact_section.full_name_placeholder")}
+                    placeholder={t("contact.full_name_placeholder")}
                     required
                     className="focus:ring-2 focus:ring-primary/20"
                   />
@@ -87,14 +87,14 @@ export default function ContactSection() {
 
                 {!isLoggedIn && (
                   <div className="space-y-2">
-                    <Label htmlFor="email">{t("contact_section.email_address")}</Label>
+                    <Label htmlFor="email">{t("contact.email_address")}</Label>
                     <Input
                       id="email"
                       name="email"
                       type="email"
                       value={data.email}
                       onChange={handleChange}
-                      placeholder={t("contact_section.email_placeholder")}
+                      placeholder={t("contact.email_placeholder")}
                       required
                       className="focus:ring-2 focus:ring-primary/20"
                     />
@@ -105,13 +105,13 @@ export default function ContactSection() {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">{t("contact_section.message")}</Label>
+                  <Label htmlFor="message">{t("contact.message")}</Label>
                   <Textarea
                     id="message"
                     name="message"
                     value={data.message}
                     onChange={handleChange}
-                    placeholder={t("contact_section.message_placeholder")}
+                    placeholder={t("contact.message_placeholder")}
                     rows={5}
                     required
                     className="focus:ring-2 focus:ring-primary/20 resize-none"
@@ -126,7 +126,7 @@ export default function ContactSection() {
                   disabled={processing}
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 transition-colors disabled:opacity-60"
                 >
-                  {processing ? t("common.sending") : t("contact_section.send_message")}
+                  {processing ? t("common.actions.sending") : t("contact.send_message")}
                 </Button>
               </form>
             </CardContent>
@@ -164,15 +164,15 @@ export default function ContactSection() {
                     <div className="flex-1 min-w-0 w-full">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-2">
                         <h4 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-blue-900 transition-colors duration-300 text-center sm:text-left">
-                          {t("contact_section.freminatos_charity")}
+                          {t("contact.freminatos_charity")}
                         </h4>
                         <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200 font-medium self-center sm:self-auto">
-                          {t("contact_section.official")}
+                          {t("contact.official")}
                         </Badge>
                       </div>
                       
                       <p className="text-slate-600 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed text-center sm:text-left">
-                        {t("contact_section.main_contact_description")}
+                        {t("contact.main_contact_description")}
                       </p>
 
                       {/* Contact Details */}
@@ -185,7 +185,7 @@ export default function ContactSection() {
                             <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact_section.email_address_label")}</p>
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact.email_address_label")}</p>
                             <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300 break-all sm:truncate">
                               fremnatoscharity@gmail.com
                             </p>
@@ -204,7 +204,7 @@ export default function ContactSection() {
         </svg>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact_section.youtube_label")}</p>
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact.youtube_label")}</p>
                             <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300 truncate">
                               @fremnatoscharity
                             </p>
@@ -219,7 +219,7 @@ export default function ContactSection() {
                             <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact_section.phone_number_label")}</p>
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact.phone_number_label")}</p>
                             <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300">
                               +251 993 110 999
                             </p>
@@ -236,7 +236,7 @@ export default function ContactSection() {
                         >
                           <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
                             <MapPin className="w-4 h-4 mr-2" />
-                            {t("contact_section.visit_our_office")}
+                            {t("contact.visit_our_office")}
                           </a>
                         </Button>
                       </div>

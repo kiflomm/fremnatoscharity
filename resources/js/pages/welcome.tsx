@@ -42,7 +42,7 @@ export default function Welcome() {
     }
 
     return (
-        <FixedHeaderLayout title={t('organization')}>
+        <FixedHeaderLayout title={t('organization.name')}>
             <div className="block md:hidden">
                 <ImageSlideshow />
             </div>

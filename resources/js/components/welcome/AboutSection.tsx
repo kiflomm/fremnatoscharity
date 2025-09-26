@@ -133,7 +133,7 @@ export default function AboutSection() {
                           <AlertDialogDescription>{selected.description}</AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel onClick={() => setOpenId(null)}>{t('close')}</AlertDialogCancel>
+                          <AlertDialogCancel onClick={() => setOpenId(null)}>{t('common.actions.close')}</AlertDialogCancel>
                         </AlertDialogFooter>
                       </>
                     )
