@@ -484,6 +484,105 @@ class NewsService
     }
 
     /**
+     * Get selected news with full details for preview functionality
+     */
+    public function getSelectedNews(?int $selectedNewsId, ?int $authUserId = null): ?array
+    {
+        if (!$selectedNewsId) {
+            return null;
+        }
+
+        $selectedNews = News::query()
+            ->notArchived()
+            ->withCount(['comments', 'likes'])
+            ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
+            ->find($selectedNewsId);
+
+        if (!$selectedNews) {
+            return null;
+        }
+
+        $isLiked = $authUserId ? $selectedNews->likes->contains('user_id', $authUserId) : false;
+        
+        return [
+            'id' => $selectedNews->id,
+            'title' => $selectedNews->news_title,
+            'description' => $selectedNews->news_description,
+            'attachments' => $this->formatAttachments($selectedNews),
+            'comments' => $this->formatComments($selectedNews->comments),
+            'commentsCount' => $selectedNews->comments_count,
+            'likesCount' => $selectedNews->likes_count,
+            'isLiked' => $isLiked,
+            'createdAt' => $selectedNews->created_at?->toIso8601String(),
+        ];
+    }
+
+    /**
+     * Get news with full details for show page
+     */
+    public function getNewsForShow(News $news, ?int $authUserId = null): array
+    {
+        $news->load(['comments.user', 'likes', 'imageAttachments', 'videoAttachments']);
+
+        $isLiked = $authUserId ? $news->likes->contains('user_id', $authUserId) : false;
+
+        return [
+            'id' => $news->id,
+            'title' => $news->news_title,
+            'description' => $news->news_description,
+            'attachments' => $this->formatAttachments($news),
+            'createdAt' => $news->created_at?->toIso8601String(),
+            'comments' => $this->formatComments($news->comments),
+            'likesCount' => $news->likes->count(),
+            'isLiked' => $isLiked,
+        ];
+    }
+
+    /**
+     * Format attachments for service methods (internal use)
+     */
+    private function formatAttachments(News $news): array
+    {
+        return [
+            'images' => $news->imageAttachments
+                ->sortBy('display_order')
+                ->map(fn($img) => [
+                    'url' => $img->url,
+                    'width' => $img->width,
+                    'height' => $img->height,
+                    'order' => $img->display_order,
+                ])
+                ->values(),
+            'videos' => $news->videoAttachments
+                ->sortBy('display_order')
+                ->map(fn($vid) => [
+                    'embedUrl' => $vid->embed_url,
+                    'provider' => $vid->provider,
+                    'order' => $vid->display_order,
+                ])
+                ->values(),
+        ];
+    }
+
+    /**
+     * Format comments for service methods (internal use)
+     */
+    private function formatComments($comments): array
+    {
+        return $comments->map(function ($c) {
+            return [
+                'id' => $c->id,
+                'text' => $c->comment_text,
+                'author' => [
+                    'id' => $c->user->id,
+                    'name' => $c->user->name,
+                ],
+                'createdAt' => $c->created_at?->toIso8601String(),
+            ];
+        })->values()->toArray();
+    }
+
+    /**
      * Copy uploaded file to public_html/storage for GoDaddy compatibility
      * Only runs in production environment
      */
