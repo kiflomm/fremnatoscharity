@@ -1,13 +1,19 @@
-import { usePage, router } from '@inertiajs/react';
+import { usePage, router } from '@inertiajs/react'; 
 import NewsLayout from '@/layouts/NewsLayout';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useTranslations } from '@/hooks/useTranslations';
-import NewsDetail from '@/components/news/NewsDetail';
-import CommentsSection from '@/components/news/CommentsSection';
+import NewsDetail from '@/components/news/NewsDetail'; 
 import NewsList from '@/components/news/NewsList';
 import EmptyNewsState from '@/components/news/EmptyNewsState';
 import type { NewsListData } from '@/lib/layout-utils';
+import { index as newsIndex } from '@/routes/public/news';
+
+// Helper function to get current query parameters
+const getCurrentQueryParams = () => {
+  const currentParams = new URLSearchParams(window.location.search);
+  return Object.fromEntries(currentParams.entries());
+};
 
 type NewsItem = {
   id: number;
@@ -73,10 +79,15 @@ export default function NewsIndex() {
     setSelectedNewsId(newsId);
     setViewMode('detail');
     
-    // Update URL with selected news
-    const params = new URLSearchParams(window.location.search);
-    params.set('selected', newsId.toString());
-    router.visit(`/news?${params.toString()}`, {
+    // Update URL with selected news using Wayfinder
+    const queryParams = getCurrentQueryParams();
+    
+    router.visit(newsIndex.url({
+      mergeQuery: {
+        ...queryParams,
+        selected: newsId.toString(),
+      }
+    }), {
       preserveScroll: true,
       preserveState: true,
     });
@@ -86,49 +97,48 @@ export default function NewsIndex() {
     setViewMode('list');
     setSelectedNewsId(undefined);
     
-    // Remove selected news from URL
-    const params = new URLSearchParams(window.location.search);
-    params.delete('selected');
-    const queryString = params.toString();
-    router.visit(`/news${queryString ? `?${queryString}` : ''}`, {
+    // Remove selected news from URL using Wayfinder
+    const queryParams = getCurrentQueryParams();
+    delete queryParams.selected;
+    
+    router.visit(newsIndex.url({
+      query: queryParams
+    }), {
       preserveScroll: true,
       preserveState: true,
     });
   };
 
-  const handleCommentSubmitted = () => {
-    // Refresh the page to show the new comment
-    router.reload();
-  };
-
   const handleFilterChange = (filters: { q?: string }) => {
-    const params = new URLSearchParams(window.location.search);
+    const queryParams = getCurrentQueryParams();
     
     // Clear page parameters when searching
-    params.delete('recent_page');
-    params.delete('popular_page');
+    delete queryParams.recent_page;
+    delete queryParams.popular_page;
     
     if (filters.q) {
-      params.set('q', filters.q);
+      queryParams.q = filters.q;
     } else {
-      params.delete('q');
+      delete queryParams.q;
     }
 
-    const queryString = params.toString();
-    router.visit(`/news${queryString ? `?${queryString}` : ''}`);
+    router.visit(newsIndex.url({
+      query: queryParams
+    }));
   };
 
   const handlePageChange = (pageType: 'recent' | 'popular', page: number) => {
-    const params = new URLSearchParams(window.location.search);
+    const queryParams = getCurrentQueryParams();
     
     if (pageType === 'recent') {
-      params.set('recent_page', page.toString());
+      queryParams.recent_page = page.toString();
     } else {
-      params.set('popular_page', page.toString());
+      queryParams.popular_page = page.toString();
     }
     
-    const queryString = params.toString();
-    router.visit(`/news?${queryString}`, {
+    router.visit(newsIndex.url({
+      query: queryParams
+    }), {
       preserveScroll: true,
       preserveState: true,
     });
