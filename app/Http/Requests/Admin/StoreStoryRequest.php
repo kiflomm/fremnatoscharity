@@ -16,7 +16,7 @@ class StoreStoryRequest extends FormRequest
         return [
             'story_title' => ['required', 'string', 'max:255'],
             'story_description' => ['required', 'string'],
-            'category' => ['required', 'in:elders,childrens,disabled'],
+            'category' => ['required', 'in:elders,children,disabled'],
             'images' => ['sometimes', 'array'],
             'images.*' => ['file', 'image'],
             'images_order' => ['sometimes', 'array'],
@@ -32,7 +32,7 @@ class StoreStoryRequest extends FormRequest
             'story_title.required' => 'The story title is required.',
             'story_description.required' => 'The story description is required.',
             'category.required' => 'The category is required.',
-            'category.in' => 'Category must be elders, childrens, or disabled.',
+            'category.in' => 'Category must be elders, children, or disabled.',
         ];
     }
     

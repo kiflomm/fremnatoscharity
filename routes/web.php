@@ -73,7 +73,7 @@ Route::middleware(['public.only'])->group(function () {
     // Stories routes
     Route::get('/stories', [PublicStoriesController::class, 'index'])->name('public.stories.index');
     Route::get('/stories/elders', [PublicStoriesController::class, 'elders'])->name('public.stories.elders');
-    Route::get('/stories/childrens', [PublicStoriesController::class, 'childrens'])->name('public.stories.childrens');
+    Route::get('/stories/children', [PublicStoriesController::class, 'children'])->name('public.stories.children');
     Route::get('/stories/disabled', [PublicStoriesController::class, 'disabled'])->name('public.stories.disabled');
     Route::get('/stories/{story}', [PublicStoriesController::class, 'show'])->name('public.stories.show');
     Route::post('/stories/{story}/comments', [PublicStoriesController::class, 'comment'])

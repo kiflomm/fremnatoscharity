@@ -22,7 +22,7 @@ type Item = {
 };
 
 type PageProps = {
-  category: 'elders' | 'childrens' | 'disabled';
+  category: 'elders' | 'children' | 'disabled';
   stories: {
     data: Item[];
     links: { url: string | null; label: string; active: boolean }[];

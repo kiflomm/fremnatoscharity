@@ -37,7 +37,7 @@ export interface StoryManagerProps {
         likes_count?: number;
         featured_image?: string;
         archived: boolean;
-        category: 'elders' | 'childrens' | 'disabled';
+        category: 'elders' | 'children' | 'disabled';
         attachments?: {
             images: { id: number; url: string; order: number }[];
             videos: { id: number; embedUrl: string; provider: string; order: number }[];
@@ -57,7 +57,7 @@ export default function StoryManager({ mode, breadcrumbs, headTitle, headerTitle
     const [archiveId, setArchiveId] = useState<number | null>(null);
     const [unarchiveId, setUnarchiveId] = useState<number | null>(null);
     const [query, setQuery] = useState('');
-    const { data, setData, processing, reset, errors, clearErrors } = useForm<{ story_title: string; story_description: string; category: 'elders' | 'childrens' | 'disabled' | '' } & Record<string, any>>({
+    const { data, setData, processing, reset, errors, clearErrors } = useForm<{ story_title: string; story_description: string; category: 'elders' | 'children' | 'disabled' | '' } & Record<string, any>>({
         story_title: '',
         story_description: '',
         category: '' as any,
@@ -232,7 +232,7 @@ export default function StoryManager({ mode, breadcrumbs, headTitle, headerTitle
                                     <select id="story-category" className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" value={data.category} onChange={(e) => (setData as any)('category', e.target.value as any)} required>
                                         <option value="" disabled>Select category</option>
                                         <option value="elders">elders</option>
-                                        <option value="childrens">childrens</option>
+                                        <option value="children">children</option>
                                         <option value="disabled">disabled</option>
                                     </select>
                                     {errors.category ? (<p className="text-xs text-red-600">{String(errors.category)}</p>) : null}

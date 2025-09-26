@@ -100,7 +100,7 @@ class PublicStoriesController extends Controller
     }
 
     public function elders(Request $request): Response { return $this->listByCategory('elders', $request); }
-    public function childrens(Request $request): Response { return $this->listByCategory('childrens', $request); }
+    public function children(Request $request): Response { return $this->listByCategory('children', $request); }
     public function disabled(Request $request): Response { return $this->listByCategory('disabled', $request); }
 
     public function show(Request $request, Story $story): Response

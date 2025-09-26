@@ -50,8 +50,7 @@ export default function NewsIndex() {
   const { t } = useTranslation();
   const { i18n } = useTranslations();
   const { props } = usePage<PageProps>();
-  const { auth, recentNews, popularNews, selectedNews } = props;
-  const isLoggedIn = Boolean(auth?.user);
+  const { auth, recentNews, popularNews, selectedNews } = props; 
   
   const [selectedNewsId, setSelectedNewsId] = useState<number | undefined>(
     selectedNews?.id || (props.filters?.selected ? parseInt(props.filters.selected || '0') : undefined)
