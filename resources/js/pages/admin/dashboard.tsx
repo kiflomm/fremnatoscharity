@@ -122,7 +122,7 @@ export default function AdminDashboard({ stats, recent = [] }: AdminDashboardPro
                 <Card>
                     <CardHeader>
                         <CardTitle>Recent Activity</CardTitle>
-                        <CardDescription>Latest stories, news, and memberships</CardDescription>
+                        <CardDescription>Latest stories, news, and Donors</CardDescription>
                     </CardHeader>
                     <CardContent>
                         {recent.length === 0 ? (

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { motion, type Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Heart, Users, Target, Globe, MapPin, Calendar, Award } from "lucide-react"
-import { usePage } from '@inertiajs/react'
+import { usePage, Link } from '@inertiajs/react'
 import { type SharedData } from '@/types' 
 
 const containerVariants: Variants = {
@@ -47,15 +47,7 @@ export default function HeroSection() {
   const { t } = useTranslation()
   const { auth, isAuthenticated } = usePage<SharedData>().props
 
-  const handleDonateClick = () => {
-    if (isAuthenticated) {
-      // User is logged in, scroll to donation form section
-      document.getElementById('donation-form')?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      // User is not logged in, scroll to donation section (bank accounts)
-      document.getElementById('donate')?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
+  const donateHref = isAuthenticated ? '/help' : '/login'
 
   const highlights = [
     {
@@ -110,14 +102,13 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300"
-                onClick={handleDonateClick}
+              <Link 
+                href={donateHref}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 h-10 px-4 py-2 text-base sm:h-11 sm:px-6 sm:py-2.5"
               >
                 {t("hero.cta.donate", { defaultValue: "Donate Now" })}
                 <ArrowRight className="ml-2 size-5" />
-              </Button>
+              </Link>
               
               <Button 
                 variant="outline" 

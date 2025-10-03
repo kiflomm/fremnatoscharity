@@ -133,17 +133,17 @@ export default function MembershipHistory({ memberships, professionalHelpCategor
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Calendar className="h-5 w-5" />
-                        Membership History
+                        History of your donations
                     </CardTitle>
                     <CardDescription>
-                        Your membership applications will appear here
+                        Your donations will appear here
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="text-center py-8 text-muted-foreground">
                         <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <p>No membership applications found</p>
-                        <p className="text-sm">Submit your first membership application to get started</p>
+                        <p>No donations found</p>
+                        <p className="text-sm">Submit your first donation to get started</p>
                     </div>
                 </CardContent>
             </Card>
@@ -155,10 +155,10 @@ export default function MembershipHistory({ memberships, professionalHelpCategor
             <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                 <CardTitle className="flex items-center gap-2 text-xl">
                     <Calendar className="h-6 w-6" />
-                    Membership History
+                    History of your donations
                 </CardTitle>
                 <CardDescription className="text-blue-100">
-                    View and manage your membership applications
+                    View and manage your donations
                 </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
@@ -167,8 +167,8 @@ export default function MembershipHistory({ memberships, professionalHelpCategor
                         <div className="mx-auto w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
                             <Calendar className="h-8 w-8 text-gray-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No Applications Yet</h3>
-                        <p className="text-gray-500 dark:text-gray-400">You haven't submitted any membership applications yet.</p>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No Donations Yet</h3>
+                        <p className="text-gray-500 dark:text-gray-400">You haven't submitted any donations yet.</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
@@ -286,7 +286,7 @@ export default function MembershipHistory({ memberships, professionalHelpCategor
                                                     </DialogTrigger>
                                                 <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                                                     <DialogHeader>
-                                                        <DialogTitle>Membership Application Details</DialogTitle>
+                                                        <DialogTitle>Donation Details</DialogTitle>
                                                         <DialogDescription>
                                                             View and edit your membership application details
                                                         </DialogDescription>
@@ -511,9 +511,9 @@ export default function MembershipHistory({ memberships, professionalHelpCategor
                                                 </AlertDialogTrigger>
                                                 <AlertDialogContent>
                                                     <AlertDialogHeader>
-                                                        <AlertDialogTitle>Delete Membership Application</AlertDialogTitle>
+                                                        <AlertDialogTitle>Delete Donation</AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            Are you sure you want to delete this membership application? This action cannot be undone.
+                                                            Are you sure you want to delete this donation? This action cannot be undone.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>

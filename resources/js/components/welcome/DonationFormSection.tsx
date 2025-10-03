@@ -421,7 +421,7 @@ export default function DonationFormSection({ professionalHelpCategories, autoOp
                   {t('donation_form.professional_help_description')}
                 </CardDescription>
                 <div className={`text-xs mt-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                  💡 Select multiple options that apply to you
+                  💡 {t('donation_form.professional_help_hint')}
                 </div>
               </CardHeader>
               <CardContent>

@@ -18,21 +18,10 @@ export default function NavigationSection() {
     // Determine role for conditional profile route
     const userRole = auth?.user?.role?.name ?? null;
     const profileHref = userRole === 'guest' ? '/guests/profile' : '/settings/profile';
-
-    const handleDonateClick = () => {
-        const isHome = typeof window !== 'undefined' && window.location.pathname === '/';
-        const targetHash = isAuthenticated ? '#donation-form' : '#donate';
-
-        if (isHome) {
-            const target = document.getElementById(targetHash.substring(1));
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-                return;
-            }
-        }
-
-        router.visit(`/${targetHash}`);
-    };
+    const donateHref = isAuthenticated ? '/help' : '/login'
+    // const handleDonateClick = () => {
+    //     router.visit('/help');
+    // };
 
     
     return (
@@ -119,16 +108,14 @@ export default function NavigationSection() {
                                                     <BookOpen className="h-4 w-4" />
                                                     {t("common.navigation.disabled")}
                                                 </Link>
-                                                <button 
-                                                    onClick={() => {
-                                                        handleDonateClick();
-                                                        setIsMobileMenuOpen(false);
-                                                    }}
-                                                    className="flex items-center gap-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                <Link 
+                                                    href={donateHref} 
+                                                    className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                    onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <DollarSign className="h-4 w-4" />
                                                     {t("common.navigation.donate")}
-                                                </button>
+                                                </Link>
                                                 <Link 
                                                     href="/#about" 
                                                     className="flex items-center gap-2 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
@@ -211,13 +198,10 @@ export default function NavigationSection() {
                                                 {t("common.navigation.disabled")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
-                                            <button 
-                                                onClick={handleDonateClick}
-                                                className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1 py-0.5 rounded-md transition-all duration-200"
-                                            >
+                                            <Link href={donateHref} className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <DollarSign className="h-3.5 w-3.5" />
                                                 {t("common.navigation.donate")}
-                                            </button>
+                                            </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/#about" className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Info className="h-3.5 w-3.5" />

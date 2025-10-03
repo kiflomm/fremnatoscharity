@@ -14,7 +14,7 @@ const adminNav: NavItem[] = [
     { title: 'News', href: '/admin/news', icon: Newspaper },
     { title: 'Manage Banks', href: '/admin/banks', icon: Banknote },
     { title: 'Manage Messages', href: '/admin/messages', icon: MessageSquare },
-    { title: 'Memberships', href: '/admin/memberships', icon: ClipboardList },
+    { title: 'Donors', href: '/admin/memberships', icon: ClipboardList },
     { title: 'Help Categories', href: '/admin/professional-help-categories', icon: Wrench },
 ];
 

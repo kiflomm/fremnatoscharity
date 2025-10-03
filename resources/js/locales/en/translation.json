@@ -384,6 +384,7 @@
     "eur": "EUR",
     "professional_help_title": "How do you want to help the organization professionally?",
     "professional_help_description": "Select the ways you can contribute professionally",
+    "professional_help_hint": "Select multiple options that apply to you",
     "help_medicine": "By Medicine",
     "help_teaching": "By Teaching",
     "help_construction": "In Construction Sector",
