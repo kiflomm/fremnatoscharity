@@ -18,11 +18,10 @@ interface DashboardStats {
     totalNewsPosts: number;
 }
 
-interface AdminDashboardProps {
-    stats: DashboardStats;
-}
+interface RecentItem { type: 'story' | 'news' | 'membership'; title: string; created_at: string; link: string }
+interface AdminDashboardProps { stats: DashboardStats; recent?: RecentItem[] }
 
-export default function AdminDashboard({ stats }: AdminDashboardProps) {
+export default function AdminDashboard({ stats, recent = [] }: AdminDashboardProps) {
     const statCards = [
         {
             title: 'Total Users',
@@ -116,6 +115,32 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
                             <Newspaper className="mr-2 h-4 w-4" />
                             Manage News
                         </Button>
+                    </CardContent>
+                </Card>
+
+                {/* Recent Activity */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Recent Activity</CardTitle>
+                        <CardDescription>Latest stories, news, and memberships</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {recent.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">No recent activity.</p>
+                        ) : (
+                            <div className="divide-y">
+                                {recent.map((item, idx) => (
+                                    <div key={idx} className="py-2 flex items-center justify-between">
+                                        <div>
+                                            <p className="text-sm font-medium capitalize">{item.type}</p>
+                                            <p className="text-sm text-foreground">{item.title}</p>
+                                            <p className="text-xs text-muted-foreground">{new Date(item.created_at).toLocaleString()}</p>
+                                        </div>
+                                        <Button variant="outline" size="sm" onClick={() => router.get(item.link)}>Open</Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>

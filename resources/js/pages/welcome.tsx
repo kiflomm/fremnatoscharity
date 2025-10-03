@@ -7,9 +7,23 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import ImageSlideshow from '@/components/ImageSlideshow';
+import {toast, Toaster } from 'sonner';
+
+interface ProfessionalHelpCategory {
+    id: number;
+    name: string;
+    description?: string;
+    is_active: boolean;
+    sort_order: number;
+    translations?: Record<string, string>;
+}
+
+interface WelcomePageProps extends SharedData {
+    professionalHelpCategories: ProfessionalHelpCategory[];
+}
 
 export default function Welcome() {
-    const { auth } = usePage<SharedData>().props;
+    const { auth, professionalHelpCategories } = usePage<WelcomePageProps>().props;
     const {  i18n, ready } = useTranslations();
     const { t } = useTranslation();
     const [forceUpdate, setForceUpdate] = useState(0);
@@ -41,9 +55,10 @@ export default function Welcome() {
             </div>
         );
     }
+    // toast.success('Membership application submitted successfully!', { id: 'membership-success' });
 
     return (
-        <FixedHeaderLayout title={t('organization')}>
+        <FixedHeaderLayout title={t('organization.name')}>
             <div className="block md:hidden">
                 <ImageSlideshow />
             </div>
@@ -51,9 +66,10 @@ export default function Welcome() {
                 <HeroSection />
             </div>
             <DonationSection />
-            <DonationFormSection />
+            <DonationFormSection professionalHelpCategories={professionalHelpCategories} />
             <AboutSection />
             <ContactSection />
+            <Toaster position="top-right" richColors />
         </FixedHeaderLayout>
     );
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\AdminStoryController;
 use App\Http\Controllers\Admin\AdminNewsController;
 use App\Http\Controllers\Admin\AdminBankController;
 use App\Http\Controllers\Admin\AdminContactMessageController;
+use App\Http\Controllers\Admin\AdminMembershipController;
+use App\Http\Controllers\Admin\AdminProfessionalHelpCategoryController;
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
@@ -14,6 +16,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     
     // Users resource
     Route::resource('users', AdminUserController::class)->except(['show']);
+    Route::put('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
     
     // Stories resource
     Route::resource('stories', AdminStoryController::class)->except(['show']);
@@ -39,4 +42,14 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     // Contact messages management
     Route::get('/messages', [AdminContactMessageController::class, 'index'])->name('messages.index');
     Route::delete('/messages/{message}', [AdminContactMessageController::class, 'destroy'])->name('messages.destroy');
+    Route::patch('/messages/{message}/read', [AdminContactMessageController::class, 'markAsRead'])->name('messages.read');
+    Route::patch('/messages/{message}/unread', [AdminContactMessageController::class, 'markAsUnread'])->name('messages.unread');
+    Route::patch('/messages/mark-all-read', [AdminContactMessageController::class, 'markAllAsRead'])->name('messages.mark-all-read');
+
+    // Memberships management
+    Route::get('/memberships', [AdminMembershipController::class, 'index'])->name('memberships.index');
+    Route::delete('/memberships/{membership}', [AdminMembershipController::class, 'destroy'])->name('memberships.destroy');
+
+    // Professional Help Categories management
+    Route::resource('professional-help-categories', AdminProfessionalHelpCategoryController::class)->except(['show', 'create', 'edit']);
 });

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('attachment_type', ['image', 'video', 'none'])->default('none');
             $table->string('attachment_url')->nullable();
             $table->longText('story_description');
-            $table->enum('category', ['elders', 'childrens', 'disabled'])->index();
+            $table->enum('category', ['elders', 'children', 'disabled'])->index();
             $table->foreignId('created_by')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->boolean('archived')->default(false);
             $table->timestamps();

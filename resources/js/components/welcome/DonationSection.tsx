@@ -386,7 +386,7 @@ export default function DonationSection() {
                       <div>
                         <h3 className="font-bold">{bank.display_name}</h3>
                         <p className="text-sm text-muted-foreground font-normal">
-                          {t("donation.accounts_available", { count: bank.accounts.length })}
+                          {`${bank.accounts.length} account${bank.accounts.length > 1 ? 's' : ''} available`}
                         </p>
                       </div>
                     </DialogTitle>
@@ -399,7 +399,7 @@ export default function DonationSection() {
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-muted-foreground mb-2 font-medium">
-                            {t("donation.account")} {bank.accounts.length > 1 ? accountIndex + 1 : ""}
+                            {t("donation.account")} {`${accountIndex + 1}.`}
                           </p>
                           <code className="text-base font-mono font-semibold text-card-foreground select-all break-all bg-muted/50 px-3 py-2 rounded-lg border">
                             {account}

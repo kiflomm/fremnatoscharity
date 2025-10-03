@@ -43,14 +43,17 @@ class PublicStoriesController extends Controller
 
     private function listByCategory(string $category, Request $request): Response
     {
+        $authUserId = $request->user()?->id;
+
         $stories = Story::query()
             ->where('category', $category)
             ->where('archived', false)
-            ->with(['imageAttachments', 'videoAttachments'])
+            ->with(['imageAttachments', 'videoAttachments', 'comments.user', 'likes'])
             ->withCount(['comments', 'likes'])
             ->latest('created_at')
             ->paginate(10)
-            ->through(function (Story $s) {
+            ->through(function (Story $s) use ($authUserId) {
+                $isLiked = $authUserId ? $s->likes->contains('user_id', $authUserId) : false;
                 return [
                     'id' => $s->id,
                     'title' => $s->story_title,
@@ -72,8 +75,20 @@ class PublicStoriesController extends Controller
                             ];
                         }),
                     ],
+                    'comments' => $s->comments->map(function (StoryComment $c) {
+                        return [
+                            'id' => $c->id,
+                            'text' => $c->comment_text,
+                            'author' => [
+                                'id' => $c->user->id,
+                                'name' => $c->user->name,
+                            ],
+                            'createdAt' => $c->created_at?->toIso8601String(),
+                        ];
+                    }),
                     'commentsCount' => $s->comments_count,
                     'likesCount' => $s->likes_count,
+                    'isLiked' => $isLiked,
                     'createdAt' => $s->created_at?->toIso8601String(),
                 ];
             });
@@ -85,7 +100,7 @@ class PublicStoriesController extends Controller
     }
 
     public function elders(Request $request): Response { return $this->listByCategory('elders', $request); }
-    public function childrens(Request $request): Response { return $this->listByCategory('childrens', $request); }
+    public function children(Request $request): Response { return $this->listByCategory('children', $request); }
     public function disabled(Request $request): Response { return $this->listByCategory('disabled', $request); }
 
     public function show(Request $request, Story $story): Response

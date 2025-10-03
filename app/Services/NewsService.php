@@ -115,6 +115,10 @@ class NewsService
                 $order = isset($imagesOrder[$index]) ? (int) $imagesOrder[$index] : $index;
                 $disk = 'public';
                 $path = $file->store('news/images', $disk);
+                
+                // Copy file to public_html/storage for GoDaddy compatibility
+                $this->copyFileToPublic($file, 'news/images/' . basename($path));
+                
                 /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
                 $fs = Storage::disk($disk);
                 $url = $fs->url($path);
@@ -197,6 +201,10 @@ class NewsService
                 $order = isset($newImagesOrder[$index]) ? (int) $newImagesOrder[$index] + $orderOffset : ($index + $orderOffset);
                 $disk = 'public';
                 $path = $file->store('news/images', $disk);
+                
+                // Copy file to public_html/storage for GoDaddy compatibility
+                $this->copyFileToPublic($file, 'news/images/' . basename($path));
+                
                 /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
                 $fs = Storage::disk($disk);
                 $url = $fs->url($path);
@@ -322,6 +330,131 @@ class NewsService
         ];
     }
 
+    /**
+     * Get recent news with pagination for layout sidebar
+     */
+    public function getRecentNews(int $page = 1, int $perPage = 5, ?string $search = null): array
+    {
+        $query = News::query()
+            ->notArchived()
+            ->withCount(['comments', 'likes'])
+            ->with(['imageAttachments', 'videoAttachments'])
+            ->latest('created_at');
+
+        // Apply search filter if provided
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('news_title', 'like', "%{$search}%")
+                  ->orWhere('news_description', 'like', "%{$search}%");
+            });
+        }
+
+        $paginatedNews = $query->paginate($perPage, ['*'], 'recent_page', $page);
+
+        return [
+            'data' => $paginatedNews->map(function (News $n) {
+                return [
+                    'id' => $n->id,
+                    'title' => $n->news_title,
+                    'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
+                    'attachments' => [
+                        'images' => $n->imageAttachments
+                            ->sortBy('display_order')
+                            ->map(fn($img) => [
+                                'url' => $img->url,
+                                'width' => $img->width,
+                                'height' => $img->height,
+                                'order' => $img->display_order,
+                            ])
+                            ->values(),
+                        'videos' => $n->videoAttachments
+                            ->sortBy('display_order')
+                            ->map(fn($vid) => [
+                                'embedUrl' => $vid->embed_url,
+                                'provider' => $vid->provider,
+                                'order' => $vid->display_order,
+                            ])
+                            ->values(),
+                    ],
+                    'commentsCount' => $n->comments_count,
+                    'likesCount' => $n->likes_count,
+                    'createdAt' => $n->created_at?->toIso8601String(),
+                ];
+            }),
+            'pagination' => [
+                'current_page' => $paginatedNews->currentPage(),
+                'last_page' => $paginatedNews->lastPage(),
+                'has_prev' => $paginatedNews->currentPage() > 1,
+                'has_next' => $paginatedNews->hasMorePages(),
+                'total' => $paginatedNews->total(),
+            ],
+        ];
+    }
+
+    /**
+     * Get popular news with pagination for layout sidebar (sorted by engagement)
+     */
+    public function getPopularNews(int $page = 1, int $perPage = 5, ?string $search = null): array
+    {
+        $query = News::query()
+            ->notArchived()
+            ->withCount(['comments', 'likes'])
+            ->with(['imageAttachments', 'videoAttachments'])
+            ->orderByRaw('(comments_count + likes_count) DESC')
+            ->orderByDesc('likes_count')
+            ->orderByDesc('comments_count')
+            ->orderByDesc('created_at');
+
+        // Apply search filter if provided
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('news_title', 'like', "%{$search}%")
+                  ->orWhere('news_description', 'like', "%{$search}%");
+            });
+        }
+
+        $paginatedNews = $query->paginate($perPage, ['*'], 'popular_page', $page);
+
+        return [
+            'data' => $paginatedNews->map(function (News $n) {
+                return [
+                    'id' => $n->id,
+                    'title' => $n->news_title,
+                    'description' => str(\strip_tags($n->news_description))->limit(160)->toString(),
+                    'attachments' => [
+                        'images' => $n->imageAttachments
+                            ->sortBy('display_order')
+                            ->map(fn($img) => [
+                                'url' => $img->url,
+                                'width' => $img->width,
+                                'height' => $img->height,
+                                'order' => $img->display_order,
+                            ])
+                            ->values(),
+                        'videos' => $n->videoAttachments
+                            ->sortBy('display_order')
+                            ->map(fn($vid) => [
+                                'embedUrl' => $vid->embed_url,
+                                'provider' => $vid->provider,
+                                'order' => $vid->display_order,
+                            ])
+                            ->values(),
+                    ],
+                    'commentsCount' => $n->comments_count,
+                    'likesCount' => $n->likes_count,
+                    'createdAt' => $n->created_at?->toIso8601String(),
+                ];
+            }),
+            'pagination' => [
+                'current_page' => $paginatedNews->currentPage(),
+                'last_page' => $paginatedNews->lastPage(),
+                'has_prev' => $paginatedNews->currentPage() > 1,
+                'has_next' => $paginatedNews->hasMorePages(),
+                'total' => $paginatedNews->total(),
+            ],
+        ];
+    }
+
     private function extractYouTubeId(string $url): ?string
     {
         if ($url === '') {
@@ -348,5 +481,132 @@ class NewsService
         }
 
         return null;
+    }
+
+    /**
+     * Get selected news with full details for preview functionality
+     */
+    public function getSelectedNews(?int $selectedNewsId, ?int $authUserId = null): ?array
+    {
+        if (!$selectedNewsId) {
+            return null;
+        }
+
+        $selectedNews = News::query()
+            ->notArchived()
+            ->withCount(['comments', 'likes'])
+            ->with(['comments.user', 'likes', 'imageAttachments', 'videoAttachments'])
+            ->find($selectedNewsId);
+
+        if (!$selectedNews) {
+            return null;
+        }
+
+        $isLiked = $authUserId ? $selectedNews->likes->contains('user_id', $authUserId) : false;
+        
+        return [
+            'id' => $selectedNews->id,
+            'title' => $selectedNews->news_title,
+            'description' => $selectedNews->news_description,
+            'attachments' => $this->formatAttachments($selectedNews),
+            'comments' => $this->formatComments($selectedNews->comments),
+            'commentsCount' => $selectedNews->comments_count,
+            'likesCount' => $selectedNews->likes_count,
+            'isLiked' => $isLiked,
+            'createdAt' => $selectedNews->created_at?->toIso8601String(),
+        ];
+    }
+
+    /**
+     * Get news with full details for show page
+     */
+    public function getNewsForShow(News $news, ?int $authUserId = null): array
+    {
+        $news->load(['comments.user', 'likes', 'imageAttachments', 'videoAttachments']);
+
+        $isLiked = $authUserId ? $news->likes->contains('user_id', $authUserId) : false;
+
+        return [
+            'id' => $news->id,
+            'title' => $news->news_title,
+            'description' => $news->news_description,
+            'attachments' => $this->formatAttachments($news),
+            'createdAt' => $news->created_at?->toIso8601String(),
+            'comments' => $this->formatComments($news->comments),
+            'likesCount' => $news->likes->count(),
+            'isLiked' => $isLiked,
+        ];
+    }
+
+    /**
+     * Format attachments for service methods (internal use)
+     */
+    private function formatAttachments(News $news): array
+    {
+        return [
+            'images' => $news->imageAttachments
+                ->sortBy('display_order')
+                ->map(fn($img) => [
+                    'url' => $img->url,
+                    'width' => $img->width,
+                    'height' => $img->height,
+                    'order' => $img->display_order,
+                ])
+                ->values(),
+            'videos' => $news->videoAttachments
+                ->sortBy('display_order')
+                ->map(fn($vid) => [
+                    'embedUrl' => $vid->embed_url,
+                    'provider' => $vid->provider,
+                    'order' => $vid->display_order,
+                ])
+                ->values(),
+        ];
+    }
+
+    /**
+     * Format comments for service methods (internal use)
+     */
+    private function formatComments($comments): array
+    {
+        return $comments->map(function ($c) {
+            return [
+                'id' => $c->id,
+                'text' => $c->comment_text,
+                'author' => [
+                    'id' => $c->user->id,
+                    'name' => $c->user->name,
+                ],
+                'createdAt' => $c->created_at?->toIso8601String(),
+            ];
+        })->values()->toArray();
+    }
+
+    /**
+     * Copy uploaded file to public_html/storage for GoDaddy compatibility
+     * Only runs in production environment
+     */
+    private function copyFileToPublic($file, $path): string
+    {
+        // Only run in production (GoDaddy hosting)
+        if (app()->environment('production')) {
+            // Use absolute path to public_html since public_path() points to fremnatos/public
+            $publicPath = '/home/sog2hcsbpmox/public_html/storage/' . $path;
+            
+            $publicDir = dirname($publicPath);
+            
+            // Create directory if it doesn't exist
+            if (!is_dir($publicDir)) {
+                mkdir($publicDir, 0755, true);
+            }
+            
+            // Copy file to public storage
+            copy($file->getRealPath(), $publicPath);
+            
+            return $publicPath;
+        }
+        
+        // In development, just return the Laravel public path
+        return public_path('storage/' . $path);
     }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { usePage } from '@inertiajs/react';
@@ -8,40 +8,92 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
+import { useRef } from 'react';
 import { router } from '@inertiajs/react';
+import { toast } from 'sonner';
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
     },
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
     },
   },
 };
 
-export default function DonationFormSection() {
-  const { t } = useTranslation();
+interface ProfessionalHelpCategory {
+  id: number;
+  name: string;
+  description?: string;
+  is_active: boolean;
+  sort_order: number;
+  translations?: Record<string, string>;
+}
+
+interface DonationFormSectionProps {
+  professionalHelpCategories: ProfessionalHelpCategory[];
+  autoOpen?: boolean;
+}
+
+export default function DonationFormSection({ professionalHelpCategories, autoOpen = false }: DonationFormSectionProps) {
+  const { t, i18n } = useTranslation();
   const { theme } = useTheme();
   const { auth, isAuthenticated, user } = usePage<SharedData>().props;
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0);
+  const loginToastCooldownRef = useRef<number | null>(null);
+  
+  // Function to get translated category name
+  const getTranslatedCategoryName = (category: ProfessionalHelpCategory) => {
+    const currentLanguage = i18n.language;
+    
+    if (currentLanguage === 'en') {
+      return category.name;
+    }
+    
+    const translations = category.translations || {};
+    return translations[currentLanguage] || category.name;
+  };
+
+  // Force re-render when language changes
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      setForceUpdate(prev => prev + 1);
+    };
+    
+    i18n.on('languageChanged', handleLanguageChange);
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [i18n]);
+  
+  // Auto open the form on mount when requested and authenticated
+  useEffect(() => {
+    if (autoOpen && isAuthenticated) {
+      setIsFormOpen(true);
+    }
+  }, [autoOpen, isAuthenticated]);
+  
   const [formData, setFormData] = useState({
     // Personal Information
     name: user?.name || '',
@@ -59,6 +111,7 @@ export default function DonationFormSection() {
     
     // Professional Help
     helpProfessions: [] as string[],
+    otherHelp: '',
     
     // Donation
     donationAmount: '',
@@ -76,12 +129,10 @@ export default function DonationFormSection() {
     }));
   };
 
-  const handleCheckboxChange = (profession: string, checked: boolean) => {
+  const handleMultiSelectChange = (selectedProfessions: string[]) => {
     setFormData(prev => ({
       ...prev,
-      helpProfessions: checked 
-        ? [...prev.helpProfessions, profession]
-        : prev.helpProfessions.filter(p => p !== profession)
+      helpProfessions: selectedProfessions
     }));
   };
 
@@ -91,41 +142,117 @@ export default function DonationFormSection() {
       router.visit('/login');
       return;
     }
-    
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // You can add API call here
+
+    const otherLabel = t('donation_form.other') as string;
+    const normalizedHelps = (formData.helpProfessions || []).map((item) => {
+      if (item === otherLabel && formData.otherHelp.trim().length > 0) {
+        return formData.otherHelp.trim();
+      }
+      return item;
+    });
+
+    router.post('/memberships', {
+      name: formData.name,
+      father_name: formData.fatherName,
+      gender: formData.gender,
+      age: formData.age ? Number(formData.age) : undefined,
+      country: formData.country,
+      region: formData.region,
+      city: formData.city,
+      woreda: formData.woreda,
+      kebele: formData.kebele,
+      profession: formData.profession,
+      education_level: formData.educationLevel,
+      phone_number: formData.phoneNumber,
+      help_profession: normalizedHelps,
+      donation_amount: formData.donationAmount ? Number(formData.donationAmount) : undefined,
+      donation_currency: formData.donationCurrency,
+      donation_time: formData.donationTime,
+      property_type: formData.propertyType,
+      additional_property: formData.additionalProperty,
+      property_donation_time: formData.propertyDonationTime,
+    }, {
+      onSuccess: () => {
+        // toast.success('Membership application submitted successfully!', {
+        //   id: 'membership-success'
+        // });
+        setIsFormOpen(false);
+        // Reset form after successful submission
+        setFormData({
+          name: user?.name || '',
+          fatherName: '',
+          gender: '',
+          age: '',
+          country: '',
+          region: '',
+          city: '',
+          woreda: '',
+          kebele: '',
+          profession: '',
+          educationLevel: '',
+          phoneNumber: '',
+          helpProfessions: [],
+          otherHelp: '',
+          donationAmount: '',
+          donationCurrency: 'ETB',
+          donationTime: '',
+          propertyType: '',
+          additionalProperty: '',
+          propertyDonationTime: '',
+        });
+      },
+      onError: (errors) => {
+        toast.error('Failed to submit membership application. Please try again.');
+        console.error('Form submission errors:', errors);
+      }
+    });
   };
 
   const handleUnauthenticatedClick = () => {
     router.visit('/login');
   };
 
-  if (!isAuthenticated) {
-    return null; // Don't render anything when user is not logged in
-  }
+  const handleToggleForm = () => {
+    if (!isAuthenticated) {
+      const now = Date.now();
+      if (!loginToastCooldownRef.current || now - loginToastCooldownRef.current > 1500) {
+        toast.dismiss('login-required');
+        toast.info('Please login first.', { id: 'login-required' });
+        loginToastCooldownRef.current = now;
+      }
+      router.visit('/login');
+      return;
+    }
+    setIsFormOpen((prev) => !prev);
+  };
+
+  // Always render the section; submission will redirect unauthenticated users
 
   return (
     <motion.section 
       id="donation-form"
       className="py-16 bg-gradient-to-br from-background via-background to-muted/20"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={containerVariants}
     >
       <div className="mx-auto max-w-4xl px-4">
-        <motion.div variants={itemVariants} className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
+        <motion.div className="text-center mb-6">
+          <Button
+            type="button"
+            onClick={handleToggleForm}
+            aria-expanded={isFormOpen}
+            className="px-6 py-3 text-base sm:text-lg font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          >
             {t('donation_form.title')}
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t('donation_form.subtitle')}
-          </p>
+          </Button>
+          {isFormOpen && (
+            <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
+              {t('donation_form.subtitle')}
+            </p>
+          )}
         </motion.div>
 
+        {isFormOpen && isAuthenticated && (
         <form onSubmit={handleSubmit}>
-          <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-8" variants={itemVariants}>
+          <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column - Personal Information */}
             <div className="space-y-6">
             <Card className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
@@ -161,25 +288,24 @@ export default function DonationFormSection() {
                   <div className="space-y-2">
                     <Label htmlFor="gender" className="text-sm font-medium">{t('donation_form.gender')}</Label>
                     <Select value={formData.gender} onValueChange={(value) => handleInputChange('gender', value)}>
-                      <SelectTrigger className="h-10">
+                    <SelectTrigger className="h-10 dark:bg-white dark:text-slate-900">
                         <SelectValue placeholder={t('donation_form.select_gender')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="male">{t('donation_form.male')}</SelectItem>
                         <SelectItem value="female">{t('donation_form.female')}</SelectItem>
-                        <SelectItem value="other">{t('donation_form.other')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="age" className="text-sm font-medium">{t('donation_form.age')}</Label>
-                    <Input
+                      <Input
                       id="age"
                       type="number"
                       value={formData.age}
-                      onChange={(e) => handleInputChange('age', e.target.value)}
-                      className="h-10"
+                        onChange={(e) => handleInputChange('age', e.target.value)}
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                     />
                   </div>
                 </div>
@@ -195,7 +321,7 @@ export default function DonationFormSection() {
                         id="country"
                         value={formData.country}
                         onChange={(e) => handleInputChange('country', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                     
@@ -205,7 +331,7 @@ export default function DonationFormSection() {
                         id="region"
                         value={formData.region}
                         onChange={(e) => handleInputChange('region', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                     
@@ -215,7 +341,7 @@ export default function DonationFormSection() {
                         id="city"
                         value={formData.city}
                         onChange={(e) => handleInputChange('city', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                     
@@ -225,7 +351,7 @@ export default function DonationFormSection() {
                         id="woreda"
                         value={formData.woreda}
                         onChange={(e) => handleInputChange('woreda', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                     
@@ -235,7 +361,7 @@ export default function DonationFormSection() {
                         id="kebele"
                         value={formData.kebele}
                         onChange={(e) => handleInputChange('kebele', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                   </div>
@@ -252,7 +378,7 @@ export default function DonationFormSection() {
                         id="profession"
                         value={formData.profession}
                         onChange={(e) => handleInputChange('profession', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                     
@@ -262,7 +388,7 @@ export default function DonationFormSection() {
                         id="educationLevel"
                         value={formData.educationLevel}
                         onChange={(e) => handleInputChange('educationLevel', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                     
@@ -273,7 +399,7 @@ export default function DonationFormSection() {
                         type="tel"
                         value={formData.phoneNumber}
                         onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                   </div>
@@ -294,31 +420,40 @@ export default function DonationFormSection() {
                 <CardDescription className={`${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'} text-sm`}>
                   {t('donation_form.professional_help_description')}
                 </CardDescription>
+                <div className={`text-xs mt-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                  💡 Select multiple options that apply to you
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    'medicine',
-                    'teaching',
-                    'construction',
-                    'hair_profession',
-                    'food_profession',
-                    'agriculture',
-                    'computer_science',
-                    'others'
-                  ].map((profession) => (
-                    <div key={profession} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={profession}
-                        checked={formData.helpProfessions.includes(profession)}
-                        onCheckedChange={(checked) => handleCheckboxChange(profession, checked as boolean)}
-                      />
-                      <Label htmlFor={profession} className="text-sm font-medium cursor-pointer">
-                        {t(`donation_form.help_${profession}`)}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
+                <MultiSelect
+                  options={professionalHelpCategories
+                    .map(category => ({
+                      value: getTranslatedCategoryName(category),
+                      label: getTranslatedCategoryName(category)
+                    }))
+                    .sort((a, b) => {
+                      const other = t('donation_form.other');
+                      if (a.label === other && b.label !== other) return 1;
+                      if (b.label === other && a.label !== other) return -1;
+                      return 0;
+                    })}
+                  value={formData.helpProfessions}
+                  onChange={handleMultiSelectChange}
+                  placeholder="Select professional help areas..."
+                  className="w-full"
+                />
+                {formData.helpProfessions.includes(t('donation_form.other')) && (
+                  <div className="mt-4 space-y-2">
+                    <Label htmlFor="otherHelp" className="text-sm font-medium">{t('donation_form.other')}</Label>
+                    <Input
+                      id="otherHelp"
+                      value={formData.otherHelp}
+                      onChange={(e) => handleInputChange('otherHelp', e.target.value)}
+                      placeholder={t('donation_form.additional_property_placeholder')}
+                      className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -344,7 +479,7 @@ export default function DonationFormSection() {
                         type="number"
                         value={formData.donationAmount}
                         onChange={(e) => handleInputChange('donationAmount', e.target.value)}
-                        className="h-10"
+                        className="h-10 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                     
@@ -352,7 +487,7 @@ export default function DonationFormSection() {
                       <div className="space-y-2">
                         <Label htmlFor="donationCurrency" className="text-sm font-medium">{t('donation_form.birr')}</Label>
                         <Select value={formData.donationCurrency} onValueChange={(value) => handleInputChange('donationCurrency', value)}>
-                          <SelectTrigger className="h-10">
+                        <SelectTrigger className="h-10 dark:bg-white dark:text-slate-900">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -366,7 +501,7 @@ export default function DonationFormSection() {
                       <div className="space-y-2">
                         <Label htmlFor="donationTime" className="text-sm font-medium">{t('donation_form.select_donation_time')}</Label>
                         <Select value={formData.donationTime} onValueChange={(value) => handleInputChange('donationTime', value)}>
-                          <SelectTrigger className="h-10">
+                        <SelectTrigger className="h-10 dark:bg-white dark:text-slate-900">
                             <SelectValue placeholder={t('donation_form.select_donation_time')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -392,7 +527,7 @@ export default function DonationFormSection() {
                       <div className="space-y-2">
                         <Label htmlFor="propertyType" className="text-sm font-medium">{t('donation_form.select_property_type')}</Label>
                         <Select value={formData.propertyType} onValueChange={(value) => handleInputChange('propertyType', value)}>
-                          <SelectTrigger className="h-10">
+                        <SelectTrigger className="h-10 dark:bg-white dark:text-slate-900">
                             <SelectValue placeholder={t('donation_form.select_property_type')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -408,7 +543,7 @@ export default function DonationFormSection() {
                       <div className="space-y-2">
                         <Label htmlFor="propertyDonationTime" className="text-sm font-medium">{t('donation_form.select_donation_time')}</Label>
                         <Select value={formData.propertyDonationTime} onValueChange={(value) => handleInputChange('propertyDonationTime', value)}>
-                          <SelectTrigger className="h-10">
+                        <SelectTrigger className="h-10 dark:bg-white dark:text-slate-900">
                             <SelectValue placeholder={t('donation_form.select_donation_time')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -427,7 +562,7 @@ export default function DonationFormSection() {
                         onChange={(e) => handleInputChange('additionalProperty', e.target.value)}
                         placeholder={t('donation_form.additional_property_placeholder')}
                         rows={3}
-                        className="resize-none"
+                        className="resize-none dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-500"
                       />
                     </div>
                   </div>
@@ -438,12 +573,13 @@ export default function DonationFormSection() {
           </motion.div>
 
           {/* Submit Button */}
-          <motion.div className="text-center mt-8" variants={itemVariants}>
+          <motion.div className="text-center mt-8">
             <Button type="submit" size="lg" className="px-12 py-3 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
               {t('donation_form.submit')}
             </Button>
           </motion.div>
         </form>
+        )}
       </div>
     </motion.section>
   );

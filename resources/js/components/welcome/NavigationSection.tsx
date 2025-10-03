@@ -1,6 +1,6 @@
 import { CardContent } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Users, Home, Newspaper, BookOpen, Menu, X, DollarSign, Info, UserPlus, LogIn, Mail } from 'lucide-react';
 import { SimpleLanguageSwitcher } from '../LanguageSwitcher';
@@ -20,13 +20,18 @@ export default function NavigationSection() {
     const profileHref = userRole === 'guest' ? '/guests/profile' : '/settings/profile';
 
     const handleDonateClick = () => {
-        if (isAuthenticated) {
-            // User is logged in, scroll to donation form section
-            document.getElementById('donation-form')?.scrollIntoView({ behavior: 'smooth' });
-        } else {
-            // User is not logged in, scroll to donation section (bank accounts)
-            document.getElementById('donate')?.scrollIntoView({ behavior: 'smooth' });
+        const isHome = typeof window !== 'undefined' && window.location.pathname === '/';
+        const targetHash = isAuthenticated ? '#donation-form' : '#donate';
+
+        if (isHome) {
+            const target = document.getElementById(targetHash.substring(1));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
         }
+
+        router.visit(`/${targetHash}`);
     };
 
     
@@ -59,7 +64,7 @@ export default function NavigationSection() {
                                             )}
                                         </button>
                                         <h2 className="text-base font-semibold text-slate-800 dark:text-slate-200 ml-2">
-                                            {t("navigation.title", "Menu")}
+                                            {t("common.navigation.title")}
                                         </h2>
                                     </div>
 
@@ -80,7 +85,7 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <Home className="h-4 w-4" />
-                                                    {t("cta.home")}
+                                                    {t("common.navigation.home")}
                                                 </Link>
                                                 <Link 
                                                     href="/news" 
@@ -88,7 +93,7 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <Newspaper className="h-4 w-4" />
-                                                    {t("cta.news")}
+                                                    {t("common.navigation.news")}
                                                 </Link>
                                                 <Link 
                                                     href="/stories/elders" 
@@ -96,15 +101,15 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <BookOpen className="h-4 w-4" />
-                                                    Elders
+                                                    {t("common.navigation.elders")}
                                                 </Link>
                                                 <Link 
-                                                    href="/stories/childrens" 
+                                                    href="/stories/children" 
                                                     className="flex items-center gap-2 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <BookOpen className="h-4 w-4" />
-                                                    Childrens
+                                                    {t("common.navigation.children")}
                                                 </Link>
                                                 <Link 
                                                     href="/stories/disabled" 
@@ -112,7 +117,7 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <BookOpen className="h-4 w-4" />
-                                                    Disabled
+                                                    {t("common.navigation.disabled")}
                                                 </Link>
                                                 <button 
                                                     onClick={() => {
@@ -122,7 +127,7 @@ export default function NavigationSection() {
                                                     className="flex items-center gap-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
                                                 >
                                                     <DollarSign className="h-4 w-4" />
-                                                    {t("nav.donate")}
+                                                    {t("common.navigation.donate")}
                                                 </button>
                                                 <Link 
                                                     href="/#about" 
@@ -130,7 +135,7 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <Info className="h-4 w-4" />
-                                                    {t("nav.about")}
+                                                    {t("common.navigation.about")}
                                                 </Link>
                                                 <Link 
                                                     href="/#contact" 
@@ -138,7 +143,7 @@ export default function NavigationSection() {
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <Mail className="h-4 w-4" />
-                                                    {t("nav.contact", "Contact")}
+                                                    {t("common.navigation.contact")}
                                                 </Link>
                                             </nav>
                                             
@@ -152,7 +157,7 @@ export default function NavigationSection() {
                                                         onClick={() => setIsMobileMenuOpen(false)}
                                                     >
                                                         <Users className="h-4 w-4" />
-                                                        {t("cta.profile")}
+                                                        {t("common.navigation.profile")}
                                                     </Link>
                                                 ) : (
                                                     <div className="flex flex-col space-y-3">
@@ -162,7 +167,7 @@ export default function NavigationSection() {
                                                             onClick={() => setIsMobileMenuOpen(false)}
                                                         >
                                                             <UserPlus className="h-4 w-4" />
-                                                            {t("cta.signUp")}
+                                                            {t("common.navigation.register")}
                                                         </Link>
                                                         <Link
                                                             href="/login"
@@ -170,7 +175,7 @@ export default function NavigationSection() {
                                                             onClick={() => setIsMobileMenuOpen(false)}
                                                         >
                                                             <LogIn className="h-4 w-4" />
-                                                            {t("cta.signIn")}
+                                                            {t("common.navigation.login")}
                                                         </Link>
                                                     </div>
                                                 )}
@@ -183,27 +188,27 @@ export default function NavigationSection() {
                                         <nav className="flex items-center gap-1 lg:gap-2 text-sm">
                                             <Link href="/" className="flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:bg-blue-50 dark:hover:bg-blue-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Home className="h-3.5 w-3.5" />
-                                                {t("cta.home")}
+                                                {t("common.navigation.home")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/news" className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Newspaper className="h-3.5 w-3.5" />
-                                                {t("cta.news")}
+                                                {t("common.navigation.news")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/stories/elders" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <BookOpen className="h-3.5 w-3.5" />
-                                                Elders
+                                                {t("common.navigation.elders")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
-                                            <Link href="/stories/childrens" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
+                                            <Link href="/stories/children" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <BookOpen className="h-3.5 w-3.5" />
-                                                Childrens
+                                                {t("common.navigation.children")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/stories/disabled" className="flex items-center gap-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium hover:bg-purple-50 dark:hover:bg-purple-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <BookOpen className="h-3.5 w-3.5" />
-                                                Disabled
+                                                {t("common.navigation.disabled")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <button 
@@ -211,17 +216,17 @@ export default function NavigationSection() {
                                                 className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1 py-0.5 rounded-md transition-all duration-200"
                                             >
                                                 <DollarSign className="h-3.5 w-3.5" />
-                                                {t("nav.donate")}
+                                                {t("common.navigation.donate")}
                                             </button>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/#about" className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:bg-orange-50 dark:hover:bg-orange-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Info className="h-3.5 w-3.5" />
-                                                {t("nav.about")}
+                                                {t("common.navigation.about")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
                                             <Link href="/#contact" className="flex items-center gap-1 text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 font-medium hover:bg-sky-50 dark:hover:bg-sky-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <Mail className="h-3.5 w-3.5" />
-                                                {t("nav.contact", "Contact")}
+                                                {t("common.navigation.contact")}
                                             </Link>
                                         </nav>
                                         <div className="flex items-center gap-1 lg:gap-1.5">
@@ -232,7 +237,7 @@ export default function NavigationSection() {
                                                     aria-label={t('aria.profileSettings')}
                                                 >
                                                     <Users className="h-3.5 w-3.5" />
-                                                    <span className="hidden lg:inline">{t("cta.profile")}</span>
+                                                    <span className="hidden lg:inline">{t("common.navigation.profile")}</span>
                                                 </Link>
                                             ) : (
                                                 <div className="flex items-center gap-2 lg:gap-3">
@@ -241,14 +246,14 @@ export default function NavigationSection() {
                                                         className="flex items-center gap-1 rounded-md px-2 py-0.5 text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 transition-all duration-200"
                                                     >
                                                         <UserPlus className="h-3.5 w-3.5" />
-                                                        {t("cta.signUp")}
+                                                        {t("common.navigation.register")}
                                                     </Link>
                                                     <Link
                                                         href="/login"
                                                         className="flex items-center gap-1 rounded-md px-2 py-0.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200"
                                                     >
                                                         <LogIn className="h-3.5 w-3.5" />
-                                                        {t("cta.signIn")}
+                                                        {t("common.navigation.login")}
                                                     </Link>
                                                 </div>
                                             )}

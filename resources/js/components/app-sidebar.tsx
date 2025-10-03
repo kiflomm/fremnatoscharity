@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Users, Heart, Newspaper, Settings, Banknote, MessageSquare } from 'lucide-react';
+import { Users, Heart, Newspaper, Settings, Banknote, MessageSquare, ClipboardList, Wrench } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const adminNav: NavItem[] = [
@@ -14,6 +14,8 @@ const adminNav: NavItem[] = [
     { title: 'News', href: '/admin/news', icon: Newspaper },
     { title: 'Manage Banks', href: '/admin/banks', icon: Banknote },
     { title: 'Manage Messages', href: '/admin/messages', icon: MessageSquare },
+    { title: 'Memberships', href: '/admin/memberships', icon: ClipboardList },
+    { title: 'Help Categories', href: '/admin/professional-help-categories', icon: Wrench },
 ];
 
 const editorNav: NavItem[] = [

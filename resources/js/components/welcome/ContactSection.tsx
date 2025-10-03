@@ -32,7 +32,7 @@ export default function ContactSection() {
   })
 
   // Google Maps URL to search for the organization's office
-  const googleMapsUrl = "https://www.google.com/maps/search/13%C2%B029'48.1%22N+39%C2%B028'31.1%22E/@13.4967031,39.4750848,62m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D"
+  const googleMapsUrl = "https://www.google.com/maps/search/13%C2%B029'55%22N+39%C2%B029'5%22E/@13.4986111,39.4847222,62m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D"
     
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,10 +42,10 @@ export default function ContactSection() {
       preserveScroll: true,
       onSuccess: () => {
         reset('name', 'email', 'message')
-        toast.success(t('contact_section.message_sent_success') || 'Your message has been sent.')
+        toast.success(t('contact.message_sent_success') || 'Your message has been sent.')
       },
       onError: () => {
-        toast.error(t('contact_section.message_sent_error') || 'Failed to send your message.')
+        toast.error(t('contact.message_sent_error') || 'Failed to send your message.')
       },
     })
   }
@@ -58,33 +58,25 @@ export default function ContactSection() {
     <section id="contact" className="py-16 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-foreground mb-4 text-balance">{t("contact_section.title")}</h2>
+          <h2 className="text-4xl font-bold text-foreground mb-4 text-balance">{t("contact.title")}</h2>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Contact Form */}
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-primary">
-                <img 
-                  src="/images/slideshow/logo2.jpg" 
-                  alt="Freminatos Charity Logo" 
-                  className="h-5 w-5 object-contain rounded"
-                />
-                {t("contact_section.get_involved")}
-              </CardTitle>
-              <CardDescription>{t("contact_section.form_description")}</CardDescription>
+              <CardDescription>{t("contact.form_description")}</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name">{t("contact_section.full_name")}</Label>
+                  <Label htmlFor="name">{t("contact.full_name")}</Label>
                   <Input
                     id="name"
                     name="name"
                     value={data.name}
                     onChange={handleChange}
-                    placeholder={t("contact_section.full_name_placeholder")}
+                    placeholder={t("contact.full_name_placeholder")}
                     required
                     className="focus:ring-2 focus:ring-primary/20"
                   />
@@ -95,14 +87,14 @@ export default function ContactSection() {
 
                 {!isLoggedIn && (
                   <div className="space-y-2">
-                    <Label htmlFor="email">{t("contact_section.email_address")}</Label>
+                    <Label htmlFor="email">{t("contact.email_address")}</Label>
                     <Input
                       id="email"
                       name="email"
                       type="email"
                       value={data.email}
                       onChange={handleChange}
-                      placeholder={t("contact_section.email_placeholder")}
+                      placeholder={t("contact.email_placeholder")}
                       required
                       className="focus:ring-2 focus:ring-primary/20"
                     />
@@ -113,13 +105,13 @@ export default function ContactSection() {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">{t("contact_section.message")}</Label>
+                  <Label htmlFor="message">{t("contact.message")}</Label>
                   <Textarea
                     id="message"
                     name="message"
                     value={data.message}
                     onChange={handleChange}
-                    placeholder={t("contact_section.message_placeholder")}
+                    placeholder={t("contact.message_placeholder")}
                     rows={5}
                     required
                     className="focus:ring-2 focus:ring-primary/20 resize-none"
@@ -134,7 +126,7 @@ export default function ContactSection() {
                   disabled={processing}
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 transition-colors disabled:opacity-60"
                 >
-                  {processing ? t("common.sending") : t("contact_section.send_message")}
+                  {processing ? t("common.actions.sending") : t("contact.send_message")}
                 </Button>
               </form>
             </CardContent>
@@ -172,15 +164,15 @@ export default function ContactSection() {
                     <div className="flex-1 min-w-0 w-full">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-2">
                         <h4 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-blue-900 transition-colors duration-300 text-center sm:text-left">
-                          {t("contact_section.freminatos_charity")}
+                          {t("contact.freminatos_charity")}
                         </h4>
                         <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200 font-medium self-center sm:self-auto">
-                          {t("contact_section.official")}
+                          {t("contact.official")}
                         </Badge>
                       </div>
                       
                       <p className="text-slate-600 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed text-center sm:text-left">
-                        {t("contact_section.main_contact_description")}
+                        {t("contact.main_contact_description")}
                       </p>
 
                       {/* Contact Details */}
@@ -193,9 +185,28 @@ export default function ContactSection() {
                             <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact_section.email_address_label")}</p>
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact.email_address_label")}</p>
                             <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300 break-all sm:truncate">
                               fremnatoscharity@gmail.com
+                            </p>
+                          </div>
+                        </a>
+
+                        <a 
+                          href="https://youtube.com/@fremnatoscharity7176?si=hyaJaZxkDn2SOt9n" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="group/link flex items-center gap-3 sm:gap-4 p-3 sm:p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-slate-200/60 hover:border-blue-200 transition-all duration-300 hover:shadow-md"
+                        >
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center shadow-sm group-hover/link:shadow-md transition-shadow duration-300 flex-shrink-0">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        </svg>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact.youtube_label")}</p>
+                            <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300 truncate">
+                              @fremnatoscharity
                             </p>
                           </div>
                         </a>
@@ -208,7 +219,7 @@ export default function ContactSection() {
                             <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact_section.phone_number_label")}</p>
+                            <p className="text-xs sm:text-sm text-slate-500 font-medium">{t("contact.phone_number_label")}</p>
                             <p className="text-sm sm:text-base text-slate-900 font-semibold group-hover/link:text-blue-700 transition-colors duration-300">
                               +251 993 110 999
                             </p>
@@ -225,7 +236,7 @@ export default function ContactSection() {
                         >
                           <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
                             <MapPin className="w-4 h-4 mr-2" />
-                            {t("contact_section.visit_our_office")}
+                            {t("contact.visit_our_office")}
                           </a>
                         </Button>
                       </div>

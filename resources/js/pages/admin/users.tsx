@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader as TableHeaderEl, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, router } from '@inertiajs/react';
@@ -75,15 +76,25 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
     const activeUser = useMemo(() => users.find(u => u.id === action.userId) || null, [users, action.userId]);
 
     const [query, setQuery] = useState('');
+    const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'editor' | 'guest'>('all');
+    const [pageSize, setPageSize] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+
     const filteredUsers = useMemo(() => {
-        if (!query.trim()) return users;
         const q = query.trim().toLowerCase();
-        return users.filter(u =>
-            u.name.toLowerCase().includes(q) ||
-            u.email.toLowerCase().includes(q) ||
-            u.role.toLowerCase().includes(q)
-        );
-    }, [users, query]);
+        return users.filter(u => {
+            const matchesQuery = !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.role.toLowerCase().includes(q);
+            const matchesRole = roleFilter === 'all' || u.role === roleFilter;
+            return matchesQuery && matchesRole;
+        });
+    }, [users, query, roleFilter]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredUsers.length / pageSize));
+    const page = Math.min(currentPage, totalPages);
+    const paginatedUsers = useMemo(() => {
+        const start = (page - 1) * pageSize;
+        return filteredUsers.slice(start, start + pageSize);
+    }, [filteredUsers, page, pageSize]);
 
     const closeDialog = () => setAction({ type: null, userId: null });
 
@@ -213,6 +224,30 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                                     className="pl-8 w-full sm:w-[300px]"
                                 />
                             </div>
+                            <div className="flex items-center gap-2 w-full sm:w-auto">
+                                <Select value={roleFilter} onValueChange={(v) => { setRoleFilter(v as any); setCurrentPage(1); }}>
+                                    <SelectTrigger className="w-[160px]">
+                                        <SelectValue placeholder="Filter role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All roles</SelectItem>
+                                        <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="editor">Editor</SelectItem>
+                                        <SelectItem value="guest">Guest</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Select value={String(pageSize)} onValueChange={(v) => { setPageSize(Number(v)); setCurrentPage(1); }}>
+                                    <SelectTrigger className="w-[120px]">
+                                        <SelectValue placeholder="Rows" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="5">5 / page</SelectItem>
+                                        <SelectItem value="10">10 / page</SelectItem>
+                                        <SelectItem value="20">20 / page</SelectItem>
+                                        <SelectItem value="50">50 / page</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -220,90 +255,85 @@ export default function AdminUsers({ users, totalUsers, editorUsers, guestUsers 
                             {filteredUsers.length === 0 && (
                                 <div className="text-center text-sm text-muted-foreground py-10">No users found.</div>
                             )}
-                            {filteredUsers.map((user) => {
-                                const RoleIcon = getRoleIcon(user.role);
-                                return (
-                                    <div
-                                        key={user.id}
-                                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <Avatar>
-                                                <AvatarImage src={user.avatar} alt={user.name} />
-                                                <AvatarFallback>
-                                                    {user.name.split(' ').map(n => n[0]).join('')}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div>
-                                                <div className="flex items-center space-x-2">
-                                                    <p className="font-medium">{user.name}</p>
-                                                    <Badge className={getRoleBadge(user.role)}>
-                                                        <RoleIcon className="mr-1 h-3 w-3" />
-                                                        {user.role}
-                                                    </Badge>
-                                                </div>
-                                                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                                    <div className="flex items-center">
-                                                        <Mail className="mr-1 h-3 w-3" />
-                                                        {user.email}
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                        <Calendar className="mr-1 h-3 w-3" />
-                                                        Joined {new Date(user.created_at).toLocaleDateString()}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {user.role !== 'admin' && (
-                                            <>
-                                                {/* Mobile actions: visible on small screens */}
-                                                <div className="flex flex-row sm:hidden w-full justify-around">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => { setData('name', user.name); setData('email', user.email); setData('password', ''); setData('password_confirmation', ''); setAction({ type: 'edit', userId: user.id }); }}
-                                                        aria-label={`Edit ${user.name}`}
-                                                    >
-                                                        Edit
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => { setData('role', user.role as any); setAction({ type: 'role', userId: user.id }); }}
-                                                        aria-label={`Change role for ${user.name}`}
-                                                    >
-                                                        Role
-                                                    </Button>
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        onClick={() => { setAction({ type: 'delete', userId: user.id }); }}
-                                                        aria-label={`Delete ${user.name}`}
-                                                    >
-                                                        Delete
-                                                    </Button>
-                                                </div>
+                            {filteredUsers.length > 0 && (
+                                <div className="overflow-x-auto">
+                                    <Table>
+                                        <TableHeaderEl>
+                                            <TableRow>
+                                                <TableHead className="w-[320px]">User</TableHead>
+                                                <TableHead>Email</TableHead>
+                                                <TableHead>Role</TableHead>
+                                                <TableHead>Joined</TableHead>
+                                                <TableHead className="text-right">Actions</TableHead>
+                                            </TableRow>
+                                        </TableHeaderEl>
+                                        <TableBody>
+                                            {paginatedUsers.map((user) => {
+                                                const RoleIcon = getRoleIcon(user.role);
+                                                return (
+                                                    <TableRow key={user.id}>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-3">
+                                                                <Avatar>
+                                                                    <AvatarImage src={user.avatar} alt={user.name} />
+                                                                    <AvatarFallback>
+                                                                        {user.name.split(' ').map(n => n[0]).join('')}
+                                                                    </AvatarFallback>
+                                                                </Avatar>
+                                                                <div>
+                                                                    <div className="font-medium">{user.name}</div>
+                                                                    <div className="text-xs text-muted-foreground flex items-center">
+                                                                        <Mail className="mr-1 h-3 w-3" />
+                                                                        {user.email}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="hidden sm:table-cell">{user.email}</TableCell>
+                                                        <TableCell>
+                                                            <Badge className={getRoleBadge(user.role)}>
+                                                                <RoleIcon className="mr-1 h-3 w-3" />
+                                                                {user.role}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                                                        <TableCell className="text-right">
+                                                            {user.role !== 'admin' && (
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <Button variant="ghost" className="h-9 w-9 p-0" aria-label={`Open actions for ${user.name}`}>
+                                                                            <MoreHorizontal className="h-4 w-4" />
+                                                                        </Button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent align="end">
+                                                                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setData('name', user.name); setData('email', user.email); setData('password', ''); setData('password_confirmation', ''); setAction({ type: 'edit', userId: user.id }); }}>Edit User</DropdownMenuItem>
+                                                                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setData('role', user.role as any); setAction({ type: 'role', userId: user.id }); }}>Change Role</DropdownMenuItem>
+                                                                        <DropdownMenuItem className="text-red-600" onSelect={(e) => { e.preventDefault(); setAction({ type: 'delete', userId: user.id }); }}>Delete User</DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
+                                                            )}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            )}
 
-                                                {/* Desktop actions: 3-dot menu */}
-                                                <div className="hidden sm:block">
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" className="h-9 w-9 p-0" aria-label={`Open actions for ${user.name}`}>
-                                                                <MoreHorizontal className="h-4 w-4" />
-                                                            </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
-                                                            <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setData('name', user.name); setData('email', user.email); setData('password', ''); setData('password_confirmation', ''); setAction({ type: 'edit', userId: user.id }); }}>Edit User</DropdownMenuItem>
-                                                            <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setData('role', user.role as any); setAction({ type: 'role', userId: user.id }); }}>Change Role</DropdownMenuItem>
-                                                            <DropdownMenuItem className="text-red-600" onSelect={(e) => { e.preventDefault(); setAction({ type: 'delete', userId: user.id }); }}>Delete User</DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                </div>
-                                            </>
-                                        )}
+                            {/* Pagination */}
+                            {filteredUsers.length > 0 && (
+                                <div className="flex items-center justify-between gap-2 pt-2">
+                                    <div className="text-sm text-muted-foreground">
+                                        Showing {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, filteredUsers.length)} of {filteredUsers.length}
                                     </div>
-                                );
-                            })}
+                                    <div className="flex items-center gap-2">
+                                        <Button variant="outline" size="sm" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={page === 1}>Previous</Button>
+                                        <div className="text-sm">Page {page} of {totalPages}</div>
+                                        <Button variant="outline" size="sm" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Next</Button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </CardContent>
                 </Card>

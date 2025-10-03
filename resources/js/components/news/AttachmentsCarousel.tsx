@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -20,6 +20,12 @@ export default function AttachmentsCarousel({ title, images = [], videos = [] }:
     }, [images, videos]);
 
     const [index, setIndex] = useState(0);
+    
+    // Reset index when items change (e.g., switching between news articles)
+    useEffect(() => {
+        setIndex(0);
+    }, [items]);
+    
     const hasItems = items.length > 0;
     const canPrev = hasItems && index > 0;
     const canNext = hasItems && index < items.length - 1;
@@ -27,15 +33,25 @@ export default function AttachmentsCarousel({ title, images = [], videos = [] }:
     if (!hasItems) return null;
 
     const current = items[index];
+    
+    // Safety check to prevent errors during rapid switching
+    if (!current || !current.type) {
+        return (
+            <div className="aspect-video bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
+                <div className="text-gray-500">Loading...</div>
+            </div>
+        );
+    }
 
     return (
-        <div className="relative">
-            <div className="aspect-video bg-gray-100 dark:bg-slate-700 overflow-hidden">
+        <div className="relative max-w-full">
+            <div className="aspect-video bg-gray-100 dark:bg-slate-700 overflow-hidden max-w-full">
                 {current.type === 'image' ? (
                     <img
                         src={(current.data as ImageAtt).url}
                         alt={title}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-cover"
+                        style={{ maxWidth: '100%', height: 'auto' }}
                     />
                 ) : (
                     <iframe

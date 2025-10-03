@@ -104,6 +104,10 @@ class StoryService
                     $order = isset($imagesOrder[$index]) ? (int) $imagesOrder[$index] : $index;
                     $disk = 'public';
                     $path = $file->store('stories/images', $disk);
+                    
+                    // Copy file to public_html/storage for GoDaddy compatibility
+                    $this->copyFileToPublic($file, 'stories/images/' . basename($path));
+                    
                     /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
                     $fs = Storage::disk($disk);
                     $url = $fs->url($path);
@@ -184,6 +188,10 @@ class StoryService
                     $order = isset($newImagesOrder[$index]) ? (int) $newImagesOrder[$index] + $orderOffset : ($index + $orderOffset);
                     $disk = 'public';
                     $path = $file->store('stories/images', $disk);
+                    
+                    // Copy file to public_html/storage for GoDaddy compatibility
+                    $this->copyFileToPublic($file, 'stories/images/' . basename($path));
+                    
                     /** @var \Illuminate\Filesystem\FilesystemAdapter $fs */
                     $fs = Storage::disk($disk);
                     $url = $fs->url($path);
@@ -312,5 +320,33 @@ class StoryService
                 ];
             }),
         ];
+    }
+
+    /**
+     * Copy uploaded file to public_html/storage for GoDaddy compatibility
+     * Only runs in production environment
+     */
+    private function copyFileToPublic($file, $path): string
+    {
+        // Only run in production (GoDaddy hosting)
+        if (app()->environment('production')) {
+            // Use absolute path to public_html since public_path() points to fremnatos/public
+            $publicPath = '/home/sog2hcsbpmox/public_html/storage/' . $path;
+            
+            $publicDir = dirname($publicPath);
+            
+            // Create directory if it doesn't exist
+            if (!is_dir($publicDir)) {
+                mkdir($publicDir, 0755, true);
+            }
+            
+            // Copy file to public storage
+            copy($file->getRealPath(), $publicPath);
+            
+            return $publicPath;
+        }
+        
+        // In development, just return the Laravel public path
+        return public_path('storage/' . $path);
     }
 }

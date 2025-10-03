@@ -40,7 +40,7 @@ interface StoryPost {
     likes_count?: number;
     featured_image?: string;
     archived: boolean;
-    category: 'elders' | 'childrens' | 'disabled';
+    category: 'elders' | 'children' | 'disabled';
     attachments?: {
         images: { id: number; url: string; order: number }[];
         videos: { id: number; embedUrl: string; provider: string; order: number }[];
@@ -63,7 +63,7 @@ export default function AdminStories({ posts, totalPosts }: AdminStoriesProps) {
     const { data, setData, post, processing, reset, errors, clearErrors } = useForm<{
         story_title: string;
         story_description: string;
-        category: 'elders' | 'childrens' | 'disabled' | '';
+        category: 'elders' | 'children' | 'disabled' | '';
         images?: string;
     }>({
         story_title: '',
@@ -355,7 +355,7 @@ export default function AdminStories({ posts, totalPosts }: AdminStoriesProps) {
                                 >
                                     <option value="" disabled>Select category</option>
                                     <option value="elders">elders</option>
-                                    <option value="childrens">childrens</option>
+                                    <option value="children">children</option>
                                     <option value="disabled">disabled</option>
                                 </select>
                                 {errors.category ? (
@@ -663,7 +663,7 @@ export default function AdminStories({ posts, totalPosts }: AdminStoriesProps) {
                                     >
                                     <option value="" disabled>Select category</option>
                                     <option value="elders">elders</option>
-                                    <option value="childrens">childrens</option>
+                                    <option value="children">children</option>
                                     <option value="disabled">disabled</option>
                                     </select>
                             </div>
