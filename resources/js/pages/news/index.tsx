@@ -175,7 +175,7 @@ export default function NewsIndex() {
           <NewsDetail
             news={safeSelectedNews}
             onBackToList={handleBackToList}
-            showBackButton={true}
+            showBackButton={false}
             auth={auth}
           />
         </>
