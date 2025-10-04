@@ -3,8 +3,8 @@
 import { useTranslation } from "react-i18next"
 import { motion, type Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Heart, Users, Target, Globe, MapPin, Calendar, Award } from "lucide-react"
-import { usePage, Link } from '@inertiajs/react'
+import { ArrowRight, Users, MapPin, Calendar, Award, BetweenVerticalEnd } from "lucide-react"
+import { usePage, Link, router } from '@inertiajs/react'
 import { type SharedData } from '@/types' 
 
 const containerVariants: Variants = {
@@ -31,21 +31,10 @@ const itemVariants: Variants = {
   },
 }
 
-const statsVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-}
 
 export default function HeroSection() {
   const { t } = useTranslation()
-  const { auth, isAuthenticated } = usePage<SharedData>().props
+  const { isAuthenticated } = usePage<SharedData>().props
 
   const donateHref = isAuthenticated ? '/help' : '/login'
 
@@ -102,16 +91,18 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3">
-              <Link 
-                href={donateHref}
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 h-10 px-4 py-2 text-base sm:h-11 sm:px-6 sm:py-2.5"
+              <Button 
+                onClick={() => router.visit(donateHref)}
+                size="lg"
+                variant="default"
+                className="border-2 hover:bg-primary/5 transition-all duration-300"
               >
                 {t("hero.cta.donate", { defaultValue: "Donate Now" })}
                 <ArrowRight className="ml-2 size-5" />
-              </Link>
+              </Button>
               
               <Button 
-                variant="outline" 
+                variant="default" 
                 size="lg"
                 className="border-2 hover:bg-primary/5 transition-all duration-300"
                 onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}

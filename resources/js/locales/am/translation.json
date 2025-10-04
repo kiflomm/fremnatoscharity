@@ -75,22 +75,22 @@
       "admin": "አስተዳዳሪ"
     },
     "forms": {
-  "required": "ይህ መስክ ያስፈልጋል",
-  "invalid_email": "የማይሰራ ኢሜይል አድራሻ",
-  "password_too_short": "የይለፍ ቃል በጣም አጫጭር ነው",
-  "passwords_do_not_match": "የይለፍ ቃሎች አይዛመዱም",
-  "invalid_input": "የማይሰራ ግቤት",
+      "required": "ይህ መስክ ያስፈልጋል",
+      "invalid_email": "የማይሰራ ኢሜይል አድራሻ",
+      "password_too_short": "የይለፍ ቃል በጣም አጫጭር ነው",
+      "passwords_do_not_match": "የይለፍ ቃሎች አይዛመዱም",
+      "invalid_input": "የማይሰራ ግቤት",
       "field_required": "ይህ መስክ ያስፈልጋል"
     },
     "pagination": {
       "showing": "የሚታየው",
-  "of": "ከ",
-  "results": "ውጤቶች",
-  "per_page": "በገፅ",
-  "first": "መጀመሪያ",
-  "last": "መጨረሻ",
-  "previous_page": "ቀዳሚ ገፅ",
-  "next_page": "ቀጣይ ገፅ",
+      "of": "ከ",
+      "results": "ውጤቶች",
+      "per_page": "በገፅ",
+      "first": "መጀመሪያ",
+      "last": "መጨረሻ",
+      "previous_page": "ቀዳሚ ገፅ",
+      "next_page": "ቀጣይ ገፅ",
       "go_to_page": "ወደ ገፅ ሂድ"
     },
     "comments": {
@@ -205,7 +205,7 @@
     "copyright": "© {{year}} ፍሬምናቶስ። ሁሉም መብቶች የተጠበቁ ናቸው።",
     "social_media": {
       "telegram": "ቴሌግራም",
-      "whatsapp": "ዋትስአፕ", 
+      "whatsapp": "ዋትስአፕ",
       "facebook": "ፌስቡክ",
       "youtube": "ዩቱብ"
     }
@@ -230,26 +230,6 @@
     "livesTouched": "የታገዙ ሰዎች",
     "yearsService": "የአገልግሎት ዓመታት",
     "focusAreas": "የትኩረት መስኮች"
-  },
-  "hero": {
-    "title": "ሽማግሌዎችን፣ የአእምሮ ጉዳተኞችን እና ህፃናትን ማገልገል",
-    "description": "የፍሬምናቶስ ቻሪቲ ድርጅት በትግራይ ክልል ውስጥ ድጋፍ የሌላቸውን ሰዎች ለማገልገል እና ችግሮቻቸውን ለመፍታት የተቀየረ ነው። በማኅበረሰብ ውስጥ እውነተኛ ተፅእኖ ለማመጣት ከእኛ ጋር ይተባበሩ።",
-    
-    "cta": {
-      "donate": "አሁን ለመለገስ",
-      "learn_more": "ተጨማሪ ይወቁ"
-    },
-
-    "highlights": {
-      "location": "ትግራይ ክልል",
-      "location_desc": "በትግራይ ውስጥ ማህበረሰቦችን እየያዙ",
-      "established": "ከ 2020 ጀምሮ",
-      "established_desc": "4+ ዓመታት የተሰጠ አገልግሎት",
-      "focus": "ሶስት ዋና መስኮች",
-      "focus_desc": "ሽማግሌዎች፣ ሕፃናት እና የአእምሮ ጤና",
-      "beneficiaries": "ተጠቃሚዎች ተረድተዋል",
-      "beneficiaries_desc": "500+ ተጠቃሚዎች ተረድተዋል"
-    }
   },
   "slideshow": {
     "slide1": {
@@ -407,102 +387,5 @@
     "forgot_password_description": "የይለፍ ቃል ዳግም ማስጀመሪያ አገናኝ ለማግኘት ኢሜይልዎን ያስገቡ",
     "confirm_password_title": "የይለፍ ቃል አረጋግጥ",
     "reset_password": "የይለፍ ቃል ዳግም አስጀመር"
-  },
-  "slideshow": {
-    "previous_slide": "ቀዳሚ ስላይድ",
-    "next_slide": "ቀጣይ ስላይድ",
-    "go_to_slide": "ወደ ስላይድ {{number}} ሂድ",
-    "aria_label": "ስላይድ ስእሊ",
-    "image_not_available": "ስእሊ ኣይርከብን",
-    "slide1": {
-      "title": "ራዕይ",
-      "alt": "የቻሪቲ ስራ - ሽማግሌዎችን መርዳት",
-      "description": "ፍሬምናቶስ በአባ ሳሙኤል እና አባ ገብረመድህን በርሀ በመልካም ተልእኮ እና በሕጋዊ ሰነዶች በመያዝያ-7/2010 ዓ.ም. በመቐለ ከተማ ዋና ማዕከል በ26 ቅርንጫፎች የተቋቋመ ማዕከል ነው።"
-    },
-    "slide2": {
-      "title": "ተልእኮ",
-      "alt": "የቻሪቲ ስራ - ልጆችን መደገፍ",
-      "description": "ድጋፍ የሌላቸው ሽማግሌዎች፣ መንጃ ሕጻናት እና ልጆችን አጠቃላይ አገልግሎት ለመስጠት እና ማህበራዊ፣ ኢኮኖሚያው እና ስነ-አእምሮ ችግሮቻቸውን ለመፍታት።"
-    },
-    "slide3": {
-      "title": "የእኛ ቡድን",
-      "alt": "የቻሪቲ ስራ - የአእምሮ ጤና ድጋፍ",
-      "description": "በሁሉም ነገር ውስጥ ልዩነት ለማምጣት የሚተጋ የተለያዩ ባለሙያዎች የተሰባሰቡ ቡድን።"
-    },
-    "slide4": {
-      "title": "እሴቶች",
-      "alt": "የቻሪቲ ስራ - የማህበረሰብ አገልግሎት",
-      "description": "• ድጋፍ የሌላቸው ሰዎችን ያለ ማድሎ መርዳት\n• ሁሉንም ሰው በእኩልነት መያዝ\n• ቁርጠኝነት እና ለውጥ መፈለግ\n• ቅንነት እና አብረው መስራት\n• ግልጽነት እና ተጠያቂነት"
-    },
-    "slide5": {
-      "title": "ተለይተው የተወሰኑ ግቦች",
-      "alt": "የቻሪቲ ስራ - የማህበረሰብ አገልግሎት",
-      "description": "ድጋፍ የሌላቸው ሽማግሌዎች፣ መንጃ ሕጻናት እና ልጆችን በአንድ ማዕከል በማህበራዊ፣ ኢኮኖሚያው እና ስነ-አእምሮ ችግሮቻቸውን በመፍታት አጠቃላይ ድጋፍ ለመስጠት።"
-    }
-  },
-  "footer": {
-    "company_name": "ፍሬምናቶስ",
-    "description": "በማህበረሰቦች ውስጥ በርካሳ እና በተግባር ልዩነት ማምጣት።",
-    "follow_us": "ተከተሉን",
-    "contact_info": "የግንኙነት መረጃ",
-    "other_contacts": "ሌሎች ግንኙነቶች",
-    "freminatos_contact": "ፍሬምናቶስ ለማግኘት",
-    "aba_samuel_contact": "አባ ሳሙኤል ወልደሰላማ ",
-    "aba_gebremedhn_contact": "አባ ገብረመድህን በርሀ ",
-    "location": "መቐለ፣ ትግራይ፣ ኢትዮጵያ",
-    "language": "ቋንቋ:",
-    "quick_links": "ፈጣን አገናኞች",
-    "stay_connected": "ኣብ ርክብ ኩናት",
-    "privacy": "የግላዊነት ፐሊሲ",
-    "terms": "የአገልግሎት ውሎች",
-    "contact": "አግኙን",
-    "newsletter": {
-      "email_label": "ኢሜይል",
-      "placeholder": "you@gmail.com",
-      "cta": "ተመዝግብ",
-      "privacy": "ግላዊነትዎን እናከብራለን። በማንኛውም ጊዜ መዝግብ ልትቆሙ ትኽእሉ።"
-    },
-    "copyright": "© {{year}} ፍሬምናቶስ። ሁሉም መብቶች የተጠበቁ ናቸው።",
-    "social_media": {
-      "telegram": "ቴሌግራም",
-      "whatsapp": "ዋትስአፕ", 
-      "facebook": "ፌስቡክ",
-      "youtube": "ዩቱብ"
-    }
-  },
-  "cta": {
-    "home": "መነሻ",
-    "news": "ዜና",
-    "stories": "ታሪኮች",
-    "profile": "መገለጫ",
-    "signUp": "ተመዝግብ",
-    "signIn": "ግባ",
-    "donate": "ለመለገስ",
-    "learnMore": "ተጨማሪ ተማር"
-  },
-  "aria": {
-    "profileSettings": "የመገለጫ ቅንብሮች"
-  },
-  "images": {
-    "bannerAlt": "የፍሬምናቶስ ቻሪቲ ድርጅት ባነር"
-  },
-  "stats": {
-    "livesTouched": "የታገዙ ሰዎች",
-    "yearsService": "የአገልግሎት ዓመታት",
-    "focusAreas": "የትኩረት መስኮች"
-  },
-  "theme": {
-    "switch_to_light_mode": "ወደ ብርሃን ሞድ ቀይር",
-    "switch_to_dark_mode": "ወደ ጨለማ ሞድ ቀይር",
-    "light_mode": "ብርሃን ሞድ",
-    "dark_mode": "ጨለማ ሞድ"
-  },
-  "bank_accounts": "ለመለገስ የባንክ ሂሳቦች",
-  "commercial_bank": "ኢትዮጵያ ንግዲ ባንኪ",
-  "wegagen_bank": "ወጋገን ባንክ",
-  "abyssinia_bank": "ኣቢስንያ ባንክ", 
-  "awash_bank": "ኣዋሽ ባንክ",
-  "berhan_bank": "ብርሃን ባንክ",
-  "dashen_bank": "ዳሽን ባንክ",
-  "anbessa_bank": "አንበሳ ባንክ"
+  }
 }

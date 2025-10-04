@@ -75,22 +75,22 @@
       "admin": "Admin"
     },
     "forms": {
-  "required": "This field is required",
-  "invalid_email": "Invalid email address",
-  "password_too_short": "Password is too short",
-  "passwords_do_not_match": "Passwords do not match",
-  "invalid_input": "Invalid input",
+      "required": "This field is required",
+      "invalid_email": "Invalid email address",
+      "password_too_short": "Password is too short",
+      "passwords_do_not_match": "Passwords do not match",
+      "invalid_input": "Invalid input",
       "field_required": "This field is required"
     },
     "pagination": {
       "showing": "Showing",
-  "of": "of",
-  "results": "Results",
-  "per_page": "Per Page",
-  "first": "First",
-  "last": "Last",
-  "previous_page": "Previous Page",
-  "next_page": "Next Page",
+      "of": "of",
+      "results": "Results",
+      "per_page": "Per Page",
+      "first": "First",
+      "last": "Last",
+      "previous_page": "Previous Page",
+      "next_page": "Next Page",
       "go_to_page": "Go to Page"
     },
     "comments": {
@@ -309,38 +309,6 @@
     "yearsService": "Years of Service",
     "focusAreas": "Focus Areas"
   },
-  "slideshow": {
-    "previous_slide": "Previous slide",
-    "next_slide": "Next slide",
-    "go_to_slide": "Go to slide {{number}}",
-    "aria_label": "Image slideshow",
-    "image_not_available": "Image not available",
-    "slide1": {
-      "title": "Vision",
-      "alt": "Charity work - Helping elders",
-      "description": "Fremnatos is a center established by Aba Samuel and Aba Gebremedhn Berhe with good intentions and legal documents dated Miyazia-7/2010 E.C. in the main center of Mekelle city with 26 branches. These founding fathers have set a great goal to serve the community, and they have used their spiritual books and the money collected from the spiritual children inside and outside the country to buy land and budget to start this good foundation. They have made this institution a model for the people and government, and it has been running for more than 5 years."
-    },
-    "slide2": {
-      "title": "Mission",
-      "alt": "Charity work - Supporting children",
-      "description": "To provide comprehensive services to unsupported elders, mentally disabled people and children, and to help them overcome their social, economic and psychological problems, as well as to provide all the necessary support for their work through various fundraising activities and to provide comprehensive support to reduce all kinds of poverty."
-    },
-    "slide3": {
-      "title": "Our Team",
-      "alt": "Charity work - Mental health support",
-      "description": "A diverse group of passionate professionals committed to excellence, innovation, and making a meaningful impact in everything we do."
-    },
-    "slide4": {
-      "title": "Values",
-      "alt": "Charity work - Community service",
-      "description": "• Helping unsupported people without discrimination\n• Treating everyone equally\n• Commitment and striving for change\n• Honesty and working together\n• Transparency and accountability"
-    },
-    "slide5": {
-      "title": "Specific Objectives",
-      "alt": "Charity work - Community service",
-      "description": "To provide comprehensive support to unsupported elders, mentally disabled people and children in one center by addressing their social, economic and psychological problems.\n\nDetailed objectives:\n• To provide comprehensive support to unsupported elders over 60 years old in one center continuously;\n• To provide comprehensive support to mentally disabled people of all ages in one center and to help them return to productive citizens (to normal) continuously;\n• To provide comprehensive support to children under 7 years old and to help them gradually transition to family life when they reach 18 years old;\n\nTo continuously work on various fundraising activities to obtain the necessary budget/funds to achieve all these objectives."
-    }
-  },
   "theme": {
     "switch_to_light_mode": "Switch to light mode",
     "switch_to_dark_mode": "Switch to dark mode",
@@ -411,59 +379,12 @@
     "additional_property_placeholder": "Describe any additional property you would like to donate...",
     "submit": "Register"
   },
-  "switch_to_light_mode": "Switch to light mode",
-  "switch_to_dark_mode": "Switch to dark mode",
-  "contact_section": {
-    "title": "We'd Love to Hear From You!",
-    "get_involved": "Get Involved",
-    "form_description": "Fill out the form below and we'll get back to you as soon as possible.",
-    "full_name": "Full Name",
-    "full_name_placeholder": "Enter your full name",
-    "email_address": "Email Address",
-    "email_placeholder": "Enter your email address",
-    "message": "Message",
-    "message_placeholder": "Tell us how you'd like to get involved or any questions you have...",
-    "send_message": "Send Message",
-    "get_in_touch": "Get in Touch",
-    "get_in_touch_description": "We're here to help and answer any questions you may have",
-    "freminatos_charity": "Freminatos Charity",
-    "official": "Official",
-    "main_contact_description": "Main organization contact for inquiries, partnerships, and general information",
-    "email_address_label": "Email Address",
-    "phone_number_label": "Phone Number",
-    "visit_our_office": "Visit Our Office",
-    "message_sent_success": "Your message has been sent.",
-    "message_sent_error": "Failed to send your message. Please try again."
-  },
-  "auth": {
-    "welcome_back": "Welcome Back",
-    "sign_in_description": "Sign in to your account to continue supporting our mission",
-    "join_mission": "Join Our Mission",
-    "create_account_description": "Create your account to start making a difference in the community",
-    "email_address": "Email address",
-    "password": "Password",
-    "full_name": "Full name",
-    "confirm_password": "Confirm password",
-    "enter_email": "Enter your email",
-    "enter_password": "Enter your password",
-    "create_password": "Create a password",
-    "confirm_password_placeholder": "Confirm your password",
-    "remember_me": "Remember me for 30 days",
-    "forgot_password": "Forgot password?",
-    "sign_in": "Sign in",
-    "create_account": "Create account",
-    "dont_have_account": "Don't have an account?",
-    "already_have_account": "Already have an account?",
-    "create_account_link": "Create an account",
-    "sign_in_instead": "Sign in instead",
-    "signing_in": "Signing in...",
-    "creating_account": "Creating account...",
-    "password_requirements": "Password requirements:",
-    "at_least_8_chars": "At least 8 characters",
-    "mix_letters_numbers": "Mix of letters and numbers",
-    "forgot_password_title": "Forgot password",
-    "forgot_password_description": "Enter your email to receive a password reset link",
-    "confirm_password_title": "Confirm password",
-    "reset_password": "Reset password"
-  }
+  "bank_accounts": "Bank Accounts for Donations",
+  "commercial_bank": "Commercial Bank of Ethiopia",
+  "wegagen_bank": "Wegagen Bank",
+  "abyssinia_bank": "Abyssinia Bank",
+  "awash_bank": "Awash Bank",
+  "berhan_bank": "Berhan Bank",
+  "dashen_bank": "Dashen Bank",
+  "anbessa_bank": "Anbessa Bank"
 }
