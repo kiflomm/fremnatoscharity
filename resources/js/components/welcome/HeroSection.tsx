@@ -5,7 +5,7 @@ import { motion, type Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Users, MapPin, Calendar, Award, BetweenVerticalEnd } from "lucide-react"
 import { usePage, Link, router } from '@inertiajs/react'
-import { type SharedData } from '@/types' 
+import { type SharedData } from '@/types'
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -64,7 +64,7 @@ export default function HeroSection() {
     <section className="relative bg-gradient-to-br from-background via-background to-muted/20 overflow-hidden flex items-center pb-20">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-      
+
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -76,13 +76,13 @@ export default function HeroSection() {
           {/* Left Column - Content */}
           <div>
             <motion.div variants={itemVariants} className="space-y-0">
-              
+
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground tracking-tight leading-tight">
-                {t("hero.title", { 
-                  defaultValue: "Supporting Elders, Mentally Disabled, and Children in Need" 
+                {t("hero.title", {
+                  defaultValue: "Supporting Elders, Mentally Disabled, and Children in Need"
                 })}
               </h1>
-              
+
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl">
                 {t("hero.description", {
                   defaultValue: "Fremnatos Charity Organization is dedicated to providing better services and solving problems for people without support in the Tigray region. Join us in making a meaningful impact."
@@ -91,7 +91,7 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3">
-              <Button 
+              <Button
                 onClick={() => router.visit(donateHref)}
                 size="lg"
                 variant="default"
@@ -100,9 +100,9 @@ export default function HeroSection() {
                 {t("hero.cta.donate", { defaultValue: "Donate Now" })}
                 <ArrowRight className="ml-2 size-5" />
               </Button>
-              
-              <Button 
-                variant="default" 
+
+              <Button
+                variant="default"
                 size="lg"
                 className="border-2 hover:bg-primary/5 transition-all duration-300"
                 onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
@@ -112,23 +112,23 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-    
-                         {/* Key Highlights */}
-                         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-               {highlights.map((highlight, index) => (
-                 <div key={highlight.title} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                     <highlight.icon className="size-4 text-primary" />
-                   </div>
-                   <div className="min-w-0">
-                     <h3 className="text-sm font-semibold text-foreground">{highlight.title}</h3>
-                     <p className="text-xs text-muted-foreground">{highlight.description}</p>
-                   </div>
-                 </div>
-               ))}
-             </motion.div> 
 
-          
+          {/* Key Highlights */}
+          <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {highlights.map((highlight, index) => (
+              <div key={highlight.title} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <highlight.icon className="size-4 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-semibold text-foreground">{highlight.title}</h3>
+                  <p className="text-xs text-muted-foreground">{highlight.description}</p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+
+
         </div>
       </motion.div>
     </section>
