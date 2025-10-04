@@ -189,7 +189,7 @@ export default function DonationFormSection({ professionalHelpCategories, autoOp
       id="donation-form"
       className="py-16 bg-gradient-to-br from-background via-background to-muted/20"
     >
-      <div className="mx-auto max-w-4xl px-4">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-foreground mb-4">
             {t('donation_form.title')}
