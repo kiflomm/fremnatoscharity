@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Guests;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProfessionalHelpCategory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,9 +31,22 @@ class ProfileController extends Controller
     {
         $this->ensureGuest($request);
 
+        $user = $request->user();
+        
+        // Get user's membership applications
+        $memberships = $user->memberships()
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Get active professional help categories with full data
+        $categories = ProfessionalHelpCategory::active()
+            ->ordered()
+            ->get();
+
         return Inertia::render('guests/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => $request->session()->get('status'),
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
+            'memberships' => $memberships,
+            'professionalHelpCategories' => $categories,
         ]);
     }
 
@@ -47,11 +61,65 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $request->user()->forceFill([
+        $user = $request->user();
+        $user->update([
             'name' => $validated['name'],
-        ])->save();
+        ]);
 
-        return to_route('guest.profile.edit');
+        return redirect()->route('guest.profile.edit');
+    }
+
+    /**
+     * Update a membership application.
+     */
+    public function updateMembership(Request $request, $membershipId): RedirectResponse
+    {
+        $this->ensureGuest($request);
+
+        $user = $request->user();
+        $membership = $user->memberships()->findOrFail($membershipId);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'father_name' => ['nullable', 'string', 'max:255'],
+            'gender' => ['nullable', 'string', 'in:male,female'],
+            'age' => ['nullable', 'integer', 'min:1', 'max:120'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'region' => ['nullable', 'string', 'max:255'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'woreda' => ['nullable', 'string', 'max:255'],
+            'kebele' => ['nullable', 'string', 'max:255'],
+            'profession' => ['nullable', 'string', 'max:255'],
+            'education_level' => ['nullable', 'string', 'max:255'],
+            'phone_number' => ['nullable', 'string', 'max:20'],
+            'help_profession' => ['nullable', 'array'],
+            'help_profession.*' => ['string', 'max:255'],
+            'donation_amount' => ['nullable', 'numeric', 'min:0'],
+            'donation_currency' => ['nullable', 'string', 'max:8'],
+            'donation_time' => ['nullable', 'string', 'max:255'],
+            'property_type' => ['nullable', 'string', 'max:255'],
+            'additional_property' => ['nullable', 'string'],
+            'property_donation_time' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $membership->update($validated);
+
+        return redirect()->route('guest.profile.edit');
+    }
+
+    /**
+     * Delete a membership application.
+     */
+    public function deleteMembership(Request $request, $membershipId): RedirectResponse
+    {
+        $this->ensureGuest($request);
+
+        $user = $request->user();
+        $membership = $user->memberships()->findOrFail($membershipId);
+
+        $membership->delete();
+
+        return redirect()->route('guest.profile.edit');
     }
 
     /**

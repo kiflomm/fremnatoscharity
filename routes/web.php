@@ -7,10 +7,21 @@ use App\Http\Controllers\PublicNewsController;
 use App\Http\Controllers\PublicStoriesController;
 use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\HelpController;
+use App\Http\Controllers\MembershipController;
+
+use App\Models\ProfessionalHelpCategory;
 
 // Home route (welcome page)
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    // Get active professional help categories with full data
+    $categories = ProfessionalHelpCategory::active()
+        ->ordered()
+        ->get();
+    
+    return Inertia::render('welcome', [
+        'professionalHelpCategories' => $categories,
+    ]);
 })->middleware(['public.only', 'require.email.verification'])->name('home');
 
 // Public contact messages (contact form submissions)
@@ -83,3 +94,9 @@ Route::middleware(['public.only'])->group(function () {
         ->middleware(['auth', 'verified'])
         ->name('public.stories.like');
 });
+// Help/Donation form route (accessible to all users)
+Route::get('/help', [HelpController::class, 'index'])->name('help');
+// Membership submission (authenticated)
+Route::post('/memberships', [MembershipController::class, 'store'])->middleware(['auth', 'verified'])->name('memberships.store');
+
+// Guest-specific routes are declared in routes/guest.php

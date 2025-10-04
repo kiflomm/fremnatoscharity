@@ -81,6 +81,14 @@ class User extends Authenticatable implements MustVerifyEmail
     // Per-type comment relations can be defined on comment models
 
     /**
+     * Get the membership applications submitted by the user.
+     */
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(Membership::class);
+    }
+
+    /**
      * Check if user has a specific role.
      */
     public function hasRole(string $role): bool

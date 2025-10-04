@@ -60,9 +60,9 @@
       "about": "ብዛዕባና",
       "contact": "ርክብ",
       "news": "ዜናታት",
-      "elders": "እማታት",
-      "children": "እማታት",
-      "disabled": "እማታት",
+      "elders": "ሽማግለታት",
+      "children": "ህፃናት",
+      "disabled": "ኣካል ጎደሎ",
       "stories": "ታሪኻት",
       "donate": "ምሃብ",
       "volunteer": "በጃዊ ስራሕ",
@@ -171,6 +171,188 @@
     "dragging": "ተጎትቲ...",
     "scroll_to_explore": "ንምርኣይ ሸብል",
     "drag_to_scroll": "ንምሸብል ጎትት"
+  },
+  "bank_accounts": "ናይ ባንክ ሕሳብ ንወፈያታት",
+  "commercial_bank": "ኢትዮጵያ ንግዲ ባንኪ",
+  "wegagen_bank": "ወጋገን ባንክ",
+  "abyssinia_bank": "ኣቢስንያ ባንክ", 
+  "awash_bank": "ኣዋሽ ባንክ",
+  "berhan_bank": "ብርሃን ባንክ",
+  "dashen_bank": "ዳሽን ባንክ",
+  "anbessa_bank": "አንበሳ ባንክ",
+  "footer": {
+    "company_name": "ፍሬምናጦስ",
+    "description": "ኣብ ማሕበረሰባት ውሽጢ ብርካሳን ተግባርን ፈላልያ ምግባር።",
+    "follow_us": "ተኸተልና",
+    "contact_info": "ሓበሬታ ርክብ",
+    "other_contacts": "ካልኦት ርኸባት",
+    "freminatos_contact": "ፍሬምናጦስ ርኸቡ",
+    "aba_samuel_contact": "አባ ሳሙኤል ወልደሰላማ ",
+    "aba_gebremedhn_contact": "አባ ገብረመድህን በርሀ ",
+    "location": "መቐለ፣ ትግራይ፣ ኢትዮጵያ",
+    "language": "ቋንቋ:",
+    "quick_links": "ቅርብ ማረፊያታት",
+    "stay_connected": "ኣብ ርክብ ኩናት",
+    "privacy": "ውሽጣዊነት",
+    "terms": "ውልቂ",
+    "contact": "ርክብ",
+    "newsletter": {
+      "email_label": "ኢመይል",
+      "placeholder": "you@example.com",
+      "cta": "ተመዝግብ",
+      "privacy": "ውሽጣዊነትኩም ንከብር። ኣብ ዝኾነ ግዜ ምዝገባ ትቅርብ ትኽእሉ።"
+    },
+    "copyright": "© {{year}} ፍሬምናጦስ። ኩሉ መሰላት ዝተሓለወ እዩ።",
+    "social_media": {
+      "telegram": "ቴሌግራም",
+      "whatsapp": "ዋትስአፕ", 
+      "facebook": "ፌስቡክ",
+      "youtube": "ዩቱብ"
+    }
+  },
+  "cta": {
+    "home": "ገዛ",
+    "news": "ዜናታት",
+    "stories": "ታሪኻት",
+    "profile": "መገለጽ",
+    "signUp": "ተመዝግብ",
+    "signIn": "እቶ",
+    "donate": "ሓገዝ ንምሃብ",
+    "learnMore": "ዝያዳ ንምፍላጥ"
+  },
+  "aria": {
+    "profileSettings": "ቅንብር መገለጽ"
+  },
+  "images": {
+    "bannerAlt": "ፍሬምናጦስ ቻሪቲ ድርጅት ባነር"
+  },
+  "stats": {
+    "livesTouched": "ነፍስታት ዝተሓገዙ",
+    "yearsService": "ዓመታት ኣገልግሎት",
+    "focusAreas": "ቦታታት ትኩረት"
+  },
+  "hero": {
+    "title": "ኣረጋውያን፣ ኣእምሮ ሕሙማትን ህፃናትን ምርዳእ",
+    "description": "ፍሬምናጦስ ቻሪቲ ድርጅት ኣብ ትግራይ ክልል ውሽጢ ዘለዉ ድጋፍ ዘይብሎም ሰባት ንምርዳእን ፀገማትኦም ንምፍታሕን ዝተነሳሰረ እዩ። ኣብ ማሕበረሰብ ውሽጢ ብሓቂ ተፅእኖ ንምፍጣር ናብና ተባብሩ።",
+
+    "cta": {
+      "donate": "ሕጂ ሓገዝ",
+      "learn_more": "ዝያዳ ፍለጥ"
+    },
+
+    "highlights": {
+      "location": "ትግራይ ክልል",
+      "location_desc": "ኣብ ትግራይ ማሕበረሰባት ንምርዳእ",
+      "established": "ካብ 2020 ጀሚሩ",
+      "established_desc": "4+ ዓመታት ዝተኸለኸለ ኣገልግሎት",
+      "focus": "ሶስተ መስኮታት ትኩረት",
+      "focus_desc": "ኣረጋውያን፣ ህፃናትን ናይ ኣእምሮ ጥዕና",
+      "beneficiaries": "ተጠቃሚታት ተሓገዙ",
+      "beneficiaries_desc": "500+ ተጠቃሚታት ተሓገዙ"
+    }
+  },
+  "slideshow": {
+    "slide1": {
+      "title": "ብዛዕባና",
+      "alt": "ሻሪቲ ስራሕ - ኣረጋውያን ምርዳእ",
+      "description": "ማእኸል መሐገዚ አረጋውያን ሕሙማት ኣእምሮን ህፃናትን ፍሬምናጦስ ብአባ ሳሙኤልን አባ ገብረመድህን በርሀን ሰናይ ተበግሶ ብሕጋውነት ሰነድ ሚያዝያ-7/2010 ዓ/ም ዋና ማእኸል ከተማ መቐለ ብምግባር 26 ፅጉማት ብምሓዝ ክምስረት ዝኸኣለ ማእኸል ፅጉማት እዩ ፍሬምናጦስ፡፡ እዞም መስረቲ መነኮሳት ኣቦታት መሰረት ገይሮም ዝተልዓልሉ ዓብይ ዕላማ ፅጉማት ንምርዳእ እንትኸውን ነዚ ዕላመኦም መበገሲ ገይሮም ዝተጠቐሙሉ ድማ ካብ ሽያጥ መንፈሳዊ መፃሕፍቶምን ካብ ውሽጢ ዓድን ወፃእን ዝርከቡ መንፈሳውያን ደቆም ዘሰባሰብዎ ገንዘብ ተጠቒሞም መሬት ብምግዛእን በጀት ብምስላዕን እቲ ሰናይ ስርሖም ብምጅማር ህዝቢ ኣብ ጎኖም ክዓስል ብሰናይ ግብሮም ገይሮምዎ እንሆ እዚ ትካል መሙርዒ ህዝብንመንግስትን ኾይኑ ንልዕሊ 5ተ ዓመት ፀኒሑን ይቕፅልን ኣሎ፡፡"
+    },
+    "slide2": {
+      "title": "ልኡኽ",
+      "alt": "ሻሪቲ ስራሕ - ሕፃናት መደገፊ",
+      "description": "ጠዋሪ ደጋፊ ዘይብሎም ወገናት ኣረጋውያን፣ ኣእምሮ ሕሙማትን ህፃንትን ብምስብሳብ ኩለመዳይ ግልጋሎት ክረኽቡ ምስራሕን ካብ ዘለዎም ማሕበራዊ፣ ኢኮኖሚያውን ስነ-ኣእመሮን ፀገማት ክላቐቑ ምግባርን ከምኡ'ውን ኩሎም ስራሕቱ ንምፍፃም ኣብ ዘኽእሉ ፍልፍላት ኣታዊ ኣነፂርካ ብምውፋርን ኣብ ምቕናስ ኩለመዳይ ድኽነት ፅዙዝ ተራ ምፅዋት፡፡"
+    },
+    "slide3": {
+      "title": "ናይና ጉጂለ",
+      "alt": "ሻሪቲ ስራሕ - ድጋፍ ስነ-ኣእምሮ",
+      "description": "ኣብ ኩሉ ነገር ፈላልያ ንምግባር ዝተጋገደ ዝተፈላለየ ፕሮፌሽናላት ዝተሰባሰቡ ጉጂለ።"
+    },
+    "slide4": {
+      "title": "ክብርታት",
+      "alt": "ሻሪቲ ስራሕ - ኣገልግሎት ማሕበረሰብ",
+      "description": "• ጠዋሪ ዘይብሉ ወገን ከይተፀየፍካ ምልዓል\n• ንኩሉ ሰብ ብማዕረ ምግልጋል\n• ፃዕራምነትን ንለውጢ ምትግሃን\n• ብፃይነትን ሓቢርካ ምስራሕን\n• ንግልፅነትን ተሓታትነትን ምትጋህ"
+    },
+    "slide5": {
+      "title": "ጥቕሉል ዕላማ",
+      "alt": "ሻሪቲ ስራሕ - ኣገልግሎት ማሕበረሰብ",
+      "description": "ጧርን ደጋፍን ዘይብሎም ኣረጋውያን፣ ኣእምሮ ሕሙማንን ህፃናትን ዓቕሚ መሰረት ዝገበረ ኣብ ሓደ ማእኸል ብምስብሳብ ማሕበራዊ፣ ኢኮኖሚያውን ኣእምራውን ፀገሞም ምቕራፍ ዝርዝር ዕላማታት\n\nጧርን ደጋፍን ዘይብሎም ልዕሊ 60 ዓመት ዝኾኑ ኣረጋውያን ኩለመዳይ ሓገዝ ኣብ ሓደ ማእኸል ብዘላቕነት ክረኽቡ ምግባር፤\n\nሓብሓቢ ዘይብሎም ኣብ ከሉ ዕድመ ዝርከቡ ኣእምሮ ሕሙማን ኣብ ሓደ ማእኸል ዝተማልአ ክንክን ክረኽቡን ብዘላቕነት ናብ መፍረያይ ዜጋ(ናብ ንቡር) ክምለሱን ምግባር፤\n\nመዕበይ ዘይብሎም 7 ዓመትን ትሕቲኡን ዝኾኑ ህፃናት ኣኪብካ ዝተማልአ ክንክን እናረኸቡን እናተምሃሩን ምስ ዓብዩ ዕድሚኦም ልዕሊ 18 ዓመት ዝኾኑ ቀስ ብቐስ ስሩዕ ቤተሰባዊ ስግግር ምክያድ፤\n\nኩሎም ዕላማታቱ ንምፍፃም ዘድሊ ሃፍቲ/በጀት ንምርካብ ዘኽእሉ ፍልፍላት ኣታዊ ኣነፂርካ ብዘላቕነት ምትግባር፡፡"
+    },
+    "go_to_slide": "ናብ ስላይድ ኺድ",
+    "aria_label": "ምስላት ስላይድሾ",
+    "image_not_available": "ምስላ ኣይርከብን",
+    "no_images_available": "ምስላት ኣይርከብን",
+    "previous_slide": "ቀዳማይ ስላይድ",
+    "next_slide": "ዝቀጥል ስላይድ"
+  },
+  "theme": {
+    "switch_to_light_mode": "ናብ ብርሃን ሞድ ቀይር",
+    "switch_to_dark_mode": "ናብ ጸልማት ሞድ ቀይር",
+    "light_mode": "ብርሃን ሞድ",
+    "dark_mode": "ጸልማት ሞድ"
+  },
+  "donation_form": {
+    "title": "ኣባልነት መመዝገቢ ቅጥዒ",
+    "subtitle": "ኣብ ሻሪቲ ውድብና ተሳተፍ እሞ ለውጢ ንምፍጣር ሓግዝ",
+    "login_required": "ኣብ ምእታው የድሊ",
+    "login_required_description": "ናብ ውህብቶ ቅጥ ንምብጻሕ እባክዎ ኣብ ምእታው",
+    "already_setup_message": "ውህብቶ ስርዓት ቀድሚ ተዳሊዩ እዩ። ንምቀጻል እባክዎ ኣብ ምእታው።",
+    "personal_info": "ውልቃዊ ሓበሬታ",
+    "name": "ሽም",
+    "father_name": "ሽም ኣቦ",
+    "gender": "ፆታ",
+    "select_gender": "ፆታ ምረጽ",
+    "male": "ወዲ",
+    "female": "ሰበይቲ",
+    "other": "ካልእ",
+    "age": "ዕድመ",
+    "country": "ሃገር",
+    "region": "ክልል",
+    "city": "ከተማ",
+    "woreda": "ወረዳ/(ንኡስ-ከተማ)",
+    "kebele": "ከቤለ(ዞን)",
+    "profession": "ሞያ(ክእለት)",
+    "education_level": "ደረጃ ትምህርቲ",
+    "phone_number": "ቁጽሪ ስልኪ",
+    "social_media": "ማሕበራዊ ሚዲያ/ኣግን",
+    "skype": "ስካይፕ",
+    "viber": "ቫይበር",
+    "facebook": "ፌስቡክ",
+    "messenger": "መሰንጅር",
+    "if_you_have_write": "እንተሊዎም ይፅሓፉልና።",
+    "monthly_contribution": "ወርሓዊ መዋጮ",
+    "amount_of_money": "ብዝሒ ገንዘብ",
+    "select_currency": "ዓይነት ገንዘብ ምረጽ",
+    "birr": "ብር",
+    "usd": "ዶላር",
+    "eur": "ዩሮ",
+    "professional_help_title": "ነዚ ውድብ ብኸመይ ሞያ ክሕግዙ ትደልዩ?",
+    "professional_help_description": "ብሞያ እትክክል መንገዲ ምረጽ",
+    "professional_help_hint": "ናዐካ ዝምልከቱ ብዙሕ ኣማራጺታት ይምረጹ",
+    "help_medicine": "ብሕክምና",
+    "help_teaching": "ብመምህርነት",
+    "help_construction": "ኣብ ኮንስትራክሽን ዘርፊ",
+    "help_hair_profession": "ፀጉሪ ሞያ",
+    "help_food_profession": "ምግቢ ሞያ",
+    "help_agriculture": "ብግብርና(ሕርሻ)",
+    "help_computer_science": "ብኮምፒተር ሳይነስ/አ.ይ.ቲ/",
+    "help_others": "ብካልኦት",
+    "donation": "ውህብቶ",
+    "by_money": "ብገንዘብ፡",
+    "by_property": "ብንብረት",
+    "select_donation_time": "ውህብቶ ጊዜ ምረጽ",
+    "one_time": "ሓደ ጊዜ",
+    "monthly": "ወርሓዊ",
+    "yearly": "ዓመታዊ",
+    "select_property_type": "ዓይነት ንብረት ምረጽ",
+    "land": "መሬት",
+    "building": "ህንጸት",
+    "vehicle": "መኪና",
+    "equipment": "መሳሪያ",
+    "immediate": "ብቕልጽፊ",
+    "future": "ጸኒሑ",
+    "additional_property": "ተወሳኪ ንብረት እንተሎ ይፅሓፉልና።",
+    "additional_property_placeholder": "እትሕግዝ ዘሎካ ተወሳኪ ንብረት ግለጽ...",
+    "submit": "መዝግብ"
   },
   "contact": {
     "title": "ካብኹም ንሰምዕ ንፈቱ!",

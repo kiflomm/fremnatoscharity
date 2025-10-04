@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
         // Seed banks and bank accounts
         $this->call(BankSeeder::class);
 
+        // Seed professional help categories
+        $this->call(ProfessionalHelpCategorySeeder::class);
+
         // Create a default admin user
         User::updateOrCreate(
             ['email' => 'admin@fremnatos.org'], 

@@ -64,7 +64,6 @@ export default function ProfileInfoForm() {
                                         <p className="text-sm text-neutral-600 dark:text-neutral-300">Saved</p>
                                     </Transition>
                                 </div>
-                                
                             </CardFooter>
                             <Separator/>
                             <div className="flex items-center justify-between gap-3"> 

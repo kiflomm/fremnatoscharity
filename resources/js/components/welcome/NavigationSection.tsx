@@ -1,6 +1,6 @@
 import { CardContent } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Users, Home, Newspaper, BookOpen, Menu, X, DollarSign, Info, UserPlus, LogIn, Mail } from 'lucide-react';
 import { SimpleLanguageSwitcher } from '../LanguageSwitcher';
@@ -12,12 +12,16 @@ import { motion } from 'framer-motion';
 
 export default function NavigationSection() {
     const page = usePage<SharedData>();
-    const { auth } = page.props;
+    const { auth, isAuthenticated } = page.props;
     const { t } = useTranslation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     // Determine role for conditional profile route
     const userRole = auth?.user?.role?.name ?? null;
     const profileHref = userRole === 'guest' ? '/guests/profile' : '/settings/profile';
+    const donateHref = isAuthenticated ? '/help' : '/login'
+    // const handleDonateClick = () => {
+    //     router.visit('/help');
+    // };
 
     
     return (
@@ -105,8 +109,8 @@ export default function NavigationSection() {
                                                     {t("common.navigation.disabled")}
                                                 </Link>
                                                 <Link 
-                                                    href="/#donation" 
-                                                    className="flex items-center gap-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                                                    href={donateHref} 
+                                                    className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-2.5 py-1.5 rounded-lg transition-all duration-200"
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
                                                     <DollarSign className="h-4 w-4" />
@@ -194,7 +198,7 @@ export default function NavigationSection() {
                                                 {t("common.navigation.disabled")}
                                             </Link>
                                             <span className="text-slate-300 dark:text-slate-600 text-xs">|</span>
-                                            <Link href="/#donation" className="flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium hover:bg-green-50 dark:hover:bg-green-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
+                                            <Link href={donateHref} className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/20 px-1 py-0.5 rounded-md transition-all duration-200">
                                                 <DollarSign className="h-3.5 w-3.5" />
                                                 {t("common.navigation.donate")}
                                             </Link>

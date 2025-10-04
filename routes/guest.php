@@ -44,4 +44,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('guests/password', [GuestPasswordController::class, 'update'])
         ->middleware('throttle:6,1')
         ->name('guest.password.update');   // Update password
+
+    // Guest membership management routes
+    Route::patch('guests/memberships/{membership}', [GuestProfileController::class, 'updateMembership'])
+        ->name('guest.membership.update');    // Update membership application
+
+    Route::delete('guests/memberships/{membership}', [GuestProfileController::class, 'deleteMembership'])
+        ->name('guest.membership.delete');    // Delete membership application
 });

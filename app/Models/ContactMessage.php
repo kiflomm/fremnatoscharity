@@ -14,6 +14,8 @@ class ContactMessage extends Model
         'name',
         'email',
         'message',
+        'is_read',
+        'read_at',
         'ip_address',
         'user_agent',
         'meta',
@@ -21,6 +23,8 @@ class ContactMessage extends Model
 
     protected $casts = [
         'meta' => 'array',
+        'is_read' => 'boolean',
+        'read_at' => 'datetime',
     ];
 }
 

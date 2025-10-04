@@ -48,4 +48,17 @@ class AdminUserController extends BaseController
 
         return $this->successResponse('User deleted successfully');
     }
+
+    public function updateRole(User $user)
+    {
+        request()->validate([
+            'role' => ['required', 'in:editor,guest'],
+        ]);
+
+        $this->userService->updateUser($user, [
+            'role' => request('role'),
+        ]);
+
+        return $this->successResponse('Role updated successfully');
+    }
 }
