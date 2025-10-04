@@ -316,8 +316,7 @@
     "dark_mode": "Dark Mode"
   },
   "donation_form": {
-    "title": "Membership Registration Form",
-    "subtitle": "Join our charity organization and help make a difference",
+    "title": "Join our charity organization and help make a difference",
     "login_required": "Login Required",
     "login_required_description": "Please log in to access the donation form",
     "already_setup_message": "The donation system is already set up and ready to use. Please log in to continue.",

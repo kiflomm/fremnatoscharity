@@ -35,7 +35,6 @@ export default function DonationFormSection({ professionalHelpCategories, autoOp
   const { t, i18n } = useTranslation();
   const { theme } = useTheme();
   const { auth, isAuthenticated, user } = usePage<SharedData>().props;
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
   const loginToastCooldownRef = useRef<number | null>(null);
   
@@ -64,12 +63,6 @@ export default function DonationFormSection({ professionalHelpCategories, autoOp
     };
   }, [i18n]);
   
-  // Auto open the form on mount when requested and authenticated
-  useEffect(() => {
-    if (autoOpen && isAuthenticated) {
-      setIsFormOpen(true);
-    }
-  }, [autoOpen, isAuthenticated]);
   
   const [formData, setFormData] = useState({
     // Personal Information
@@ -153,7 +146,6 @@ export default function DonationFormSection({ professionalHelpCategories, autoOp
         // toast.success('Membership application submitted successfully!', {
         //   id: 'membership-success'
         // });
-        setIsFormOpen(false);
         // Reset form after successful submission
         setFormData({
           name: user?.name || '',
@@ -189,19 +181,6 @@ export default function DonationFormSection({ professionalHelpCategories, autoOp
     router.visit('/login');
   };
 
-  const handleToggleForm = () => {
-    if (!isAuthenticated) {
-      const now = Date.now();
-      if (!loginToastCooldownRef.current || now - loginToastCooldownRef.current > 1500) {
-        toast.dismiss('login-required');
-        toast.info('Please login first.', { id: 'login-required' });
-        loginToastCooldownRef.current = now;
-      }
-      router.visit('/login');
-      return;
-    }
-    setIsFormOpen((prev) => !prev);
-  };
 
   // Always render the section; submission will redirect unauthenticated users
 
@@ -212,22 +191,11 @@ export default function DonationFormSection({ professionalHelpCategories, autoOp
     >
       <div className="mx-auto max-w-4xl px-4">
         <motion.div className="text-center mb-6">
-          <Button
-            type="button"
-            onClick={handleToggleForm}
-            aria-expanded={isFormOpen}
-            className="px-6 py-3 text-base sm:text-lg font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-          >
+          <h2 className="text-3xl font-bold text-foreground mb-4">
             {t('donation_form.title')}
-          </Button>
-          {isFormOpen && (
-            <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
-              {t('donation_form.subtitle')}
-            </p>
-          )}
+          </h2> 
         </motion.div>
 
-        {isFormOpen && isAuthenticated && (
         <form onSubmit={handleSubmit}>
           <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column - Personal Information */}
@@ -556,7 +524,6 @@ export default function DonationFormSection({ professionalHelpCategories, autoOp
             </Button>
           </motion.div>
         </form>
-        )}
       </div>
     </motion.section>
   );

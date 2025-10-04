@@ -316,8 +316,7 @@
     "dark_mode": "ጸልማት ሞድ"
   },
   "donation_form": {
-    "title": "ኣባልነት መመዝገቢ ቅጥዒ",
-    "subtitle": "ኣብ ሻሪቲ ውድብና ተሳተፍ እሞ ለውጢ ንምፍጣር ሓግዝ",
+    "title": "ኣብ ሻሪቲ ውድብና ተሳተፍ እሞ ለውጢ ንምፍጣር ሓግዝ",
     "login_required": "ኣብ ምእታው የድሊ",
     "login_required_description": "ናብ ውህብቶ ቅጥ ንምብጻሕ እባክዎ ኣብ ምእታው",
     "already_setup_message": "ውህብቶ ስርዓት ቀድሚ ተዳሊዩ እዩ። ንምቀጻል እባክዎ ኣብ ምእታው።",
