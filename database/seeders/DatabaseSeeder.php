@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         // Seed banks and bank accounts
         $this->call(BankSeeder::class);
 
-        // Seed professional help categories
+        // Seed help categories
         $this->call(ProfessionalHelpCategorySeeder::class);
 
         // Create a default admin user

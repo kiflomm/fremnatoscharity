@@ -39,7 +39,7 @@ export default function AdminMemberships({ memberships }: { memberships: { data:
       <div className="flex h-full flex-1 flex-col gap-6 p-4 sm:p-6">
         <Card>
           <CardHeader>
-            <CardTitle>Donor Registrations</CardTitle>
+            <CardTitle>Offered Donations</CardTitle>
             <CardDescription>Review and manage Donors submissions</CardDescription>
             <div className="flex items-center gap-2">
               <Input placeholder="Search by name, email, phone, help..." value={query} onChange={(e) => setQuery(e.target.value)} className="w-full sm:w-[320px]" />
@@ -50,10 +50,10 @@ export default function AdminMemberships({ memberships }: { memberships: { data:
               <Table>
                 <TableHeaderEl>
                   <TableRow>
-                    <TableHead>Name</TableHead>
+                    <TableHead>Full Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
-                    <TableHead>Help</TableHead>
+                    <TableHead>Help Category</TableHead>
                     <TableHead>Donation</TableHead>
                     <TableHead>Submitted</TableHead>
                     <TableHead className="text-right">Actions</TableHead>

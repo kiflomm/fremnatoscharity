@@ -1,5 +1,3 @@
-import { type SharedData } from '@/types';
-import { usePage } from '@inertiajs/react';
 import FixedHeaderLayout from '@/layouts/FixedHeaderLayout';
 import { AboutSection, ContactSection, DonationSection, HeroSection } from '@/components/welcome'; 
 import { useTranslations } from '@/hooks/useTranslations';
@@ -8,21 +6,7 @@ import { useEffect, useState } from 'react';
 import ImageSlideshow from '@/components/ImageSlideshow';
 import {toast, Toaster } from 'sonner';
 
-interface ProfessionalHelpCategory {
-    id: number;
-    name: string;
-    description?: string;
-    is_active: boolean;
-    sort_order: number;
-    translations?: Record<string, string>;
-}
-
-interface WelcomePageProps extends SharedData {
-    professionalHelpCategories: ProfessionalHelpCategory[];
-}
-
 export default function Welcome() {
-    const { auth, professionalHelpCategories } = usePage<WelcomePageProps>().props;
     const {  i18n, ready } = useTranslations();
     const { t } = useTranslation();
     const [forceUpdate, setForceUpdate] = useState(0);
@@ -54,7 +38,6 @@ export default function Welcome() {
             </div>
         );
     }
-    // toast.success('Membership application submitted successfully!', { id: 'membership-success' });
 
     return (
         <FixedHeaderLayout title={t('organization.name')}>
