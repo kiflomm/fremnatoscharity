@@ -71,7 +71,7 @@ export default function Footer() {
     {
       name: "Aba Samuel",
       phone: "+972543046018",
-      email: "abasamuel@freminatos.org",
+      email: "abasamuel@fremnatos.org",
       image: "/images/contact/aba_selama.png",
       youtube: "https://www.youtube.com/@abasamuelweldeselama4908"
     },
