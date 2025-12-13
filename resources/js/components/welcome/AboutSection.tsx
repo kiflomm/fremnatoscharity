@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Heart, Users, Target, Lightbulb, Globe } from "lucide-react"
+import { ArrowRight, Heart, Flag, Target, Lightbulb, Globe } from "lucide-react"
 
 export default function AboutSection() {
   const { theme } = useTheme()
@@ -19,37 +19,37 @@ export default function AboutSection() {
   const sections = [
     {
       id: "slide-1",
-      title: t("slideshow.slide1.title", { defaultValue: "Our Mission" }),
+      title: t("slideshow.slide1.title", { defaultValue: "Vision" }),
       description: t("slideshow.slide1.description", {
         defaultValue:
-          "We are dedicated to creating positive change in communities worldwide through innovative solutions and collaborative partnerships.",
-      }),
-      icon: Target,
-    },
-    {
-      id: "slide-2",
-      title: t("slideshow.slide2.title", { defaultValue: "Our Vision" }),
-      description: t("slideshow.slide2.description", {
-        defaultValue:
-          "Building a sustainable future where technology and humanity work together to solve the world's most pressing challenges.",
+          "To see a united, family-oriented community in Tigray that serves as a center of hope and a model for society by reducing the number of people facing economic, social, psychological, and health challenges—particularly the elderly, people with mental health conditions, and children—through capacity building and the introduction of diverse, sustainable activities.",
       }),
       icon: Lightbulb,
     },
     {
+      id: "slide-2",
+      title: t("slideshow.slide2.title", { defaultValue: "Goal" }),
+      description: t("slideshow.slide2.description", {
+        defaultValue:
+          "To alleviate social, economic, and psychological problems by bringing together, in one center, vulnerable groups who lack care and support—specifically the elderly, people suffering from mental illness, and disadvantaged children—and addressing their needs in a holistic manner.",
+      }),
+      icon: Flag,
+    },
+    {
       id: "slide-3",
-      title: t("slideshow.slide3.title", { defaultValue: "Our Team" }),
+      title: t("slideshow.slide3.title", { defaultValue: "Mission" }),
       description: t("slideshow.slide3.description", {
         defaultValue:
-          "A diverse group of passionate professionals committed to excellence, innovation, and making a meaningful impact in everything we do.",
+          "To work toward ensuring that vulnerable members of society—elderly people without caretakers, individuals with mental health conditions, and children—receive comprehensive services by bringing them together in a supportive environment. Additionally, to help them overcome their social, economic, and psychological challenges and to significantly reduce poverty by identifying and developing sustainable sources of income that enable the effective implementation of all programs and activities.",
       }),
-      icon: Users,
+      icon: Target,
     },
     {
       id: "slide-4",
-      title: t("slideshow.slide4.title", { defaultValue: "Our Values" }),
+      title: t("slideshow.slide4.title", { defaultValue: "Core Values" }),
       description: t("slideshow.slide4.description", {
         defaultValue:
-          "Integrity, transparency, and social responsibility guide every decision we make as we work toward our shared goals.",
+          "• Providing care and support to vulnerable people without discrimination\n• Serving all individuals equally\n• Being diligent and open to change\n• Working collaboratively and as a team\n• Upholding transparency and accountability",
       }),
       icon: Heart,
     }
@@ -130,7 +130,23 @@ export default function AboutSection() {
                       <>
                         <AlertDialogHeader>
                           <AlertDialogTitle>{selected.title}</AlertDialogTitle>
-                          <AlertDialogDescription>{selected.description}</AlertDialogDescription>
+                          {selected.id === "slide-4" ? (
+                            <div className="text-muted-foreground mt-4">
+                              <ul className="space-y-3 list-none pl-0">
+                                {selected.description.split('\n').map((item, idx) => {
+                                  const text = item.replace(/^•\s*/, '').trim()
+                                  return text ? (
+                                    <li key={idx} className="flex items-start gap-3">
+                                      <span className="text-primary mt-1.5 flex-shrink-0">•</span>
+                                      <span>{text}</span>
+                                    </li>
+                                  ) : null
+                                })}
+                              </ul>
+                            </div>
+                          ) : (
+                            <AlertDialogDescription>{selected.description}</AlertDialogDescription>
+                          )}
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel onClick={() => setOpenId(null)}>{t('common.actions.close')}</AlertDialogCancel>
@@ -282,9 +298,25 @@ export default function AboutSection() {
                           </CardHeader>
                           
                           <CardContent className="relative pt-0">
-                            <CardDescription className="text-lg leading-relaxed text-muted-foreground font-medium">
-                              {section.description}
-                            </CardDescription>
+                            {section.id === "slide-4" ? (
+                              <div className="text-lg leading-relaxed text-muted-foreground font-medium">
+                                <ul className="space-y-3 list-none pl-0">
+                                  {section.description.split('\n').map((item, idx) => {
+                                    const text = item.replace(/^•\s*/, '').trim()
+                                    return text ? (
+                                      <li key={idx} className="flex items-start gap-3">
+                                        <span className="text-primary mt-1.5 flex-shrink-0">•</span>
+                                        <span>{text}</span>
+                                      </li>
+                                    ) : null
+                                  })}
+                                </ul>
+                              </div>
+                            ) : (
+                              <CardDescription className="text-lg leading-relaxed text-muted-foreground font-medium">
+                                {section.description}
+                              </CardDescription>
+                            )}
                             
                             {/* Decorative elements */}
                             <div className="mt-6 flex items-center gap-2">
